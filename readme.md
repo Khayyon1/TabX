@@ -1,6 +1,5 @@
-# Readme
-# Miguel is Here (11/26 10:13AM)
-# Khayyon is Here (11/26 10:13AM)
+#Readme
 
-|Name |Day No.|Meeting Times| End Goals|
-|:=|:=|:=|:=|
+GOOGLE 
+DRIVE: 
+https://drive.google.com/open?id=16qhoxbi3ic6AbOpAMP6jVq7iFsZ5qpNh

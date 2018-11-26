@@ -1,6 +1,6 @@
 # Tungsten
 
-## tungsten
+## ext
 Contains the code to run on the different browsers as an extension
 
 

@@ -12,14 +12,14 @@ function displaySuggestions(activeElement)
 
    current_table = document.getElementById("suggestionsTable");
 
-
+   console.log("current word: " + getCurrentWord(document.activeElement))
    console.log(current_table);
    if(current_table != null)
    {
       document.body.removeChild(current_table);
    }
 
-   if(document.activeElement.value == ""){
+   if(document.activeElement.value == "" || getCurrentWord(document.activeElement) == ""){
          return;
    }
 
@@ -76,6 +76,10 @@ function replaceWordAt(str, i, word, delimiter=' ')
     console.log("Before  : " + before);
     console.log("Replace : " + word);
     console.log("After   : " + after);
+    if (after.charAt(0) != " ")
+    {
+        after = " "+after;
+    }
     return before + word + after;
 }
 
@@ -103,9 +107,10 @@ function getCurrentWord(inputField)
    prev = text.charAt(caret - 1);
 
    //Make sure caret is at the end of a developing word
-   if(prev.match(/\w/) && (caret == text.length || text.charAt(caret).match(/\W/)))
+   if(prev.match(/\w/))
    {
       //Iterate backwards to find the first instance of a white space
+       // 0 to caret
       var startOfWord = indexOfStartOfCurrentWord(text, caret);
 
       if(startOfWord == 0)

@@ -2,5 +2,15 @@
    "name" : "Tungsten",
 	"version" : "1.0",
 	"description" : "Writing assistant for browsers",
+   "background": {
+      "scripts": ["scripts/background.js"],
+      "persistent": false
+   },
+   "content_scripts": [
+   {
+     "matches": ["*://*/*"],
+     "js": ["scripts/test.js"]
+   }
+ ],
 	"manifest_version" : 2
 }

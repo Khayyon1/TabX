@@ -37,8 +37,13 @@ function displaySuggestions(activeElement)
    for(i = 0; i < suggestions.length; i++)
    {
        row = document.createElement("tr");
-      row.append(document.createTextNode(suggestions[i]));
-      table.appendChild(row);
+       column1 = document.createElement("td");
+       column2 = document.createElement("td");
+       column1.appendChild(document.createTextNode(((i+1).toString())));
+       column2.appendChild(document.createTextNode(suggestions[i]));
+       row.append(column1);
+       row.append(column2);
+       table.appendChild(row);
    }
 
    document.body.appendChild(table);

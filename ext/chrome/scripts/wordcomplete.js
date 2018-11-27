@@ -8,8 +8,22 @@ function displaySuggestions(activeElement)
       return;
    }
 
+   current_table = document.getElementById("suggestionsTable");
+   console.log(current_table);
+   if(current_table != null)
+   {
+      document.body.removeChild(current_table);
+   }
+
+   if(document.activeElement.value == ""){
+         return;
+   }
+
    table = document.createElement("table");
-   suggestions = getSuggestions(activeElement.value);
+   table.id = "suggestionsTable"
+
+   console.log(document.activeElement.value);
+   suggestions = getSuggestions(document.activeElement.value);
    for(i = 0; i < suggestions.length; i++)
    {
       row = document.createElement("tr");
@@ -101,5 +115,5 @@ function indexOfStartOfCurrentWord(text, caret)
 
 function getSuggestions(incomplete_string)
 {
-   return ["wibble", "wobble", "wubble"];
+   return [incomplete_string + "ua", incomplete_string + "oa", incomplete_string + "ia"];
 }

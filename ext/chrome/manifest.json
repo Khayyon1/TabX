@@ -9,7 +9,7 @@
    "content_scripts": [
    {
      "matches": ["*://*/*"],
-     "js": ["scripts/foobar.js"]
+     "js": ["scripts/wordcomplete.js"]
    }
  ],
 	"manifest_version" : 2

@@ -1,5 +1,24 @@
-document.addEventListener("keyup", storeCurrentWord);
+document.addEventListener("keyup", displaySuggestions);
+
 let _current_word = "";
+
+function displaySuggestions(activeElement)
+{
+   if(!activeElementIsTextField()){
+      return;
+   }
+
+   table = document.createElement("table");
+   suggestions = getSuggestions(activeElement.value);
+   for(i = 0; i < suggestions.length; i++)
+   {
+      row = document.createElement("tr");
+      row.append(document.createTextNode(suggestions[i]));
+      table.appendChild(row);
+   }
+
+   document.body.appendChild(table);
+}
 
 function activeElementIsTextField()
 {
@@ -28,6 +47,7 @@ function storeCurrentWord(){
     {
         _current_word = getCurrentWord(document.activeElement);
         console.log(_current_word);
+        console.log("Suggestions: " + getSuggestions(_current_word));
     }
 }
 
@@ -69,7 +89,7 @@ function getCurrentWord(inputField)
 
 function indexOfStartOfCurrentWord(text, caret)
 {
-         //Iterate backwards to find the first instance of a white space
+      //Iterate backwards to find the first instance of a white space
       var i = caret;
       while(i > 0 && text.charAt(i - 1).match(/\w/))
       {
@@ -77,4 +97,9 @@ function indexOfStartOfCurrentWord(text, caret)
       }
 
       return i;
+}
+
+function getSuggestions(incomplete_string)
+{
+   return ["wibble", "wobble", "wubble"];
 }

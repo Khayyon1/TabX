@@ -1,4 +1,4 @@
-document.addEventListener("keyup", displaySuggestions);
+// document.addEventListener("keyup", displaySuggestions);
 
 let _current_word = "";
 
@@ -65,9 +65,17 @@ function wordCompletion(activeElement, userChoice ='world')
 
 function replaceWordAt(str, i, word, delimiter=' ')
 {
-    startOfWord = word.lastIndexOf(delimiter, i);
+    startOfWord = str.lastIndexOf(delimiter, i - 1);
     before = str.substring(0, startOfWord);
+    if (before != "" && before != null)
+    {
+        before += " "
+    }
     after  = str.substring(i);
+    console.log("Start   : " + startOfWord.toString());
+    console.log("Before  : " + before);
+    console.log("Replace : " + word);
+    console.log("After   : " + after);
     return before + word + after;
 }
 
@@ -131,4 +139,27 @@ function indexOfStartOfCurrentWord(text, caret)
 function getSuggestions(incomplete_string)
 {
    return [incomplete_string + "ua", incomplete_string + "oa", incomplete_string + "ia"];
+}
+
+function handleUserInput(event)
+{
+    keyname = event.key;
+    choices = ["1", "2", "3"];
+    if (activeElementIsTextField()){
+        if (choices.includes(keyname) && suggestionsAreBeingDisplayed()) {
+            wordCompletion(document.activeElement, getSuggestions(getCurrentWord(document.activeElement))[parseInt(keyname) - 1])
+        }
+        else {
+            displaySuggestions(document.activeElement)
+        }
+    }
+    else
+        {
+            return;
+        }
+}
+
+document.addEventListener('keyup', handleUserInput);
+function suggestionsAreBeingDisplayed() {
+    return document.getElementById("suggestionsTable") != null
 }

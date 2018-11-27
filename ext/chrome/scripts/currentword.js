@@ -1,4 +1,4 @@
-document.addEventListener("click", printCurrentWordInActiveTextField);
+document.addEventListener("keyup", printCurrentWordInActiveTextField);
 
 function printActiveElement()
 {

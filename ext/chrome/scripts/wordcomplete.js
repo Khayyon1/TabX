@@ -2,6 +2,8 @@ document.addEventListener("keyup", displaySuggestions);
 
 let _current_word = "";
 
+
+
 function displaySuggestions(activeElement)
 {
    if(!activeElementIsTextField()){
@@ -9,6 +11,8 @@ function displaySuggestions(activeElement)
    }
 
    current_table = document.getElementById("suggestionsTable");
+
+
    console.log(current_table);
    if(current_table != null)
    {
@@ -22,11 +26,17 @@ function displaySuggestions(activeElement)
    table = document.createElement("table");
    table.id = "suggestionsTable"
 
+    table.style.position = 'fixed';
+    var input_bounds = document.activeElement.getBoundingClientRect();
+
+    table.style.left = (input_bounds.left).toString() + "px";
+    table.style.top = (input_bounds.top + 20).toString()+"px";
+
    console.log(document.activeElement.value);
-   suggestions = getSuggestions(document.activeElement.value);
+   suggestions = getSuggestions(getCurrentWord(document.activeElement));
    for(i = 0; i < suggestions.length; i++)
    {
-      row = document.createElement("tr");
+       row = document.createElement("tr");
       row.append(document.createTextNode(suggestions[i]));
       table.appendChild(row);
    }

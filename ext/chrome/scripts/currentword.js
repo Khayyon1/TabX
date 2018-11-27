@@ -1,5 +1,3 @@
-document.addEventListener("keyup", printCurrentWordInActiveTextField);
-
 function printActiveElement()
 {
    console.log(document.activeElement);
@@ -23,7 +21,7 @@ function printTextFieldContents()
    }
 }
 
-function activeElementIsTextField()
+export function activeElementIsTextField()
 {
    var activeElement = document.activeElement;
    return activeElement.tagName == 'INPUT';
@@ -39,7 +37,7 @@ function printCurrentWordInActiveTextField()
 }
 
 //Assumes that the caret is at the end of a word in a text field
-function getCurrentWord(inputField)
+export function getCurrentWord(inputField)
 {
    text = inputField.value;
    caret = inputField.selectionStart;
@@ -55,18 +53,15 @@ function getCurrentWord(inputField)
    if(prev.match(/\w/) && (caret == text.length || text.charAt(caret).match(/\W/)))
    {
       //Iterate backwards to find the first instance of a white space
-      var i = caret;
-      while(i > 0 && text.charAt(i - 1).match(/\w/))
-      {
-          i--;
-      }
-      if(i == 0)
+      var startOfWord = indexOfStartOfCurrentWord(text, caret);
+
+      if(startOfWord == 0)
       {
          return text.substring(0, caret);
       }
       else
       {
-         return text.substring(i, caret);
+         return text.substring(startOfWord, caret);
       }
    }
 
@@ -74,4 +69,16 @@ function getCurrentWord(inputField)
    {
       return "";
    }
+}
+
+function indexOfStartOfCurrentWord(text, caret)
+{
+         //Iterate backwards to find the first instance of a white space
+      var i = caret;
+      while(i > 0 && text.charAt(i - 1).match(/\w/))
+      {
+          i--;
+      }
+
+      return i;
 }

@@ -9,7 +9,7 @@
    "content_scripts": [
    {
      "matches": ["*://*/*"],
-     "js": ["scripts/currentword.js"]
+     "js": ["scripts/foobar.js"]
    }
  ],
 	"manifest_version" : 2

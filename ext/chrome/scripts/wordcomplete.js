@@ -1,4 +1,5 @@
-document.addEventListener("keyup", currentword.storeCurrentWord);
+document.addEventListener("keyup", storeCurrentWord);
+let _current_word = "";
 
 function activeElementIsTextField()
 {
@@ -21,7 +22,6 @@ function replaceWordAt(str, i, word, delimiter=' ')
     after  = str.substring(i);
     return before + word + after;
 }
-
 
 function storeCurrentWord(){
     if(activeElementIsTextField())

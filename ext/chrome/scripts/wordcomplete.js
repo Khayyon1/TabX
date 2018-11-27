@@ -143,23 +143,25 @@ function getSuggestions(incomplete_string)
 
 function handleUserInput(event)
 {
-    keyname = event.key;
-    choices = ["1", "2", "3"];
-    if (activeElementIsTextField()){
-        if (choices.includes(keyname) && suggestionsAreBeingDisplayed()) {
-            wordCompletion(document.activeElement, getSuggestions(getCurrentWord(document.activeElement))[parseInt(keyname) - 1])
-        }
-        else {
-            displaySuggestions(document.activeElement)
-        }
+    if (activeElementIsTextField())
+    {
+        displaySuggestions(document.activeElement);
     }
-    else
-        {
-            return;
-        }
 }
 
+document.addEventListener('keydown', handleWordComplete);
 document.addEventListener('keyup', handleUserInput);
+
 function suggestionsAreBeingDisplayed() {
     return document.getElementById("suggestionsTable") != null
+}
+
+function handleWordComplete(event){
+    keyname = event.key;
+    choices = ["1", "2", "3"];
+    if(activeElementIsTextField() && choices.includes(keyname) && suggestionsAreBeingDisplayed())
+    {
+        event.preventDefault();
+        wordCompletion(document.activeElement, getSuggestions(getCurrentWord(document.activeElement))[parseInt(keyname) - 1])
+    }
 }

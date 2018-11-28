@@ -42,4 +42,11 @@ function getCurrentWordTestSuite()
 }
 
 describe('Word Complete', wordCompleteTestSuite);
-function wordCompleteTestSuite(){};
+function wordCompleteTestSuite()
+{
+    it("word should appear in active input field", function () {
+        var testword = "hi"
+        wordCompletion(document.activeElement, testword)
+        expect(document.activeElement.value.includes(testword)).toBe(true)
+    });
+}

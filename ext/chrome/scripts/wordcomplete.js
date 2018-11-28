@@ -148,7 +148,14 @@ function indexOfStartOfCurrentWord(text, caret)
 
 function getSuggestions(incomplete_string)
 {
-   return [incomplete_string + "ua", incomplete_string + "oa", incomplete_string + "ia"];
+    if (incomplete_string == 'fjuernf' || incomplete_string == ""|| incomplete_string=="BigK99")
+    {
+        return [];
+    }
+    else
+    {
+        return [incomplete_string + 'a', incomplete_string + 'b', incomplete_string + 'c']
+    }
 }
 
 function handleUserInput(event)

@@ -1,52 +1,59 @@
-var levenshtein = require('fast-levenshtein')
-//levenshtein-edit-distance
 
-function simpleReadFileSync(filePath){
+function readAndParse(filePath) {
     var fs = require('fs');
-      var options = {encoding:'utf-8', flag:'r'};
-  
-      var buffer = fs.readFileSync(filePath, options);
-  
-      return buffer;
+    var options = {encoding:'utf-8', flag:'r'};
+    var buffer = fs.readFileSync(filePath, options);
+    //var dictionary = buffer.replace( /\n/g, " " ).split( " " ); // For Russell's computer
+    var dictionary = buffer.replace( /\n/g, " " ).split( "\r " ); 
+    return dictionary;
 }
 
-var words = simpleReadFileSync('1-1000.txt');
-words = words.replace( /\n/g, " " ).split( " " )
-
-var word = "tw"
-var recs = {}
-for (var i = 0; i < words.length; i++) {
-    if (words[i].substring(0, word.length) === word) {
-        //put all words that start with a certain letter in dict
-        recs[words[i]] = 1
+function searchForAdditions(word, dictionary, recs) {
+    var i = 0;
+    while (Object.keys(recs).length < 3) {
+        if (dictionary[i].substring(0, word.length) === word) {     
+            recs[dictionary[i]] = 1;
+        }
+       i++; 
     }
+    return recs
 }
 
-var i = 0
-var maxDist = 0
-var recsLen = Object.keys(recs).length
-while ((maxDist !== 1 && i < words.length) || recsLen < 3) {
-    if (!(words[i] in recs)) {
-        var lev = levenshtein.get(word, words[i])
-        if (recsLen < 3) {
-            recs[words[i]] = lev
-            if (lev > maxDist) {
-                maxDist = lev
+function searchForReplacements(word, dictionary, recs) {
+    var i = 0;
+    var maxDist = 0;
+    var recsLen;
+    var levenshtein = require('fast-levenshtein');
+
+    while ((maxDist !== 1 && i < dictionary.length) ||  (recsLen = Object.keys(recs).length) < 3) { 
+        if (!(dictionary[i] in recs)) {
+            var lev = levenshtein.get(word, dictionary[i]);
+            if (recsLen < 3) {
+                recs[dictionary[i]] = lev;
+                if (lev > maxDist) {
+                    maxDist = lev;
+                }
+            }
+            else {
+                if (lev < maxDist) {
+                    delete recs[Object.keys(recs).find(key => recs[key] === maxDist)];
+                    recs[dictionary[i]] = lev;
+                    maxDist = lev;
+                }
             }
         }
-        else {
-            if (lev < maxDist) {
-                delete recs[Object.keys(recs).find(key => recs[key] === maxDist)]
-                recs[words[i]] = lev
-                maxDist = lev
-            }
+        i++;
     }
-    recsLen = Object.keys(recs).length
-    }
-    i++
+    return recs;
 }
 
-//console.log(maxDist)
-for (var key in recs) {
-    console.log(key)
+function findCompleteWordOptions(word) {
+    var dictionary = readAndParse('1-1000.txt');
+    var recs = {};
+
+    recs = searchForAdditions(word, dictionary, recs);
+    recs = searchForReplacements(word, dictionary, recs);
+    
+    return Object.keys(recs);
 }
+

@@ -2,8 +2,6 @@
 
 var _current_word = "";
 
-
-
 function displaySuggestions(activeElement)
 {
    if(!activeElementIsTextField()){

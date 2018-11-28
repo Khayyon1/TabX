@@ -67,19 +67,24 @@ function replaceWordAt(str, i, word, delimiter=' ')
 {
     startOfWord = str.lastIndexOf(delimiter, i - 1);
     before = str.substring(0, startOfWord);
+    
     if (before != "" && before != null)
     {
         before += " "
     }
+
     after  = str.substring(i);
+
+    if(after.charAt(0) != "" && after.charAt(0) != " ")
+    {
+      after = " " + after;
+    }
+
     console.log("Start   : " + startOfWord.toString());
     console.log("Before  : " + before);
     console.log("Replace : " + word);
     console.log("After   : " + after);
-    if (after.charAt(0) != " ")
-    {
-        after = " "+after;
-    }
+
     return before + word + after;
 }
 

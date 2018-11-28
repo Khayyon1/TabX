@@ -16,4 +16,8 @@ function suggestionsTestSuite()
    it("shoud return an empty suggestions list for a nonsense word", function(){
       expect(getSuggestions("fjuernf").length == 0).toBe(true);
    });
+
+    it('should return empty suggestions list for empty string', function () {
+       expect(getSuggestions("").length == 0).toBe(true);
+    });
 }

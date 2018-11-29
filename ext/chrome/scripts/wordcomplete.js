@@ -2,8 +2,6 @@
 
 var _current_word = "";
 
-
-
 function displaySuggestions(activeElement)
 {
    if(!activeElementIsTextField()){
@@ -67,7 +65,7 @@ function replaceWordAt(str, i, word, delimiter=' ')
 {
     startOfWord = str.lastIndexOf(delimiter, i - 1);
     before = str.substring(0, startOfWord);
-    
+
     if (before != "" && before != null)
     {
         before += " "
@@ -148,6 +146,8 @@ function indexOfStartOfCurrentWord(text, caret)
 
 function getSuggestions(incomplete_string)
 {
+   return testTrie.nearestChildren(incomplete_string);
+
     if (incomplete_string == 'fjuernf' || incomplete_string == ""|| incomplete_string=="BigK99")
     {
         return [];

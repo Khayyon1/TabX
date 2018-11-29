@@ -1157,7 +1157,8 @@ Trie.prototype.remove = function(key) {
 }
 
 
-var testTrie = new Trie()
+var testTrie = new Trie();
+
 wordList = simpleReadFileSync("1-1000.txt")
 for(var i = 0; i < wordList.length; i++){
     testTrie.add(wordList[i])

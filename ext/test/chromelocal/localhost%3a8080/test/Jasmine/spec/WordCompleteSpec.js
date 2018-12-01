@@ -3,7 +3,7 @@
 * Each describe block is equivalent to one test case
 *
 */
-import {getSuggestions, getCurrentWord, wordCompletion} from "../../../src/wordcompleteUI.js"
+import {}*} from "../../../src/wordcompleteUI.js"
 function suggestionsTestSuite()
 {
     var inputId = "mockInput"
@@ -25,7 +25,7 @@ function suggestionsTestSuite()
       expect(getSuggestions("the").length > 0).toBe(true);
    });
 
-   it("should return an empty suggestions list for a nonsense word", function(){
+   it("shoud return an empty suggestions list for a nonsense word", function(){
       expect(getSuggestions("fjuernf").length).toEqual(0);
    });
 
@@ -53,7 +53,7 @@ function getCurrentWordTestSuite()
    });
 
     afterEach(function(){
-      var input = document.getElementById(inputId);
+      input = document.getElementById(inputId);
       input.parentNode.removeChild(input);
     });
 
@@ -101,7 +101,7 @@ function wordCompleteTestSuite()
    });
 
     afterEach(function(){
-      var input = document.getElementById(inputId);
+      input = document.getElementById(inputId);
       input.parentNode.removeChild(input);
     });
 

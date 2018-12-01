@@ -2,13 +2,15 @@
 
 var _current_word = "";
 
-function displaySuggestions(activeElement)
+import {testTrie} from './lib/wordcompletion/word-completion.js';
+
+export function displaySuggestions(activeElement)
 {
    if(!activeElementIsTextField()){
       return;
    }
 
-   current_table = document.getElementById("suggestionsTable");
+   var current_table = document.getElementById("suggestionsTable");
 
    console.log("current word: " + getCurrentWord(document.activeElement))
    console.log(current_table);
@@ -21,7 +23,7 @@ function displaySuggestions(activeElement)
          return;
    }
 
-   table = document.createElement("table");
+   var table = document.createElement("table");
    table.id = "suggestionsTable"
 
     table.style.position = 'fixed';
@@ -31,12 +33,12 @@ function displaySuggestions(activeElement)
     table.style.top = (input_bounds.top + 20).toString()+"px";
 
    console.log(document.activeElement.value);
-   suggestions = getSuggestions(getCurrentWord(document.activeElement));
+   var suggestions = getSuggestions(getCurrentWord(document.activeElement));
    for(i = 0; i < suggestions.length; i++)
    {
-       row = document.createElement("tr");
-       column1 = document.createElement("td");
-       column2 = document.createElement("td");
+       var row = document.createElement("tr");
+       var column1 = document.createElement("td");
+       var column2 = document.createElement("td");
        column1.appendChild(document.createTextNode(((i+1).toString())));
        column2.appendChild(document.createTextNode(suggestions[i]));
        row.append(column1);
@@ -53,7 +55,7 @@ function activeElementIsTextField()
    return activeElement.tagName == 'INPUT';
 }
 
-function wordCompletion(activeElement, userChoice ='world')
+export function wordCompletion(activeElement, userChoice ='world')
 {
     activeElement.value = replaceWordAt(
         activeElement.value,
@@ -63,15 +65,15 @@ function wordCompletion(activeElement, userChoice ='world')
 
 function replaceWordAt(str, i, word, delimiter=' ')
 {
-    startOfWord = str.lastIndexOf(delimiter, i - 1);
-    before = str.substring(0, startOfWord);
+    var startOfWord = str.lastIndexOf(delimiter, i - 1);
+    var before = str.substring(0, startOfWord);
 
     if (before != "" && before != null)
     {
         before += " "
     }
 
-    after  = str.substring(i);
+    var after  = str.substring(i);
 
     if(after.charAt(0) != "" && after.charAt(0) != " ")
     {
@@ -97,17 +99,17 @@ function storeCurrentWord(){
 
 
 //Assumes that the caret is at the end of a word in a text field
-function getCurrentWord(inputField)
+export function getCurrentWord(inputField)
 {
-   text = inputField.value;
-   caret = inputField.selectionStart;
+   var text = inputField.value;
+   var caret = inputField.selectionStart;
 
    if(caret == 0)
    {
       return "";
    }
 
-   prev = text.charAt(caret - 1);
+   var prev = text.charAt(caret - 1);
 
    //Make sure caret is at the end of a developing word
    if(prev.match(/\w/))
@@ -144,7 +146,7 @@ function indexOfStartOfCurrentWord(text, caret)
       return i;
 }
 
-function getSuggestions(incomplete_string)
+export function getSuggestions(incomplete_string)
 {
    return testTrie.nearestChildren(incomplete_string);
 
@@ -174,8 +176,8 @@ function suggestionsAreBeingDisplayed() {
 }
 
 function handleWordComplete(event){
-    keyname = event.key;
-    choices = ["1", "2", "3"];
+    var keyname = event.key;
+    var choices = ["1", "2", "3"];
     if(activeElementIsTextField() && choices.includes(keyname) && suggestionsAreBeingDisplayed())
     {
         event.preventDefault();

@@ -1,4 +1,5 @@
 const TabX = require('./tabx.js');
-const WordCompleteModel = require("./models/wordcomplete");
+const WordCompleteModel = require("./lib/wordcompletion/triecomplete.js");
+const WordPredictModel = undefined;
 
-var tabx = new TabX(WordCompleteModel.WordCompleteModel);
+var tabx = new TabX(WordCompleteModel, WordPredictModel);

@@ -1,15 +1,17 @@
-// document.addEventListener("keyup", displaySuggestions);
+// this.document.addEventListener("keyup", displaySuggestions);
 
 var _current_word = "";
 
 //import {wordCompleteModel} from './models/wordcomplete.js';
-
+var _debug = true;
 
 const TabX = class
 {
-   constructor(wordCompleteModel)
+   constructor(wordCompleteModel, wordPredictModel, document=document)
    {
       this.wordCompleteModel = wordCompleteModel;
+      this.wordPredictModel = wordPredictModel;
+      this.document = document;
       this.registerEventListeners();
    }
 
@@ -19,48 +21,53 @@ const TabX = class
          return;
       }
 
-      var current_table = document.getElementById("suggestionsTable");
+      var current_table = this.document.getElementById("suggestionsTable");
 
-      console.log("current word: " + this.getCurrentWord(document.activeElement))
-      console.log(current_table);
-      if(current_table != null)
+      if(debug)
       {
-         document.body.removeChild(current_table);
+         console.log("current word: " + this.getCurrentWord(this.document.activeElement))
+         console.log(current_table);
       }
 
-      if(document.activeElement.value == "" || this.getCurrentWord(document.activeElement) == ""){
+      if(current_table != null)
+      {
+         this.document.body.removeChild(current_table);
+      }
+
+      if(this.document.activeElement.value == "" || this.getCurrentWord(this.document.activeElement) == ""){
             return;
       }
 
-      var table = document.createElement("table");
+      var table = this.document.createElement("table");
       table.id = "suggestionsTable"
 
       table.style.position = 'fixed';
-      var input_bounds = document.activeElement.getBoundingClientRect();
+      var input_bounds = this.document.activeElement.getBoundingClientRect();
 
       table.style.left = (input_bounds.left).toString() + "px";
       table.style.top = (input_bounds.top + 20).toString()+"px";
 
-      console.log(document.activeElement.value);
-      var suggestions = this.getSuggestions(this.getCurrentWord(document.activeElement));
+
+      console.log(this.document.activeElement.value);
+      var suggestions = this.getSuggestions(this.getCurrentWord(this.document.activeElement));
       for(var i = 0; i < suggestions.length; i++)
       {
-          var row = document.createElement("tr");
-          var column1 = document.createElement("td");
-          var column2 = document.createElement("td");
-          column1.appendChild(document.createTextNode(((i+1).toString())));
-          column2.appendChild(document.createTextNode(suggestions[i]));
+          var row = this.document.createElement("tr");
+          var column1 = this.document.createElement("td");
+          var column2 = this.document.createElement("td");
+          column1.appendChild(this.document.createTextNode(((i+1).toString())));
+          column2.appendChild(this.document.createTextNode(suggestions[i]));
           row.append(column1);
           row.append(column2);
           table.appendChild(row);
       }
 
-      document.body.appendChild(table);
+      this.document.body.appendChild(table);
    }
 
    activeElementIsTextField()
    {
-      var activeElement = document.activeElement;
+      var activeElement = this.document.activeElement;
       return activeElement.tagName == 'INPUT';
    }
 
@@ -154,19 +161,19 @@ const TabX = class
    {
        if (this.activeElementIsTextField())
        {
-           this.displaySuggestions(document.activeElement);
+           this.displaySuggestions(this.document.activeElement);
        }
    }
 
    registerEventListeners()
    {
-      document.addEventListener('keydown', this.handleWordComplete.bind(this));
-      document.addEventListener('keyup', this.handleUserInput.bind(this));
+      this.document.addEventListener('keydown', this.handleWordComplete.bind(this));
+      this.document.addEventListener('keyup', this.handleUserInput.bind(this));
    }
 
    suggestionsAreBeingDisplayed()
    {
-       return document.getElementById("suggestionsTable") != null
+       return this.document.getElementById("suggestionsTable") != null
    }
 
    handleWordComplete(event)
@@ -176,7 +183,7 @@ const TabX = class
        if(this.activeElementIsTextField() && choices.includes(keyname) && this.suggestionsAreBeingDisplayed())
        {
            event.preventDefault();
-           this.wordCompletion(document.activeElement, this.getSuggestions(this.getCurrentWord(document.activeElement))[parseInt(keyname) - 1])
+           this.wordCompletion(this.document.activeElement, this.getSuggestions(this.getCurrentWord(this.document.activeElement))[parseInt(keyname) - 1])
        }
    }
 };

@@ -6,10 +6,14 @@
 const jsdom = require("jsdom");
 const { JSDOM } = jsdom;
 
-const wordcomplete =  require('../src/wordcompleteUI');
-const { getSuggestions, wordCompletion, getCurrentWord } = wordcomplete;
+const TabX =  require('../src/tabx');
+
+const mock = {
+   predictCurrentWord: function(){return ["hello", "world", "bye"];}
+}
 
 const document = (new JSDOM(``)).window.document;
+const tabx = new TabX(mock, undefined, document);
 
 function suggestionsTestSuite()
 {
@@ -29,19 +33,19 @@ function suggestionsTestSuite()
 
     it("should return non-empty suggestions list for common word", function()
    {
-      expect(getSuggestions("the").length > 0).toBe(true);
+      expect(tabx.getSuggestions("the").length > 0).toBe(true);
    });
 
    it("should return an empty suggestions list for a nonsense word", function(){
-      expect(getSuggestions("fjuernf").length).toEqual(0);
+      expect(tabx.getSuggestions("fjuernf").length).toEqual(0);
    });
 
    it('should return empty suggestions list for empty string', function () {
-       expect(getSuggestions("").length).toEqual(0);
+       expect(tabx.getSuggestions("").length).toEqual(0);
    });
 
    it('should not return suggestions for non-alphabetic word', function () {
-        expect(getSuggestions("BigK99").length).toEqual(0);
+        expect(tabx.getSuggestions("BigK99").length).toEqual(0);
    })
 }
 
@@ -69,28 +73,28 @@ function getCurrentWordTestSuite()
        var testwords = "hello world"
        document.activeElement.value =  testwords
        document.activeElement.selectionStart = 0
-       expect(getCurrentWord(document.activeElement)).toEqual("");
+       expect(tabx.getCurrentWord(document.activeElement)).toEqual("");
    });
 
    it("should return the leftmost word when caret at end of input", function()
    {
        var testwords = "hello world"
        document.activeElement.value =  testwords
-       expect(getCurrentWord(document.activeElement)).toEqual("world");
+       expect(tabx.getCurrentWord(document.activeElement)).toEqual("world");
    });
 
    it("should capture whole word text up to caret delimited by space ", function()
    {
        var testwords = "hello worlds"
        document.activeElement.value = testwords
-       expect(getCurrentWord(document.activeElement)).toEqual("worlds");
+       expect(tabx.getCurrentWord(document.activeElement)).toEqual("worlds");
    });
 
    it("should capture partial word text up to caret delimited by space",function () {
        var testwords = "hello worlds"
        document.activeElement.value = testwords
        document.activeElement.selectionStart = 3
-       expect(getCurrentWord(document.activeElement)).toEqual("hel");
+       expect(tabx.getCurrentWord(document.activeElement)).toEqual("hel");
    })
 }
 
@@ -114,7 +118,7 @@ function wordCompleteTestSuite()
 
     it("word should appear in active input field", function () {
         var testword = "hello"
-        wordCompletion(document.activeElement, testword)
+        tabx.wordCompletion(document.activeElement, testword)
         expect(document.activeElement.value.includes(testword)).toBe(true)
     });
 
@@ -124,7 +128,7 @@ function wordCompleteTestSuite()
       var teststring = "Hello wo";
       document.activeElement.value = teststring;
       document.activeElement.selectionStart = teststring.length;
-      wordCompletion(document.activeElement, "world");
+      tabx.wordCompletion(document.activeElement, "world");
 
       expect(document.activeElement.value).toEqual("Hello world");
     });
@@ -136,7 +140,7 @@ function wordCompleteTestSuite()
           var teststring = "He world";
           document.activeElement.value = teststring;
           document.activeElement.selectionStart = 2;
-          wordCompletion(document.activeElement, "Hello");
+          tabx.wordCompletion(document.activeElement, "Hello");
 
           expect(document.activeElement.value).toEqual("Hello world");
      });
@@ -147,7 +151,7 @@ function wordCompleteTestSuite()
           var teststring = "Hello wo Hello";
           document.activeElement.value = teststring;
           document.activeElement.selectionStart = 8;
-          wordCompletion(document.activeElement, "world");
+          tabx.wordCompletion(document.activeElement, "world");
 
           expect(document.activeElement.value).toEqual("Hello world Hello");
      });
@@ -157,7 +161,7 @@ function wordCompleteTestSuite()
       var teststring = "Hello world";
       document.activeElement.value = teststring;
       document.activeElement.selectionStart = teststring.length - 2;
-      wordCompletion(document.activeElement, "world");
+      tabx.wordCompletion(document.activeElement, "world");
 
       expect(document.activeElement.value).toEqual("Hello world ld");
    });

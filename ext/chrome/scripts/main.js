@@ -90,8 +90,9 @@
 
 const TabX = __webpack_require__(1);
 const WordCompleteModel = __webpack_require__(2);
+const WordPredictModel = undefined;
 
-var tabx = new TabX(WordCompleteModel.WordCompleteModel);
+var tabx = new TabX(WordCompleteModel, WordPredictModel, document);
 
 
 /***/ }),
@@ -107,9 +108,10 @@ var _current_word = "";
 
 const TabX = class
 {
-   constructor(wordCompleteModel)
+   constructor(wordCompleteModel, wordPredictModel)
    {
       this.wordCompleteModel = wordCompleteModel;
+      this.wordPredictModel = wordPredictModel;
       this.registerEventListeners();
    }
 
@@ -288,9 +290,8 @@ module.exports = TabX;
 /* 2 */
 /***/ (function(module, exports) {
 
-function simpleReadFileSync(filePath){
-
-var buffer =`the
+function simpleReadFileSync(filePath) {
+var buffer = `the
 of
 to
 and
@@ -1308,6 +1309,7 @@ function Trie() {
   			key : ''
   		, children: {}
     };
+
 }
 
 // Prototype adds a characteristic to the Trie, in this case it adds a function
@@ -1370,7 +1372,6 @@ Trie.prototype.search = function(key) {
 	}
 
 }
-
 Trie.prototype.getChildren = function(finalArray, total, curNode){
     var cQueue = []
     cQueue.push(curNode)
@@ -1452,9 +1453,7 @@ for(var i = 0; i < wordList.length; i++){
     testTrie.add(wordList[i])
 }
 
-module.exports = {
-   WordCompleteModel: testTrie
-}
+module.exports = testTrie;
 
 // expect(testTrie.nearestChildren("the")).toEqual(['the', 'they', 'then']);
 //console.log(testTrie.nearestChildren("neered"))

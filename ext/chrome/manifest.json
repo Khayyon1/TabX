@@ -9,7 +9,7 @@
    "content_scripts": [
    {
      "matches": ["<all_urls>"],
-     "js": ["scripts/wordcomplete.js", "lib/wordcompletion/word-completion.js"]
+     "js": ["scripts/main.js"]
    }
  ],
 	"manifest_version" : 2

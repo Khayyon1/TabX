@@ -2,7 +2,7 @@
 
 var _current_word = "";
 
-import {testTrie} from './lib/wordcompletion/word-completion.js';
+import {wordCompleteModel} from './models/wordcomplete.js';
 
 export function displaySuggestions(activeElement)
 {
@@ -34,7 +34,7 @@ export function displaySuggestions(activeElement)
 
    console.log(document.activeElement.value);
    var suggestions = getSuggestions(getCurrentWord(document.activeElement));
-   for(i = 0; i < suggestions.length; i++)
+   for(var i = 0; i < suggestions.length; i++)
    {
        var row = document.createElement("tr");
        var column1 = document.createElement("td");
@@ -148,16 +148,7 @@ function indexOfStartOfCurrentWord(text, caret)
 
 export function getSuggestions(incomplete_string)
 {
-   return testTrie.nearestChildren(incomplete_string);
-
-    if (incomplete_string == 'fjuernf' || incomplete_string == ""|| incomplete_string=="BigK99")
-    {
-        return [];
-    }
-    else
-    {
-        return [incomplete_string + 'a', incomplete_string + 'b', incomplete_string + 'c']
-    }
+   return wordCompleteModel.predictCurrentWord(incomplete_string);
 }
 
 function handleUserInput(event)

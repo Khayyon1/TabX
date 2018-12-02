@@ -80,6 +80,7 @@ function getCurrentWordTestSuite()
    {
        var testwords = "hello world"
        document.activeElement.value =  testwords
+       document.activeElement.selectionStart = testwords.length;
        expect(tabx.getCurrentWord(document.activeElement)).toEqual("world");
    });
 
@@ -87,7 +88,8 @@ function getCurrentWordTestSuite()
    {
        var testwords = "hello worlds"
        document.activeElement.value = testwords
-       expect(tabx.getCurrentWord(document.activeElement)).toEqual("worlds");
+       document.activeElement.selectionStart = "hello".length;
+       expect(tabx.getCurrentWord(document.activeElement)).toEqual("hello");
    });
 
    it("should capture partial word text up to caret delimited by space",function () {

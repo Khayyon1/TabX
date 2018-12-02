@@ -1,1 +1,2 @@
-import * as wordcomplete from './wordcompleteUI.js'
+const wordcomplete = require('./wordcompleteUI.js');
+wordcomplete.registerEventListeners();

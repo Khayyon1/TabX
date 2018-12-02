@@ -162,8 +162,10 @@ function handleUserInput(event)
     }
 }
 
-document.addEventListener('keydown', handleWordComplete);
-document.addEventListener('keyup', handleUserInput);
+function registerEventListeners(){
+   document.addEventListener('keydown', handleWordComplete);
+   document.addEventListener('keyup', handleUserInput);
+}
 
 function suggestionsAreBeingDisplayed() {
     return document.getElementById("suggestionsTable") != null
@@ -182,5 +184,6 @@ function handleWordComplete(event){
 module.exports = {
    getSuggestions: getSuggestions,
    getCurrentWord: getCurrentWord,
-   wordCompletion: wordCompletion
+   wordCompletion: wordCompletion,
+   registerEventListeners: registerEventListeners
 }

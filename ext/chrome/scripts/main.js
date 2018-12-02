@@ -86,13 +86,10 @@
 /************************************************************************/
 /******/ ([
 /* 0 */
-/***/ (function(module, __webpack_exports__, __webpack_require__) {
+/***/ (function(module, exports, __webpack_require__) {
 
-"use strict";
-__webpack_require__.r(__webpack_exports__);
-/* harmony import */ var _wordcompleteUI_js__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(1);
-/* harmony import */ var _wordcompleteUI_js__WEBPACK_IMPORTED_MODULE_0___default = /*#__PURE__*/__webpack_require__.n(_wordcompleteUI_js__WEBPACK_IMPORTED_MODULE_0__);
-
+const wordcomplete = __webpack_require__(1);
+wordcomplete.registerEventListeners();
 
 
 /***/ }),
@@ -263,8 +260,10 @@ function handleUserInput(event)
     }
 }
 
-document.addEventListener('keydown', handleWordComplete);
-document.addEventListener('keyup', handleUserInput);
+function registerEventListeners(){
+   document.addEventListener('keydown', handleWordComplete);
+   document.addEventListener('keyup', handleUserInput);
+}
 
 function suggestionsAreBeingDisplayed() {
     return document.getElementById("suggestionsTable") != null
@@ -283,7 +282,8 @@ function handleWordComplete(event){
 module.exports = {
    getSuggestions: getSuggestions,
    getCurrentWord: getCurrentWord,
-   wordCompletion: wordCompletion
+   wordCompletion: wordCompletion,
+   registerEventListeners: registerEventListeners
 }
 
 

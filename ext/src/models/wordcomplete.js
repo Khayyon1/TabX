@@ -1,6 +1,6 @@
 function simpleReadFileSync(filePath){
 
-    var buffer =`the
+var buffer =`the
 of
 to
 and

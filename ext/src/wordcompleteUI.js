@@ -150,7 +150,8 @@ function indexOfStartOfCurrentWord(text, caret)
 
 function getSuggestions(incomplete_string)
 {
-   return WordCompleteModel.predictCurrentWord(incomplete_string);
+   console.log(WordCompleteModel);
+   return WordCompleteModel.WordCompleteModel.predictCurrentWord(incomplete_string);
 }
 
 function handleUserInput(event)

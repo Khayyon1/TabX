@@ -3,7 +3,7 @@
 var _current_word = "";
 
 //import {wordCompleteModel} from './models/wordcomplete.js';
-var _debug = true;
+var _debug = false;
 
 const TabX = class
 {
@@ -23,12 +23,6 @@ const TabX = class
 
       var current_table = this.document.getElementById("suggestionsTable");
 
-      if(debug)
-      {
-         console.log("current word: " + this.getCurrentWord(this.document.activeElement))
-         console.log(current_table);
-      }
-
       if(current_table != null)
       {
          this.document.body.removeChild(current_table);
@@ -47,8 +41,6 @@ const TabX = class
       table.style.left = (input_bounds.left).toString() + "px";
       table.style.top = (input_bounds.top + 20).toString()+"px";
 
-
-      console.log(this.document.activeElement.value);
       var suggestions = this.getSuggestions(this.getCurrentWord(this.document.activeElement));
       for(var i = 0; i < suggestions.length; i++)
       {
@@ -95,11 +87,6 @@ const TabX = class
        {
          after = " " + after;
        }
-
-       console.log("Start   : " + startOfWord.toString());
-       console.log("Before  : " + before);
-       console.log("Replace : " + word);
-       console.log("After   : " + after);
 
        return before + word + after;
    }
@@ -154,7 +141,18 @@ const TabX = class
 
    getSuggestions(incomplete_string)
    {
-      return this.wordCompleteModel.predictCurrentWord(incomplete_string);
+      var inputHasCharactersOtherThanLetters = (/[^a-zA-Z]/).test(incomplete_string);
+      var inputIsEmpty = incomplete_string === "";
+
+      if(inputHasCharactersOtherThanLetters || inputIsEmpty)
+      {
+         return [];
+      }
+
+      else
+      {
+         return this.wordCompleteModel.predictCurrentWord(incomplete_string);
+      }
    }
 
    handleUserInput(event)

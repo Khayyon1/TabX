@@ -9,7 +9,7 @@ const { JSDOM } = jsdom;
 const TabX =  require('../src/tabx');
 
 const mock = {
-   predictCurrentWord: function(){return ["hello", "world", "bye"];}
+   predictCurrentWord: function(word){ return ["hello", "world", "bye"]; }
 }
 
 const document = (new JSDOM(``)).window.document;
@@ -31,16 +31,12 @@ function suggestionsTestSuite()
       input.parentNode.removeChild(input);
     });
 
-    it("should return non-empty suggestions list for common word", function()
+    it("should return suggestions for common word", function()
    {
       expect(tabx.getSuggestions("the").length > 0).toBe(true);
    });
 
-   it("should return an empty suggestions list for a nonsense word", function(){
-      expect(tabx.getSuggestions("fjuernf").length).toEqual(0);
-   });
-
-   it('should return empty suggestions list for empty string', function () {
+   it('should not return suggestions for for empty string', function () {
        expect(tabx.getSuggestions("").length).toEqual(0);
    });
 

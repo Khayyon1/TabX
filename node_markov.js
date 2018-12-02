@@ -1,9 +1,9 @@
+var MarkovChain = require('markovchain')
+var fs = require('fs')
 
 function chain() {
-    var MarkovChain = require('markovchain')
-  , fs = require('fs')
-  , text = new MarkovChain(fs.readFileSync('poeTrain.txt', 'utf8'));
-  return text;
+    var text = new MarkovChain(fs.readFileSync('poeTrain.txt', 'utf8'));
+    return text;
 }
 
 var text = chain();
@@ -20,3 +20,5 @@ function predictNextWord(word) {
     }
     return predictions;
 }
+
+console.log(predictNextWord("because"))

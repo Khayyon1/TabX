@@ -2,9 +2,11 @@
 
 var _current_word = "";
 
-import {wordCompleteModel} from './models/wordcomplete.js';
+//import {wordCompleteModel} from './models/wordcomplete.js';
 
-export function displaySuggestions(activeElement)
+const WordCompleteModel = require("./models/wordcomplete");
+
+function displaySuggestions(activeElement)
 {
    if(!activeElementIsTextField()){
       return;
@@ -55,7 +57,7 @@ function activeElementIsTextField()
    return activeElement.tagName == 'INPUT';
 }
 
-export function wordCompletion(activeElement, userChoice ='world')
+function wordCompletion(activeElement, userChoice ='world')
 {
     activeElement.value = replaceWordAt(
         activeElement.value,
@@ -99,7 +101,7 @@ function storeCurrentWord(){
 
 
 //Assumes that the caret is at the end of a word in a text field
-export function getCurrentWord(inputField)
+function getCurrentWord(inputField)
 {
    var text = inputField.value;
    var caret = inputField.selectionStart;
@@ -146,9 +148,9 @@ function indexOfStartOfCurrentWord(text, caret)
       return i;
 }
 
-export function getSuggestions(incomplete_string)
+function getSuggestions(incomplete_string)
 {
-   return wordCompleteModel.predictCurrentWord(incomplete_string);
+   return WordCompleteModel.predictCurrentWord(incomplete_string);
 }
 
 function handleUserInput(event)
@@ -174,4 +176,10 @@ function handleWordComplete(event){
         event.preventDefault();
         wordCompletion(document.activeElement, getSuggestions(getCurrentWord(document.activeElement))[parseInt(keyname) - 1])
     }
+}
+
+module.exports = {
+   getSuggestions: getSuggestions,
+   getCurrentWord: getCurrentWord,
+   wordCompletion: wordCompletion
 }

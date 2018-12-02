@@ -1,5 +1,3 @@
-
-
 function simpleReadFileSync(filePath){
 
     var buffer =`the
@@ -1020,7 +1018,6 @@ function Trie() {
   			key : ''
   		, children: {}
     };
-
 }
 
 // Prototype adds a characteristic to the Trie, in this case it adds a function
@@ -1083,6 +1080,7 @@ Trie.prototype.search = function(key) {
 	}
 
 }
+
 Trie.prototype.getChildren = function(finalArray, total, curNode){
     var cQueue = []
     cQueue.push(curNode)
@@ -1157,14 +1155,17 @@ Trie.prototype.remove = function(key) {
 }
 
 
-export var testTrie = new Trie();
+var testTrie = new Trie();
 
 var wordList = simpleReadFileSync("1-1000.txt")
 for(var i = 0; i < wordList.length; i++){
     testTrie.add(wordList[i])
 }
 
-export var wordCompleteModel = testTrie;
+module.exports = {
+   WordCompleteModel: testTrie
+}
+
 // expect(testTrie.nearestChildren("the")).toEqual(['the', 'they', 'then']);
 //console.log(testTrie.nearestChildren("neered"))
 //expect(testTrie.nearestChildren("the")).toEqual(['the', 'they', 'then']);

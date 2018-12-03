@@ -4,7 +4,7 @@ import char_indices from './char_indices';
 import 'babel-polyfill';
 
 const INPUT_LENGTH = 40;
-const CHARS_TO_GENERATE = 200;
+const CHARS_TO_GENERATE = 30;
 const DIVERSITY = 0.5;
 
 /**
@@ -43,7 +43,19 @@ class Main {
    * This is the main tfjs loop.
    */
   async generateText() {
+    const divs = [0.3, 0.6, 0.9, 1.2];
+    const result = [];
+    divs.forEach((diversity) => {
+      this.generateTextHelper(diversity).then((pred) => result.push(pred));
+    });
+    console.log(result);
+    this.enableGeneration();
+  }
+
+  async generateTextHelper(diversity){
+    var spaces = 0;
     let generated = this.inputSeed.value;
+    let result = "";
     this.generatedSentence.innerText = generated;
     this.generateButton.disabled = true;
     this.generateButton.innerText = "Pay attention to Nietzsche's words"
@@ -51,24 +63,29 @@ class Main {
       const indexTensor = tf.tidy(() => {
         const input = this.convert(generated);
         const prediction = this.model.predict(input).squeeze();
-        return this.sample(prediction);
+        return this.sample(prediction, diversity);
       })
       const index = await indexTensor.data();
       indexTensor.dispose();
-      generated += indices_char[index];
-      this.generatedSentence.innerText = generated;
-      await tf.nextFrame();
+      const new_char = indices_char[index];
+      generated += new_char;
+      if (new_char == " ") spaces += 1;
+      if (spaces == 1) result += new_char;
     }
+    result = result.substring(1);
+    return result
+    console.log('A'+result+'A');
+    this.generatedSentence.innerText = generated;
     this.enableGeneration();
   }
 
   /**
    * Randomly samples next character weighted by model prediction.
    */
-  sample(prediction) {
+  sample(prediction, divers) {
     return tf.tidy(() => {
       prediction = prediction.log();
-      const diversity = tf.scalar(DIVERSITY);
+      const diversity = tf.scalar(divers);
       prediction = prediction.div(diversity);
       prediction = prediction.exp();
       prediction = prediction.div(prediction.sum());

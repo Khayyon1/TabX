@@ -16,13 +16,7 @@ class Main {
    * the application
    */
   constructor() {
-    // Initiate variables
-    this.generatedSentence = document.getElementById("generated-sentence");
-    this.inputSeed = document.getElementById("seed");
-    this.generateButton = document.getElementById("generate-button");
-    // this.generateButton.onclick = () => {
-    //   this.generateText();
-    // }
+
     tf.loadModel('https://raw.githubusercontent.com/Khayyon1/TabX/nn-word/ext/src/lib/nn_wordprediction/lstm/model.json').then((model) => {
       this.model = model;
       // this.enableGeneration();

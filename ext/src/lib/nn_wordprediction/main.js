@@ -23,7 +23,7 @@ class Main {
     this.generateButton.onclick = () => {
       this.generateText();
     }
-    tf.loadModel('lstm/model.json').then((model) => {
+    tf.loadModel('https://raw.githubusercontent.com/Khayyon1/TabX/nn-word/ext/src/lib/nn_wordprediction/lstm/model.json').then((model) => {
       this.model = model;
       this.enableGeneration();
     });

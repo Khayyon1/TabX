@@ -25,4 +25,5 @@ class WordPrediction {
     }
 }
 
-module.exports = WordPrediction;
+var wp = new WordPrediction();
+module.exports = wp;

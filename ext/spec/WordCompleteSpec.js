@@ -8,9 +8,7 @@ const { JSDOM } = jsdom;
 
 const TabX =  require('../src/tabx');
 
-const mock = {
-   predictCurrentWord: function(word){ return ["hello", "world", "bye"]; }
-}
+const mock = require('../src/lib/mock/wordcomplete_mock');
 
 const document = (new JSDOM(``)).window.document;
 const tabx = new TabX(mock, undefined, document);

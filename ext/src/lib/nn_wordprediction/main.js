@@ -16,11 +16,10 @@ class Main {
    * the application
    */
   constructor() {
-
+    this.ready = false;
     tf.loadModel('https://raw.githubusercontent.com/Khayyon1/TabX/nn-word/ext/src/lib/nn_wordprediction/lstm/model.json').then((model) => {
       this.model = model;
-      // this.enableGeneration();
-      this.generateText();
+      this.ready = true;
     });
   }
 
@@ -28,19 +27,27 @@ class Main {
    * Predicts next character from given text and updates UI accordingly.
    * This is the main tfjs loop.
    */
-  async generateText() {
+  predict(seed) {
+    if (!this.ready) return [];
+    this.ready = false;
     const divs = [0.3, 0.6, 0.9, 1.2];
     const result = [];
-    divs.forEach((diversity) => {
-      this.generateTextHelper(diversity).then((pred) => result.push(pred));
-    });
-    console.log(result);
-    // this.enableGeneration();
+    return new Promise(resolve => {
+      divs.forEach((diversity) => {
+        this.generateTextHelper(seed, diversity).then((pred) => {
+          result.push(pred);
+          if (result.length == divs.length) {
+            this.ready = true;
+            resolve(result);
+          }
+        });
+      });
+    })
   }
 
-  async generateTextHelper(diversity){
+  async generateTextHelper(seed, diversity){
     var spaces = 0;
-    let generated = "Man";
+    let generated = seed;
     let result = "";
     while (spaces < 2) {
       const indexTensor = tf.tidy(() => {
@@ -95,4 +102,10 @@ class Main {
   }
 }
 
-window.addEventListener('load', () => new Main());
+let my_nn = new Main();
+setInterval(function () { 
+  my_nn.predict("man").then((pred) => {
+    console.log(pred);
+  });
+}, 40000);
+

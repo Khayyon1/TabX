@@ -102,10 +102,6 @@ class Main {
   }
 }
 
-let my_nn = new Main();
-setInterval(function () { 
-  my_nn.predict("man").then((pred) => {
-    console.log(pred);
-  });
-}, 40000);
 
+let nn = new Main();
+module.exports = nn;

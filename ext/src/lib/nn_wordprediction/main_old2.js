@@ -1,7 +1,7 @@
+import 'babel-polyfill';
 import * as tf from '@tensorflow/tfjs';
 import indices_char from './indices_char';
 import char_indices from './char_indices';
-import 'babel-polyfill';
 
 const INPUT_LENGTH = 40;
 const CHARS_TO_GENERATE = 30;
@@ -16,17 +16,10 @@ class Main {
    * the application
    */
   constructor() {
-    // Initiate variables
-    this.generatedSentence = document.getElementById("generated-sentence");
-    this.inputSeed = document.getElementById("seed");
-    this.generateButton = document.getElementById("generate-button");
-    // this.generateButton.onclick = () => {
-    //   this.generateText();
-    // }
+    this.canGenerate = false;
     tf.loadModel('https://raw.githubusercontent.com/Khayyon1/TabX/nn-word/ext/src/lib/nn_wordprediction/lstm/model.json').then((model) => {
       this.model = model;
-      // this.enableGeneration();
-      this.generateText();
+      this.canGenerate = true;
     });
   }
 
@@ -34,19 +27,23 @@ class Main {
    * Predicts next character from given text and updates UI accordingly.
    * This is the main tfjs loop.
    */
-  async generateText() {
+  async generateText(seed) {
+    this.canGenerate = false;
     const divs = [0.3, 0.6, 0.9, 1.2];
     const result = [];
     divs.forEach((diversity) => {
-      this.generateTextHelper(diversity).then((pred) => result.push(pred));
+      this.generateTextHelper(seed, diversity).then((pred) => result.push(pred));
+      if (result.length == divs.length){
+        this.canGenerate = true;
+        console.log('result',result);
+        return result;
+      }
     });
-    console.log(result);
-    // this.enableGeneration();
   }
 
-  async generateTextHelper(diversity){
+  async generateTextHelper(seed, diversity){
     var spaces = 0;
-    let generated = "Man";
+    let generated = seed;
     let result = "";
     while (spaces < 2) {
       const indexTensor = tf.tidy(() => {
@@ -101,4 +98,6 @@ class Main {
   }
 }
 
-window.addEventListener('load', () => new Main());
+const word_predictor = new Main();
+word_predictor.generateText("Man");
+// module.exports = word_predictor;

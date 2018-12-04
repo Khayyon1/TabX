@@ -42,7 +42,7 @@ describe("Get Next Word Suggestions", function()
    });
 
     it('should return results if current word is valid'
-        + 'and there is a space before the caret', function()
+        + ' and there is a space before the caret', function()
     {
        var testInput = 'Hello, there are 3 people here ';
        input(testInput);

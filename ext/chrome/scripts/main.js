@@ -393,7 +393,7 @@ const TabX = class
 
     getAppropriateSuggestions()
     {
-        var elem = document.activeElement
+        var elem = this.document.activeElement
         var previous = elem.value.charAt(elem.selectionStart - 1)
         if(previous != " ")
         {
@@ -553,6 +553,7 @@ const TabX = class
         {
             return this.wordCompleteModel.predictCurrentWord(incomplete_string);
         }
+
     }
 
 
@@ -569,9 +570,11 @@ const TabX = class
         }
         else
         {
-            return this.wordPredictModel.predictNextWord(this.getCurrentWord(document.activeElement));
+            return this.wordPredictModel.predictNextWord(this.getCurrentWord(this.document.activeElement));
         }
     }
+
+
 
     handleUserInput(event)
     {
@@ -585,6 +588,19 @@ const TabX = class
     {
         this.document.addEventListener('keydown', this.handleWordComplete.bind(this));
         this.document.addEventListener('keyup', this.handleUserInput.bind(this));
+        var serviceableElements = this.document.querySelectorAll("input[type=text]");
+        for(var i = 0; i < serviceableElements.length; i++)
+        {
+            var elem = serviceableElements[i];
+            elem.addEventListener('blur', function()
+            {
+                var table = this.document.getElementById("suggestionsTable");
+                if(table != null)
+                {
+                    table.parentNode.removeChild(table);
+                }
+            }.bind(this))
+        };
     }
 
     suggestionsAreBeingDisplayed()
@@ -43231,6 +43247,7 @@ exports.dirname = function(path) {
 
 exports.basename = function(path, ext) {
   var f = splitPath(path)[2];
+  // TODO: make this comparison case-insensitive on windows?
   if (ext && f.substr(-1 * ext.length) === ext) {
     f = f.substr(0, f.length - ext.length);
   }

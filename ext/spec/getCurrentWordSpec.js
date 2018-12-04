@@ -12,19 +12,22 @@ function getCurrentWordTestSuite()
 {
    var inputId = "mockInput"
 
-    beforeEach(function(){
+    beforeEach(function()
+    {
       var field = document.createElement("input");
       field.id = inputId;
       document.body.appendChild(field);
       field.focus();
    });
 
-    afterEach(function(){
+    afterEach(function()
+    {
       var input = document.getElementById(inputId);
       input.parentNode.removeChild(input);
     });
 
-   it("should return nothing when caret is at beginning of input", function()
+   it("should return nothing when caret is at beginning of input",
+   function()
    {
        var testwords = "hello world"
        document.activeElement.value =  testwords
@@ -32,7 +35,8 @@ function getCurrentWordTestSuite()
        expect(tabx.getCurrentWord(document.activeElement)).toEqual("");
    });
 
-   it("should return the leftmost word when caret at end of input", function()
+   it("should return the leftmost word when caret at end of input",
+   function()
    {
        var testwords = "hello world"
        document.activeElement.value =  testwords
@@ -40,7 +44,8 @@ function getCurrentWordTestSuite()
        expect(tabx.getCurrentWord(document.activeElement)).toEqual("world");
    });
 
-   it("should capture whole word text up to caret delimited by space ", function()
+   it("should capture text before the caret, delimited by space ",
+   function()
    {
        var testwords = "hello worlds"
        document.activeElement.value = testwords
@@ -48,14 +53,19 @@ function getCurrentWordTestSuite()
        expect(tabx.getCurrentWord(document.activeElement)).toEqual("hello");
    });
 
-   it("should capture partial word text up to caret delimited by space",function () {
+   it("should capture partial word text before the caret, delimited by space",
+   function ()
+   {
        var testwords = "hello worlds"
        document.activeElement.value = testwords
        document.activeElement.selectionStart = 3
        expect(tabx.getCurrentWord(document.activeElement)).toEqual("hel");
    })
 
-    it('should return the whole word that precedes the space that precedes the caret', function () {
+    it('should return the word that is before a space, which is '
+    + 'before the caret',
+    function ()
+    {
         var testwords = "hello "
         document.activeElement.value = testwords
         document.activeElement.selectionStart = testwords.length

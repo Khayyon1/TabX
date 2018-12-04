@@ -139,12 +139,24 @@ const TabX = class
          return i;
    }
 
+   inputHasCharactersOtherThanLetters(string)
+   {
+       return (/[^a-zA-Z\s]/).test(string)
+   }
+
+   inputIsEmpty(string)
+   {
+       return string === "";
+   }
+
+   inputIsNotValid(str)
+   {
+       return this.inputHasCharactersOtherThanLetters(str) || this.inputIsEmpty(str);
+   }
+
    getSuggestions(incomplete_string)
    {
-      var inputHasCharactersOtherThanLetters = (/[^a-zA-Z]/).test(incomplete_string);
-      var inputIsEmpty = incomplete_string === "";
-
-      if(inputHasCharactersOtherThanLetters || inputIsEmpty)
+      if(this.inputIsNotValid(incomplete_string))
       {
          return [];
       }
@@ -153,6 +165,25 @@ const TabX = class
       {
          return this.wordCompleteModel.predictCurrentWord(incomplete_string);
       }
+   }
+
+
+   getNextWordSuggestion(word)
+   {
+       var caret_position = this.document.activeElement.selectionStart;
+       var left_of_caret = caret_position - 1;
+       var space_precedes_caret = word.charAt(left_of_caret) == " ";
+
+       if(this.inputIsNotValid(word)|| !space_precedes_caret)
+       {
+           return [];
+       }
+       else
+       {
+           return ["Hello", "Goodbye", "Hi"];
+       }
+
+
    }
 
    handleUserInput(event)

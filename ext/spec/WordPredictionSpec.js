@@ -6,6 +6,17 @@ const mock = require('../src/lib/mock/nextword_mock');
 const document = (new JSDOM('')).window.document;
 const tabx = new TabX(undefined, mock, document);
 
+function set_caret(caret_position)
+{
+    document.activeElement.selectionStart = caret_position
+}
+
+function input(str)
+{
+    document.activeElement.value = str;
+    set_caret(str.length)
+}
+
 function suggestionTestSuite()
 {
     var inputId = "mockInput";
@@ -22,9 +33,33 @@ function suggestionTestSuite()
       input.parentNode.removeChild(input);
     });
 
-   it("should return suggestions for the next word", function()
+   it("should not return suggestions if caret is at position 0", function()
    {
-      fail();
+      //var current_Active_Element = getInput() = 'hello ';
+       set_caret(0);
+      expect(tabx.getNextWordSuggestion("hi ").length == 0).toBe(true);
    });
+
+   it("should not return results if number in input", function () {
+     input("BigK99")
+     expect(tabx.getNextWordSuggestion(getInput()).length == 0).toBe(true);
+   });
+
+   it("should return result even with multiple spaces between word and caret", function()
+   {
+       var testInput = 'Hi There           ';
+       input(testInput);
+       expect(tabx.getNextWordSuggestion(getInput()).length > 0).toBe(true)
+   });
+
+   it('should not return results if caret does not precede at least a space', function()
+   {
+       input('Hi There');
+       expect(tabx.getNextWordSuggestion(getInput()).length == 0).toBe(true)
+   });
+}
+
+function getInput(){
+    return document.activeElement.value;
 }
 describe("Get Next Word Suggestions", suggestionTestSuite)

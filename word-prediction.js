@@ -34967,16 +34967,26 @@ class WordPrediction {
     }
 
     predictNextWord(word) {
-        var predictions = [];
+        var suggestions = [];
         var iter = 0;
-        while (predictions.length < 3 && iter < 50) {
+        while (suggestions.length < 3 && iter < 20) {
             var prediction = this.model.start(word).end(1).process().substring((word.length + 1));
-            if (!(predictions.includes(prediction))) {
-                predictions.push(prediction);
+            if (prediction.length > 0) {
+                prediction = prediction.split(/[^a-z]/i);
+                if (prediction[0].match(/[a-z]/i)) {
+                  prediction = prediction[0];
+                }
+                else {
+                  prediction = prediction[1];
+                }
+                prediction = prediction[0] + prediction.slice(1).toLowerCase();
+            }
+            if (!(suggestions.includes(prediction))) {
+                suggestions.push(prediction);
             }
             iter++;
         }
-        return predictions;
+        return suggestions;
     }
 }
 

@@ -45,21 +45,26 @@ function suggestionTestSuite()
      expect(tabx.getNextWordSuggestion(getInput()).length == 0).toBe(true);
    });
 
-   it("should return result even with multiple spaces between word and caret", function()
-   {
-       var testInput = 'Hi There           ';
-       input(testInput);
-       expect(tabx.getNextWordSuggestion(getInput()).length > 0).toBe(true)
-   });
-
    it('should not return results if caret does not precede at least a space', function()
    {
        input('Hi There');
        expect(tabx.getNextWordSuggestion(getInput()).length == 0).toBe(true)
    });
+
+
+
+    it('should return results if current word is valid and white space precedes caret', function()
+    {
+       var testInput = 'Hello, there are 3 people here ';
+       input(testInput);
+       console.log("Current Word: " + tabx.getCurrentWord(document.activeElement).toString())
+       expect(tabx.getNextWordSuggestion(getInput()).length > 0).toBe(true);
+    });
+
 }
 
 function getInput(){
     return document.activeElement.value;
 }
+
 describe("Get Next Word Suggestions", suggestionTestSuite)

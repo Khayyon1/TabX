@@ -102,7 +102,15 @@ const TabX = class
          return "";
       }
 
+      //Check to see if the previoius character is a whitespace
+       //If it is not, push previous back one to allow the current
+       //word be the word that comes before a whitespace
+       //Ex. "hello |" -> "hello"
       var prev = text.charAt(caret - 1);
+      if(prev === " "){
+          prev = text.charAt(caret - 2);
+          caret -= 1;
+      }
 
       //Make sure caret is at the end of a developing word
       if(prev.match(/\w/))
@@ -168,13 +176,14 @@ const TabX = class
    }
 
 
-   getNextWordSuggestion(word)
+   getNextWordSuggestion(str)
    {
        var caret_position = this.document.activeElement.selectionStart;
        var left_of_caret = caret_position - 1;
-       var space_precedes_caret = word.charAt(left_of_caret) == " ";
+       var space_precedes_caret = str.charAt(left_of_caret) == " ";
+       var currentWord = this.getCurrentWord(this.document.activeElement);
 
-       if(this.inputIsNotValid(word)|| !space_precedes_caret)
+       if(this.inputIsNotValid(currentWord) || !space_precedes_caret)
        {
            return [];
        }

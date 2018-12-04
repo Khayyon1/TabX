@@ -224,6 +224,16 @@ const TabX = class
            this.wordCompletion(this.document.activeElement, this.getSuggestions(this.getCurrentWord(this.document.activeElement))[parseInt(keyname) - 1])
        }
    }
+
+   shouldGetSuggestionsForWordComplete()
+   {
+      var elem = this.doc.activeElement;
+
+      if(elem.value.charAt(elem.selectionStart - 1) == " ")
+      {
+
+      }
+   }
 };
 
 module.exports = TabX;

@@ -102,7 +102,15 @@ const TabX = class
          return "";
       }
 
+      //Check to see if the previoius character is a whitespace
+       //If it is not, push previous back one to allow the current
+       //word be the word that comes before a whitespace
+       //Ex. "hello |" -> "hello"
       var prev = text.charAt(caret - 1);
+      if(prev === " "){
+          prev = text.charAt(caret - 2);
+          caret -= 1;
+      }
 
       //Make sure caret is at the end of a developing word
       if(prev.match(/\w/))
@@ -139,12 +147,24 @@ const TabX = class
          return i;
    }
 
+   inputHasCharactersOtherThanLetters(string)
+   {
+       return (/[^a-zA-Z\s]/).test(string)
+   }
+
+   inputIsEmpty(string)
+   {
+       return string === "";
+   }
+
+   inputIsNotValid(str)
+   {
+       return this.inputHasCharactersOtherThanLetters(str) || this.inputIsEmpty(str);
+   }
+
    getSuggestions(incomplete_string)
    {
-      var inputHasCharactersOtherThanLetters = (/[^a-zA-Z]/).test(incomplete_string);
-      var inputIsEmpty = incomplete_string === "";
-
-      if(inputHasCharactersOtherThanLetters || inputIsEmpty)
+      if(this.inputIsNotValid(incomplete_string))
       {
          return [];
       }
@@ -153,6 +173,26 @@ const TabX = class
       {
          return this.wordCompleteModel.predictCurrentWord(incomplete_string);
       }
+   }
+
+
+   getNextWordSuggestion(str)
+   {
+       var caret_position = this.document.activeElement.selectionStart;
+       var left_of_caret = caret_position - 1;
+       var space_precedes_caret = str.charAt(left_of_caret) == " ";
+       var currentWord = this.getCurrentWord(this.document.activeElement);
+
+       if(this.inputIsNotValid(currentWord) || !space_precedes_caret)
+       {
+           return [];
+       }
+       else
+       {
+           return ["Hello", "Goodbye", "Hi"];
+       }
+
+
    }
 
    handleUserInput(event)

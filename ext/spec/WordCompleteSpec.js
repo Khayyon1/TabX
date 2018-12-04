@@ -8,9 +8,7 @@ const { JSDOM } = jsdom;
 
 const TabX =  require('../src/tabx');
 
-const mock = {
-   predictCurrentWord: function(word){ return ["hello", "world", "bye"]; }
-}
+const mock = require('../src/lib/mock/wordcomplete_mock');
 
 const document = (new JSDOM(``)).window.document;
 const tabx = new TabX(mock, undefined, document);
@@ -48,55 +46,7 @@ function suggestionsTestSuite()
 describe("Get Suggestions", suggestionsTestSuite);
 
 
-function getCurrentWordTestSuite()
-{
-   var inputId = "mockInput"
 
-    beforeEach(function(){
-      var field = document.createElement("input");
-      field.id = inputId;
-      document.body.appendChild(field);
-      field.focus();
-   });
-
-    afterEach(function(){
-      var input = document.getElementById(inputId);
-      input.parentNode.removeChild(input);
-    });
-
-   it("should return nothing when caret is at beginning of input", function()
-   {
-       var testwords = "hello world"
-       document.activeElement.value =  testwords
-       document.activeElement.selectionStart = 0
-       expect(tabx.getCurrentWord(document.activeElement)).toEqual("");
-   });
-
-   it("should return the leftmost word when caret at end of input", function()
-   {
-       var testwords = "hello world"
-       document.activeElement.value =  testwords
-       document.activeElement.selectionStart = testwords.length;
-       expect(tabx.getCurrentWord(document.activeElement)).toEqual("world");
-   });
-
-   it("should capture whole word text up to caret delimited by space ", function()
-   {
-       var testwords = "hello worlds"
-       document.activeElement.value = testwords
-       document.activeElement.selectionStart = "hello".length;
-       expect(tabx.getCurrentWord(document.activeElement)).toEqual("hello");
-   });
-
-   it("should capture partial word text up to caret delimited by space",function () {
-       var testwords = "hello worlds"
-       document.activeElement.value = testwords
-       document.activeElement.selectionStart = 3
-       expect(tabx.getCurrentWord(document.activeElement)).toEqual("hel");
-   })
-}
-
-describe("Get Current Word", getCurrentWordTestSuite);
 
 function wordCompleteTestSuite()
 {

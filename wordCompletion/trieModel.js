@@ -1,4 +1,4 @@
-var predictModel =  {
+module.exports = {
   head:
    { key: '',
      children:
@@ -8817,5 +8817,3 @@ var predictModel =  {
                  length: 2 } },
            length: 1 } },
      length: 0 } }
-
-module.exports = predictModel;

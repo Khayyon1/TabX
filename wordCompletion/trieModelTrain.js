@@ -1,11 +1,3 @@
-
-
-
-// TODO Fix Circular Logic
-    // Remove Parents
-
-
-
 //var expect = require('expect')
 
 function simpleReadFileSync(filePath){
@@ -36,7 +28,6 @@ Trie.prototype.add = function(key, validWord) {
     var firstNode = false;
     // Make a copy of key
     keyHold = JSON.parse(JSON.stringify(key));
-    //See if it works
     var curNode = this.head
     	, newNode = null
     	, curChar = key.slice(0,1)
@@ -57,10 +48,9 @@ Trie.prototype.add = function(key, validWord) {
     }
 
 	while(curChar.length > 0) {
-        // console.log("key " + key + " Slice " + curChar)
 		newNode = {
 			key : curChar
-        //places value of String if true, places undefined if not end of word
+            //places value of String if true, places undefined if not end of word
 			, value : key.length === 0 && validWord === true ? keyHold : undefined
 			, children : {}
             , length: parNode.length + 1
@@ -72,20 +62,14 @@ Trie.prototype.add = function(key, validWord) {
 		key = key.slice(1);
 
 	}
-    // if (parNode.value != undefined && parNode.value != null){
-    //     if (parNode.value.length != parNode.length ){
-    //             er =  new Error('length is wrong ' + parNode.value + " " + parNode.length );
-    //             throw er
-    //     }
-    // }
+    if (parNode.value != undefined && parNode.value != null){
+        if (parNode.value.length != parNode.length ){
+                er =  new Error('length is wrong ' + parNode.value + " " + parNode.length );
+                throw er
+        }
+    }
 
 };
-
-// Trie.prototype.corrected(inputWord, correctWord){
-//     this.search(correctWord).shortcut[]
-// };
-
-
 
 var testTrie = new Trie()
 wordList = simpleReadFileSync("sampleText/1-1000.txt")
@@ -93,7 +77,6 @@ for(var i = 0; i < wordList.length; i++){
     testTrie.add(wordList[i], true)
 }
 
-console.log(testTrie.getSuggestion("The"))
-
 var util = require("util");
 console.log(util.inspect(testTrie, {showHidden: false, depth: null}));
+console.log('module.exports = Trie')

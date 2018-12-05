@@ -12,6 +12,37 @@ class WordPrediction{
             this.tokens.push(terms[i].text);
         }
     }
+    findNextWord(currentWord) {
+        let nextWords = [];
+        for (let w = 0; w < this.tokens.length - 1; w++) {
+            if (this.tokens[w] == currentWord) {
+                this.addPossibleNextWord(nextWords, this.tokens[w + 1]);
+            }
+            if (nextWords.length == 4) break;
+        }
+        return nextWords;
+    }
+    predict(seed) {
+        const next_words = this.findNextWord(seed);
+        console.log(next_words);
+    }
+    addPossibleNextWord(nextWords, word){
+        let addWord = true;
+        nextWords.forEach((n_word) => {
+            if (n_word == word) addWord = false;
+        });
+        if(addWord) nextWords.push(word);
+    }
+    sentenceGeneration() {
+        this.createTokens();
+        var currentWord = this.chooseStartingToken();
+        var sentence = currentWord + " ";
+        while (currentWord.indexOf(".") < 0) { // while we haven't found a period
+            currentWord = this.findNextWord(currentWord);
+            sentence += currentWord + " ";
+        }
+        console.log(sentence);
+    }
     chooseStartingToken() {
         var index = Math.floor(Math.random() * this.tokens.length);
         return this.tokens[index];
@@ -27,38 +58,12 @@ class WordPrediction{
         var word = nextWords[Math.floor(Math.random() * nextWords.length)]; // choose a random next word
         return word;
     }
-    findNextWord(currentWord) {
-        var nextWords = [];
-        for (var w = 0; w < this.tokens.length - 1; w++) {
-            if (this.tokens[w] == currentWord) {
-                this.addPossibleNextWord(nextWords, this.tokens[w + 1]);
-            }
-            if (nextWords.length == 4) break;
-        }
-        return nextWords;
-    }
-    addPossibleNextWord(nextWords, word){
-        nextWords.forEach((n_word) => {
-            if (n_word == word) return;
-        });
-        nextWords.push(word);
-    }
-    sentenceGeneration() {
-        this.createTokens();
-        var currentWord = this.chooseStartingToken();
-        var sentence = currentWord + " ";
-        while (currentWord.indexOf(".") < 0) { // while we haven't found a period
-            currentWord = this.findNextWord(currentWord);
-            sentence += currentWord + " ";
-        }
-        console.log(sentence);
-    }
-    predict(seed){
-        const next_words = this.findNextWord(seed);
-        console.log(next_words);
-    }
 }
 
 const model = new WordPrediction();
+console.time('createTokens');
 model.createTokens();
-model.predict("you");
+console.timeEnd('createTokens');
+console.time('predict');
+model.predict("He");
+console.timeEnd('predict');

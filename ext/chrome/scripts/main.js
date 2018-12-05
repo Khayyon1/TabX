@@ -43284,11 +43284,11 @@ var substr = 'ab'.substr(-1) === 'b'
 /* 16 */
 /***/ (function(module, exports, __webpack_require__) {
 
-html = ['settings'];
+html = ['settings', 'popup'];
 img = ['logo256.png'];
 
 html.forEach(() => __webpack_require__(17)("./" + html + ".html"));
-img.forEach(() => __webpack_require__(19)("./" + img));
+img.forEach(() => __webpack_require__(20)("./" + img));
 
 
 /***/ }),
@@ -43296,7 +43296,8 @@ img.forEach(() => __webpack_require__(19)("./" + img));
 /***/ (function(module, exports, __webpack_require__) {
 
 var map = {
-	"./settings.html": 18
+	"./popup.html": 18,
+	"./settings.html": 19
 };
 
 
@@ -43324,14 +43325,20 @@ webpackContext.id = 17;
 /* 18 */
 /***/ (function(module, exports, __webpack_require__) {
 
-module.exports = __webpack_require__.p + "../assets/html/settings.html";
+module.exports = __webpack_require__.p + "../assets/html/popup.html";
 
 /***/ }),
 /* 19 */
 /***/ (function(module, exports, __webpack_require__) {
 
+module.exports = __webpack_require__.p + "../assets/html/settings.html";
+
+/***/ }),
+/* 20 */
+/***/ (function(module, exports, __webpack_require__) {
+
 var map = {
-	"./logo256.png": 20
+	"./logo256.png": 21
 };
 
 
@@ -43353,10 +43360,10 @@ webpackContext.keys = function webpackContextKeys() {
 };
 webpackContext.resolve = webpackContextResolve;
 module.exports = webpackContext;
-webpackContext.id = 19;
+webpackContext.id = 20;
 
 /***/ }),
-/* 20 */
+/* 21 */
 /***/ (function(module, exports, __webpack_require__) {
 
 module.exports = __webpack_require__.p + "../assets/img/logo256.png";

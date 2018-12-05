@@ -1,21 +1,27 @@
 {
-   "name" : "Tungsten",
-	"version" : "1.0",
-	"description" : "Writing assistant for browsers",
-   "background": {
+  "name" : "TabX",
+  "version" : "1.0",
+  "description" : "Writing assistant for browsers",
+
+  "background":
+   {
       "scripts": ["scripts/background.js"],
       "persistent": false
    },
 
-   "browser_action":
+  "browser_action":
    {
-      "default_popup": "popup.html",
+      "default_popup": "./assets/html/popup.html"
    },
+
+   "permissions": ["storage"],
+
    "content_scripts": [
    {
      "matches": ["<all_urls>"],
      "js": ["scripts/main.js"]
    }
+
  ],
 	"manifest_version" : 2
 }

@@ -1,10 +1,4 @@
-console.log("Start")
 var Trie = require('./trieModel');
-
-
-
-
-
 
 Trie.add = function(key, validWord) {
     key = key.toLowerCase();
@@ -105,6 +99,7 @@ Trie.getChildren = function(finalArray, total, curNode, ignore){
 }
 
 Trie.getSuggestion = function(key){
+
     this.add(key, false)
     key = key.toLowerCase();
     keyHold = JSON.parse(JSON.stringify(key));
@@ -115,9 +110,12 @@ Trie.getSuggestion = function(key){
     var cQueue = []
     key = key.slice(1);
 
+    //Node Stack to keep track
+    var nodeStack = []
     //findNode
-    while(typeof curNode.children[curChar] !== "undefined" && curChar.length > 0){
 
+    while(typeof curNode.children[curChar] !== "undefined" && curChar.length > 0){
+        nodeStack.push(curNode)
         //Traverse 1 layer down the tree
         curNode = curNode.children[curChar];
         //add next character
@@ -126,19 +124,18 @@ Trie.getSuggestion = function(key){
         key = key.slice(1);
     }
 
-    if (total > 0){
-        var cQueue = []
-            cQueue.push(curNode);
-    //This checks each word one away from the length of the word
-        var cStack = []
-        //TODO MAKE THIS NEATER
-        for (var i in keyHold){
-            cStack.push(keyHold[i])
-        }
-                tempArrayChild = this.getChildren(finalArray,total, curNode, cStack.pop());
-                finalArray = tempArrayChild[0]
-                total = tempArrayChild[1]
+    //This checks Stores each letter in prediction word
+    var cStack = []
+    for (var i in keyHold){
+        cStack.push(keyHold[i])
     }
+
+    while(nodeStack.length > 0 && total > 0){
+        tempArrayChild = this.getChildren(finalArray,total, nodeStack.pop(), cStack.pop() );
+        finalArray = tempArrayChild[0]
+        total = tempArrayChild[1]
+    }
+
     return finalArray
 }
 Trie.remove = function(key) {
@@ -148,6 +145,3 @@ Trie.remove = function(key) {
     		removeH(this.head, key, d);
     	}
 }
-
-
-console.log(Trie.getSuggestion("The"))

@@ -1,5 +1,20 @@
 
 
+//DONE: Track Length of
+    // Add to Add Node Length of word.
+    //Fix parent
+    // Add children Condition to other Search (Only if length is within two one more or less)
+    // Goal 12:30
+// TODO: Fix All Circular Logic
+
+
+// TODO: Track number of Changes between words
+    // Add Check for Replacement
+//TODO: Track Similarities in corrections
+
+
+var expect = require('expect')
+
 function simpleReadFileSync(filePath){
 
     var fs = require('fs');
@@ -18,12 +33,13 @@ function Trie() {
   	this.head = {
   			key : ''
   		, children: {}
+        , length:  0
+        , shortcut: {}
     };
 }
 
 // Prototype adds a characteristic to the Trie, in this case it adds a function
 Trie.prototype.add = function(key, validWord) {
-
     key = key.toLowerCase();
     var firstNode = false;
     // Make a copy of key
@@ -33,41 +49,58 @@ Trie.prototype.add = function(key, validWord) {
     	, newNode = null
     	, curChar = key.slice(0,1)
         , parNode = this.head;
-
     key = key.slice(1);
-
 	while(typeof curNode.children[curChar] !== "undefined"
 		&& curChar.length > 0){
+
 		curNode = curNode.children[curChar];
 		curChar = key.slice(0,1);
 		key = key.slice(1);
-        firstNode = true
+        firstNode = true;
+
 	}
     //If the first letter is already used
     if (firstNode){
-        parNode = curNode
+        parNode = curNode;
     }
-	while(curChar.length > 0) {
 
+	while(curChar.length > 0) {
+        // console.log("key " + key + " Slice " + curChar)
 		newNode = {
 			key : curChar
         //places value of String if true, places undefined if not end of word
-			, value : key.length === 0 && validWord ? keyHold : undefined
+			, value : key.length === 0 && validWord === true ? keyHold : undefined
 			, children : {}
-      , parent : parNode
+            , parent : Object.assign({}, parNode)
+            , length: parNode.length + 1
 		};
-        //console.log("first New Node, " + keyHold + " " + newNode.parent.key)
-		curNode.children[curChar] = newNode;
-        parNode = curNode;
-		curNode = newNode;
-		curChar = key.slice(0,1);
+
+
+        parNode.children[curChar] = newNode;
+		parNode = Object.assign({}, newNode);
+
+        curChar = key.slice(0,1);
 		key = key.slice(1);
+        if(newNode.parent === newNode){
+            throw new Error("Self Referential Parent")
+        }
 	}
+    if (parNode.value != undefined && parNode.value != null){
+        if (parNode.value.length != parNode.length ){
+                er =  new Error('length is wrong ' + parNode.value + " " + parNode.length );
+                throw er
+        }
+    }
+
 };
 
-Trie.prototype.search = function(key) {
-  key = key.toLowerCase();
+// Trie.prototype.corrected(inputWord, correctWord){
+//     this.search(correctWord).shortcut[]
+// };
 
+Trie.prototype.search = function(key) {
+    key = key.toLowerCase();
+    keyHold = JSON.parse(JSON.stringify(key));
 	var curNode = this.head
 		, curChar = key.slice(0,1)
 		, d = 0;
@@ -82,9 +115,10 @@ Trie.prototype.search = function(key) {
 	}
 
 	if (curNode.value !== undefined && key.length === 0) {
-		return d;
+		return curNode;
 	} else {
-		return -1;
+        er =  new Error('word "' +keyHold +'" does not exist'  );
+        throw er
 	}
 }
 
@@ -149,7 +183,7 @@ Trie.prototype.getSuggestion = function(key){
                 finalArray = tempArrayChild[0]
                 total = tempArrayChild[1]
                 curNode = curNode.parent
-            }
+        }
     }
     return finalArray
 }
@@ -163,7 +197,11 @@ Trie.prototype.remove = function(key) {
 }
 
 var testTrie = new Trie()
-wordList = simpleReadFileSync("1-1000.txt")
+wordList = simpleReadFileSync("testSuite/1-1000.txt")
 for(var i = 0; i < wordList.length; i++){
     testTrie.add(wordList[i], true)
 }
+console.log(testTrie.getSuggestion("Russell"))
+
+// var util = require("util");
+// console.log(util.inspect(testTrie, {showHidden: false, depth: null}));

@@ -1,17 +1,25 @@
 <!DOCTYPE html>
 <html lang="en">
+
+<link rel="stylesheet" type="text/css" href="../css/popup.css">
+
 <head>
     <meta charset="UTF-8">
     <title>Title</title>
 </head>
-<body>
 
-<form id="settings">
-    Select what writing assistant features you want to use :
-    <input type="radio" name="feature", value="Current Word">Current Word<br>
-    <input type="radio" name="feature", value="Next Word">Next Word
-</form>
+
+<body>
+<h1 class="title"> TabX </h1>
+
+<img class="logo" src="../img/logo256.png"><br>
+
+<script src="../button.js"></script>
+
+<div w3-include-html="popup_form.html"></div>
+<script src="../form.js"></script>
 
 <script type="text/javascript", src="../popup.js"></script>
+
 </body>
 </html>

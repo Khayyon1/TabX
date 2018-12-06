@@ -1,19 +1,9 @@
 const nlp = require('./nlp_compromise.min')
-const txt = require('./nyt_headlines')
+const tokens = require('./tokens');
 
 class WordPrediction{
     constructor(){
-        this.tokens = [];
-        this.createTokens();
-    }
-    createTokens() {
-        setTimeout(() => {
-            this.nlp_text = nlp.text(txt);
-            var terms = this.nlp_text.terms();
-            for (var i = 0; i < terms.length; i++) {
-                this.tokens.push(terms[i].text);
-            }
-        }, 1)
+        this.tokens = tokens;
     }
     findNextWord(currentWord) {
         let nextWords = [];

@@ -1,16 +1,18 @@
 const nlp = require('./nlp_compromise.min')
-const txt = require('./text')
+const txt = require('./nyt_headlines')
 
 class WordPrediction{
     constructor(){
         this.tokens = [];
     }
     createTokens() {
-        this.nlp_text = nlp.text(txt);
-        var terms = this.nlp_text.terms();
-        for (var i = 0; i < terms.length; i++) {
-            this.tokens.push(terms[i].text);
-        }
+        setTimeout(() => {
+            this.nlp_text = nlp.text(txt);
+            var terms = this.nlp_text.terms();
+            for (var i = 0; i < terms.length; i++) {
+                this.tokens.push(terms[i].text);
+            }
+        }, 1)
     }
     findNextWord(currentWord) {
         let nextWords = [];
@@ -23,8 +25,9 @@ class WordPrediction{
         return nextWords;
     }
     predict(seed) {
-        const next_words = this.findNextWord(seed);
-        console.log(next_words);
+        const last_word = seed.split(" ").pop()
+        const next_words = this.findNextWord(last_word.toLowerCase());
+        return next_words;
     }
     addPossibleNextWord(nextWords, word){
         let addWord = true;
@@ -61,9 +64,4 @@ class WordPrediction{
 }
 
 const model = new WordPrediction();
-console.time('createTokens');
-model.createTokens();
-console.timeEnd('createTokens');
-console.time('predict');
-model.predict("He");
-console.timeEnd('predict');
+module.exports = model;

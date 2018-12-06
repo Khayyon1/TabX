@@ -29,11 +29,13 @@ const TabX = class
     {
         var table = this.document.createElement("table");
         table.id = this.SUGGESTIONS_TABLE;
-
-        table.style.position = 'fixed';
+        table.className = "suggestions";
+        table.style.position = 'absolute';
         var input_bounds = this.document.activeElement.getBoundingClientRect();
+        table.style.backgroundColor = "lightblue";
+        table.style.zIndex = 999;
         table.style.left = (input_bounds.left).toString() + "px";
-        table.style.top = (input_bounds.top + 20).toString()+"px";
+        table.style.top = (input_bounds.top + input_bounds.height).toString()+"px";
         return table
     }
 

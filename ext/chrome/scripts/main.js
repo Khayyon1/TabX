@@ -344,6 +344,7 @@ module.exports = {"_from":"markovchain","_id":"markovchain@1.0.2","_inBundle":fa
 const TabX = __webpack_require__(5);
 const WordCompleteModel = __webpack_require__(6);
 const WordPredictModel = __webpack_require__(7);
+
 __webpack_require__(16);
 
 var tabx = new TabX(WordCompleteModel, WordPredictModel, document);
@@ -384,11 +385,13 @@ const TabX = class
     {
         var table = this.document.createElement("table");
         table.id = this.SUGGESTIONS_TABLE;
-
-        table.style.position = 'fixed';
+        table.className = "suggestions";
+        table.style.position = 'absolute';
         var input_bounds = this.document.activeElement.getBoundingClientRect();
+        table.style.backgroundColor = "lightblue";
+        table.style.zIndex = 999;
         table.style.left = (input_bounds.left).toString() + "px";
-        table.style.top = (input_bounds.top + 20).toString()+"px";
+        table.style.top = (input_bounds.top + input_bounds.height).toString()+"px";
         return table
     }
 
@@ -43286,9 +43289,12 @@ var substr = 'ab'.substr(-1) === 'b'
 
 html = ['settings', 'popup'];
 img = ['logo256.png'];
+js = ['activated', 'button', 'form', 'settings'];
+css = ['popup'];
 
-html.forEach(() => __webpack_require__(17)("./" + html + ".html"));
-img.forEach(() => __webpack_require__(20)("./" + img));
+html.forEach((html) => __webpack_require__(17)("./" + html + ".html"));
+img.forEach((img) => __webpack_require__(20)("./" + img));
+css.forEach((css) => __webpack_require__(22)("./" + css + ".css"));
 
 
 /***/ }),
@@ -43367,6 +43373,41 @@ webpackContext.id = 20;
 /***/ (function(module, exports, __webpack_require__) {
 
 module.exports = __webpack_require__.p + "../assets/img/logo256.png";
+
+/***/ }),
+/* 22 */
+/***/ (function(module, exports, __webpack_require__) {
+
+var map = {
+	"./popup.css": 23
+};
+
+
+function webpackContext(req) {
+	var id = webpackContextResolve(req);
+	return __webpack_require__(id);
+}
+function webpackContextResolve(req) {
+	var id = map[req];
+	if(!(id + 1)) { // check for number or string
+		var e = new Error("Cannot find module '" + req + "'");
+		e.code = 'MODULE_NOT_FOUND';
+		throw e;
+	}
+	return id;
+}
+webpackContext.keys = function webpackContextKeys() {
+	return Object.keys(map);
+};
+webpackContext.resolve = webpackContextResolve;
+module.exports = webpackContext;
+webpackContext.id = 22;
+
+/***/ }),
+/* 23 */
+/***/ (function(module, exports, __webpack_require__) {
+
+module.exports = __webpack_require__.p + "../assets/css/popup.css";
 
 /***/ })
 /******/ ]);

@@ -4,6 +4,7 @@ const txt = require('./nyt_headlines')
 class WordPrediction{
     constructor(){
         this.tokens = [];
+        this.createTokens();
     }
     createTokens() {
         setTimeout(() => {

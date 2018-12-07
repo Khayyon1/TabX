@@ -7,5 +7,5 @@ function train(textFile) {
     return model;
 }
 
-console.log(util.inspect(train('poeTrain.txt'), {showHidden: false, depth: null}));
+console.log(util.inspect(train('fake.txt'), {showHidden: false, depth: null}));
     

@@ -7,10 +7,12 @@ var _debug = false;
 
 const TabX = class
 {
-    constructor(wordCompleteModel, wordPredictModel, document=document)
+    constructor(wordCompleteModel, wordPredictModel, displayStrategy, document=document)
     {
         this.wordCompleteModel = wordCompleteModel;
         this.wordPredictModel = wordPredictModel;
+        this.displayStrategy = displayStrategy;
+        this.shortcuts = ["1", "2", "3"];
         this.document = document;
         this.registerEventListeners();
     }
@@ -31,7 +33,8 @@ const TabX = class
 
     displaySuggestions(activeElement)
     {
-        if(!this.activeElementIsTextField()){
+        if(!this.activeElementIsTextField())
+        {
             return;
         }
 
@@ -41,6 +44,20 @@ const TabX = class
         {
             return;
         }
+
+        this.mappings = {};
+        let suggestions = this.getAppropriateSuggestions();
+        for(let i = 0; i < suggestions.length; i++)
+        {
+            let shortcut = this.shortcuts[i];
+            let suggestion = suggestions[i];
+
+            //Every shortcut is mapped to a suggestion that TabX can reference
+            //later
+            this.mappings[shortcut] = suggestion;
+        }
+
+        this.displayStrategy.display(this.mappings);
     }
 
     activeElementIsTextField()
@@ -192,34 +209,33 @@ const TabX = class
 
     registerEventListeners()
     {
+        //Provide suggestions based on developing word
         this.document.addEventListener('keydown', this.handleWordComplete.bind(this));
+
+        //Shows suggestions
         this.document.addEventListener('keyup', this.handleUserInput.bind(this));
         var serviceableElements = this.document.querySelectorAll("input[type=text]");
+
+        //Listens for when active elements lose focus
         for(var i = 0; i < serviceableElements.length; i++)
         {
             var elem = serviceableElements[i];
             elem.addEventListener('blur', function()
             {
                this.displayStrategy.tearDown();
-            }
+            }.bind(this));
         };
-    }
-
-    suggestionsAreBeingDisplayed()
-    {
-        return this.document.getElementById(this.SUGGESTIONS_TABLE) != null
     }
 
     handleWordComplete(event)
     {
         var keyname = event.key;
-        var choices = ["1", "2", "3"];
-        if(this.activeElementIsTextField() && choices.includes(keyname) && this.displayStrategy.isActive())
+        if(this.activeElementIsTextField() && this.shortcuts.includes(keyname) && this.displayStrategy.isActive())
         {
             event.preventDefault();
-            var userChoice = this.document.getElementById(this.SUGGESTIONS_TABLE).rows[keyname - 1].cells[1].innerHTML;
+            var userChoice = this.mappings[keyname];
             this.wordCompletion(this.document.activeElement, userChoice);
-        }.bind(this);
+        };
     }
 };
 

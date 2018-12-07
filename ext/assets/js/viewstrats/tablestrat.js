@@ -1,16 +1,20 @@
 var ID = "suggestions"
+var current_table = null;
 
 function createSuggestionsTable()
 {
-    var table = document.createElement("table");
+    let table = document.createElement("table");
     table.id = ID;
     table.className = "suggestions";
     table.style.position = 'absolute';
-    var input_bounds = document.activeElement.getBoundingClientRect();
+
+    let input_bounds = document.activeElement.getBoundingClientRect();
     table.style.backgroundColor = "lightblue";
     table.style.zIndex = 999;
     table.style.left = (input_bounds.left).toString() + "px";
     table.style.top = (input_bounds.top + input_bounds.height).toString()+"px";
+
+    current_table = table;
     return table
 }
 
@@ -21,30 +25,37 @@ function isActive()
 
 function tearDown()
 {
-   if(isActive)
+   if(isActive())
    {
-      document.body.removeChild(current_table);
+       current_table.parentNode.removeChild(current_table);
    }
 }
 
-function display(suggestions, shortcuts)
+function display(mappings)
 {
    var table = createSuggestionsTable();
 
-   var suggestions = getAppropriateSuggestions();
+   var suggestions = Object.values(mappings);
+   var shortcuts = Object.keys(mappings);
 
    for(var i = 0; i < suggestions.length; i++)
    {
        var row = document.createElement("tr");
-       var column1 = document.createElement("td");
-       var column2 = document.createElement("td");
-       column1.appendChild(document.createTextNode(((i + 1).toString())));
-       column2.appendChild(document.createTextNode(suggestions[i]));
-       row.append(column1);
-       row.append(column2);
+       var shortcutColumn = document.createElement("td");
+       var suggestionsColumn = document.createElement("td");
+       shortcutColumn.appendChild(document.createTextNode((shortcuts[i].toString())));
+       suggestionsColumn.appendChild(document.createTextNode(suggestions[i]));
+       row.append(shortcutColumn);
+       row.append(suggestionsColumn);
        table.appendChild(row);
    }
 
    document.body.appendChild(table);
 
+}
+
+module.exports = {
+    isActive: isActive,
+    tearDown: tearDown,
+    display: display
 }

@@ -13,30 +13,6 @@ const TabX = class
         this.wordPredictModel = wordPredictModel;
         this.document = document;
         this.registerEventListeners();
-        this.SUGGESTIONS_TABLE = "suggestionsTable";
-    }
-
-    removeActiveTable()
-    {
-        var current_table = this.document.getElementById(this.SUGGESTIONS_TABLE);
-        if(current_table != null)
-        {
-            this.document.body.removeChild(current_table);
-        }
-    }
-
-    createSuggestionsTable()
-    {
-        var table = this.document.createElement("table");
-        table.id = this.SUGGESTIONS_TABLE;
-        table.className = "suggestions";
-        table.style.position = 'absolute';
-        var input_bounds = this.document.activeElement.getBoundingClientRect();
-        table.style.backgroundColor = "lightblue";
-        table.style.zIndex = 999;
-        table.style.left = (input_bounds.left).toString() + "px";
-        table.style.top = (input_bounds.top + input_bounds.height).toString()+"px";
-        return table
     }
 
     getAppropriateSuggestions()
@@ -59,30 +35,12 @@ const TabX = class
             return;
         }
 
+        this.displayStrategy.tearDown();
 
-        this.removeActiveTable();
         if(this.document.activeElement.value == "" || this.getCurrentWord(this.document.activeElement) == "")
         {
             return;
         }
-
-        var table = this.createSuggestionsTable();
-
-        var suggestions = this.getAppropriateSuggestions();
-
-        for(var i = 0; i < suggestions.length; i++)
-        {
-            var row = this.document.createElement("tr");
-            var column1 = this.document.createElement("td");
-            var column2 = this.document.createElement("td");
-            column1.appendChild(this.document.createTextNode(((i+1).toString())));
-            column2.appendChild(this.document.createTextNode(suggestions[i]));
-            row.append(column1);
-            row.append(column2);
-            table.appendChild(row);
-        }
-
-        this.document.body.appendChild(table);
     }
 
     activeElementIsTextField()
@@ -242,12 +200,8 @@ const TabX = class
             var elem = serviceableElements[i];
             elem.addEventListener('blur', function()
             {
-                var table = this.document.getElementById("suggestionsTable");
-                if(table != null)
-                {
-                    table.parentNode.removeChild(table);
-                }
-            }.bind(this))
+               this.displayStrategy.tearDown();
+            }
         };
     }
 
@@ -260,12 +214,12 @@ const TabX = class
     {
         var keyname = event.key;
         var choices = ["1", "2", "3"];
-        if(this.activeElementIsTextField() && choices.includes(keyname) && this.suggestionsAreBeingDisplayed())
+        if(this.activeElementIsTextField() && choices.includes(keyname) && this.displayStrategy.isActive())
         {
             event.preventDefault();
             var userChoice = this.document.getElementById(this.SUGGESTIONS_TABLE).rows[keyname - 1].cells[1].innerHTML;
             this.wordCompletion(this.document.activeElement, userChoice);
-        }
+        }.bind(this);
     }
 };
 

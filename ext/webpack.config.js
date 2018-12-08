@@ -1,7 +1,14 @@
 module.exports = {
     mode: 'production',
-    entry: './src/entry',
-
+    entry: {
+        tabx: './src/main',
+        models: './src/models'
+    },
+    output:
+        {
+            path: __dirname + "/chrome/scripts",
+            filename: "[name].js"
+        },
     node:
         {
             fs: "empty"
@@ -53,11 +60,6 @@ module.exports = {
         {
             // We no not want to minimize our code.
             minimize: false
-        },
-
-    output:
-        {
-            path: __dirname + "/chrome/scripts",
         },
 
     target: "web"

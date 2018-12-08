@@ -2,11 +2,21 @@
 <project version="4">
   <component name="ChangeListManager">
     <list default="true" id="23e51493-2fe8-4643-9db8-9b5eccab0d8c" name="Default Changelist" comment="">
-      <change afterPath="$PROJECT_DIR$/ext/assets/js/viewstrats/mockstrat.js" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/ext/assets/js/viewstrats/tablestrat.js" beforeDir="false" afterPath="$PROJECT_DIR$/ext/assets/js/viewstrats/tablestrat.js" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/ext/chrome/scripts/main.js" beforeDir="false" afterPath="$PROJECT_DIR$/ext/chrome/scripts/main.js" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/ext/src/entry.js" beforeDir="false" afterPath="$PROJECT_DIR$/ext/src/entry.js" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/ext/browserspec/chrome/chromescriptexec.js" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/ext/browserspec/chrome/chromestorage.js" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/ext/chrome/scripts/loader.js" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/ext/src/main.js" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/ext/assets/js/activated.js" beforeDir="false" afterPath="$PROJECT_DIR$/ext/assets/js/activated.js" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/ext/assets/js/button.js" beforeDir="false" afterPath="$PROJECT_DIR$/ext/assets/js/button.js" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/ext/chrome/manifest.json" beforeDir="false" afterPath="$PROJECT_DIR$/ext/chrome/manifest.json" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/ext/chrome/scripts/background.js" beforeDir="false" afterPath="$PROJECT_DIR$/ext/src/models.js" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/ext/chrome/scripts/main.js" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/ext/node_modules/vm-browserify/example/run/server.js" beforeDir="false" afterPath="$PROJECT_DIR$/ext/node_modules/vm-browserify/example/run/server.js" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/ext/node_modules/vm-browserify/readme.markdown" beforeDir="false" afterPath="$PROJECT_DIR$/ext/node_modules/vm-browserify/readme.markdown" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/ext/src/entry.js" beforeDir="false" />
       <change beforePath="$PROJECT_DIR$/ext/src/tabx.js" beforeDir="false" afterPath="$PROJECT_DIR$/ext/src/tabx.js" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/ext/webpack.config.js" beforeDir="false" afterPath="$PROJECT_DIR$/ext/webpack.config.js" afterDir="false" />
     </list>
     <option name="EXCLUDED_CONVERTED_TO_IGNORED" value="true" />
     <option name="SHOW_DIALOG" value="false" />
@@ -37,32 +47,32 @@
       </usages-collector>
       <usages-collector id="statistics.file.extensions.open">
         <counts>
-          <entry key="html" value="7" />
-          <entry key="js" value="34" />
-          <entry key="json" value="4" />
+          <entry key="html" value="9" />
+          <entry key="js" value="53" />
+          <entry key="json" value="7" />
         </counts>
       </usages-collector>
       <usages-collector id="statistics.file.types.open">
         <counts>
-          <entry key="HTML" value="7" />
-          <entry key="JSON" value="4" />
-          <entry key="JavaScript" value="34" />
+          <entry key="HTML" value="9" />
+          <entry key="JSON" value="7" />
+          <entry key="JavaScript" value="53" />
         </counts>
       </usages-collector>
       <usages-collector id="statistics.file.extensions.edit">
         <counts>
           <entry key="html" value="494" />
-          <entry key="js" value="13270" />
-          <entry key="json" value="119" />
-          <entry key="txt" value="597" />
+          <entry key="js" value="18010" />
+          <entry key="json" value="315" />
+          <entry key="txt" value="726" />
         </counts>
       </usages-collector>
       <usages-collector id="statistics.file.types.edit">
         <counts>
           <entry key="HTML" value="494" />
-          <entry key="JSON" value="119" />
-          <entry key="JavaScript" value="13270" />
-          <entry key="PLAIN_TEXT" value="597" />
+          <entry key="JSON" value="315" />
+          <entry key="JavaScript" value="18010" />
+          <entry key="PLAIN_TEXT" value="726" />
         </counts>
       </usages-collector>
     </session>
@@ -72,26 +82,44 @@
       <file pinned="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/ext/src/tabx.js">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="187">
-              <caret line="11" column="10" selection-start-line="10" selection-start-column="5" selection-end-line="11" selection-end-column="10" />
+            <state relative-caret-position="246">
+              <caret line="65" column="19" selection-start-line="65" selection-start-column="19" selection-end-line="65" selection-end-column="19" />
             </state>
           </provider>
         </entry>
       </file>
       <file pinned="false" current-in-tab="false">
-        <entry file="file://$PROJECT_DIR$/ext/assets/js/viewstrats/tablestrat.js">
+        <entry file="file://$PROJECT_DIR$/ext/chrome/manifest.json">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="119">
-              <caret line="10" column="20" lean-forward="true" selection-start-line="10" selection-start-column="20" selection-end-line="10" selection-end-column="20" />
+            <state relative-caret-position="102">
+              <caret line="6" column="36" selection-start-line="6" selection-start-column="36" selection-end-line="6" selection-end-column="36" />
+            </state>
+          </provider>
+        </entry>
+      </file>
+      <file pinned="false" current-in-tab="false">
+        <entry file="file://$PROJECT_DIR$/ext/webpack.config.js">
+          <provider selected="true" editor-type-id="text-editor">
+            <state relative-caret-position="255">
+              <caret line="15" selection-start-line="15" selection-end-line="15" />
+            </state>
+          </provider>
+        </entry>
+      </file>
+      <file pinned="false" current-in-tab="false">
+        <entry file="file://$PROJECT_DIR$/ext/src/main.js">
+          <provider selected="true" editor-type-id="text-editor">
+            <state relative-caret-position="322">
+              <caret line="23" column="7" selection-start-line="23" selection-start-column="7" selection-end-line="23" selection-end-column="7" />
             </state>
           </provider>
         </entry>
       </file>
       <file pinned="false" current-in-tab="true">
-        <entry file="file://$PROJECT_DIR$/ext/src/entry.js">
+        <entry file="file://$PROJECT_DIR$/ext/src/models.js">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="153">
-              <caret line="9" column="65" selection-start-line="9" selection-start-column="65" selection-end-line="9" selection-end-column="65" />
+            <state relative-caret-position="357">
+              <caret line="21" lean-forward="true" selection-start-line="21" selection-end-line="21" />
             </state>
           </provider>
         </entry>
@@ -99,31 +127,35 @@
       <file pinned="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/ext/test/html/test_input.html">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="204">
-              <caret line="12" selection-start-line="12" selection-end-line="12" />
+            <state relative-caret-position="170">
+              <caret line="10" column="7" selection-start-line="10" selection-start-column="7" selection-end-line="10" selection-end-column="7" />
             </state>
           </provider>
         </entry>
       </file>
       <file pinned="false" current-in-tab="false">
-        <entry file="file://$PROJECT_DIR$/ext/src/lib/wordprediction/markov/train-word-prediction.js">
-          <provider selected="true" editor-type-id="text-editor" />
-        </entry>
-      </file>
-      <file pinned="false" current-in-tab="false">
-        <entry file="file://$PROJECT_DIR$/ext/src/lib/wordprediction/markov/word-prediction.js">
+        <entry file="file://$PROJECT_DIR$/ext/chrome/scripts/tabx.js">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="274">
-              <caret line="82" column="39" selection-start-line="82" selection-start-column="39" selection-end-line="82" selection-end-column="39" />
+            <state relative-caret-position="-102">
+              <caret line="15" column="31" selection-start-line="15" selection-start-column="31" selection-end-line="15" selection-end-column="31" />
             </state>
           </provider>
         </entry>
       </file>
       <file pinned="false" current-in-tab="false">
-        <entry file="file://$PROJECT_DIR$/ext/assets/js/viewstrats/mockstrat.js">
+        <entry file="file://$PROJECT_DIR$/ext/chrome/scripts/loader.js">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="289">
-              <caret line="26" column="7" selection-start-line="26" selection-start-column="7" selection-end-line="26" selection-end-column="7" />
+            <state relative-caret-position="136">
+              <caret line="8" column="1" selection-start-line="8" selection-start-column="1" selection-end-line="8" selection-end-column="1" />
+            </state>
+          </provider>
+        </entry>
+      </file>
+      <file pinned="false" current-in-tab="false">
+        <entry file="file://$PROJECT_DIR$/ext/chrome/scripts/bgmsghandler.js">
+          <provider selected="true" editor-type-id="text-editor">
+            <state relative-caret-position="102">
+              <caret line="6" column="29" selection-start-line="6" selection-start-column="22" selection-end-line="6" selection-end-column="29" />
             </state>
           </provider>
         </entry>
@@ -142,13 +174,21 @@
     <findStrings>
       <find>document.activeElement.value</find>
       <find>predictCurrentWord</find>
-      <find>displayS</find>
       <find>suggestionsTable</find>
       <find>wordComple</find>
       <find>c</find>
       <find>console</find>
-      <find>current_</find>
       <find>current_table</find>
+      <find>current_</find>
+      <find>TabX</find>
+      <find>mylib</find>
+      <find>getSuggestions</find>
+      <find>getAppropriateSuggestions</find>
+      <find>displa</find>
+      <find>display</find>
+      <find>displayS</find>
+      <find>displaySuggestions</find>
+      <find>getNextWordSuggestion</find>
     </findStrings>
     <replaceStrings>
       <replace>getInput()</replace>
@@ -170,7 +210,6 @@
         <option value="$PROJECT_DIR$/ext/src/lib/mock/wordcomplete_mock.js" />
         <option value="$PROJECT_DIR$/ext/spec/WordCompleteSpec.js" />
         <option value="$PROJECT_DIR$/ext/spec/getCurrentWordSpec.js" />
-        <option value="$PROJECT_DIR$/ext/chrome/scripts/main.js" />
         <option value="$PROJECT_DIR$/ext/spec/WordPredictionSpec.js" />
         <option value="$PROJECT_DIR$/ext/test/html/test_input.html" />
         <option value="$PROJECT_DIR$/ext/spec/DisplayTableSpec.js" />
@@ -178,13 +217,26 @@
         <option value="$PROJECT_DIR$/ext/chrome/assets/popup.js" />
         <option value="$PROJECT_DIR$/ext/chrome/assets/html/popup.html" />
         <option value="$PROJECT_DIR$/ext/chrome/assets/html/popup_form.html" />
-        <option value="$PROJECT_DIR$/ext/chrome/manifest.json" />
-        <option value="$PROJECT_DIR$/ext/webpack.config.js" />
         <option value="$PROJECT_DIR$/ext/assets/index.js" />
         <option value="$PROJECT_DIR$/ext/assets/js/viewstrats/tablestrat.js" />
-        <option value="$PROJECT_DIR$/ext/src/tabx.js" />
         <option value="$PROJECT_DIR$/ext/assets/js/viewstrats/mockstrat.js" />
+        <option value="$PROJECT_DIR$/ext/assets/js/activated.js" />
+        <option value="$PROJECT_DIR$/ext/browserspec/ChromeStorage.js" />
+        <option value="$PROJECT_DIR$/ext/assets/js/button.js" />
+        <option value="$PROJECT_DIR$/ext/browserspec/chromescriptexec.js" />
+        <option value="$PROJECT_DIR$/ext/browserspec/chrome/chromestorage.js" />
+        <option value="$PROJECT_DIR$/ext/chrome/scripts/main.js" />
+        <option value="$PROJECT_DIR$/ext/chrome/scripts/senddom.js" />
+        <option value="$PROJECT_DIR$/ext/chrome/scripts/background.js" />
+        <option value="$PROJECT_DIR$/ext/src/lib/models.js" />
         <option value="$PROJECT_DIR$/ext/src/entry.js" />
+        <option value="$PROJECT_DIR$/ext/webpack.config.js" />
+        <option value="$PROJECT_DIR$/ext/chrome/scripts/loader.js" />
+        <option value="$PROJECT_DIR$/ext/src/tabx.js" />
+        <option value="$PROJECT_DIR$/ext/chrome/scripts/bgmsghandler.js" />
+        <option value="$PROJECT_DIR$/ext/chrome/manifest.json" />
+        <option value="$PROJECT_DIR$/ext/src/main.js" />
+        <option value="$PROJECT_DIR$/ext/src/models.js" />
       </list>
     </option>
   </component>
@@ -676,7 +728,7 @@
     </packageJsonPaths>
   </component>
   <component name="ProjectFrameBounds" extendedState="6">
-    <option name="x" value="-7" />
+    <option name="x" value="676" />
     <option name="width" value="697" />
     <option name="height" value="735" />
   </component>
@@ -702,34 +754,6 @@
               <item name="TabX" type="b2602c69:ProjectViewProjectNode" />
               <item name="TabX" type="462c0819:PsiDirectoryNode" />
               <item name="ext" type="462c0819:PsiDirectoryNode" />
-              <item name="assets" type="462c0819:PsiDirectoryNode" />
-            </path>
-            <path>
-              <item name="TabX" type="b2602c69:ProjectViewProjectNode" />
-              <item name="TabX" type="462c0819:PsiDirectoryNode" />
-              <item name="ext" type="462c0819:PsiDirectoryNode" />
-              <item name="assets" type="462c0819:PsiDirectoryNode" />
-              <item name="css" type="462c0819:PsiDirectoryNode" />
-            </path>
-            <path>
-              <item name="TabX" type="b2602c69:ProjectViewProjectNode" />
-              <item name="TabX" type="462c0819:PsiDirectoryNode" />
-              <item name="ext" type="462c0819:PsiDirectoryNode" />
-              <item name="assets" type="462c0819:PsiDirectoryNode" />
-              <item name="js" type="462c0819:PsiDirectoryNode" />
-            </path>
-            <path>
-              <item name="TabX" type="b2602c69:ProjectViewProjectNode" />
-              <item name="TabX" type="462c0819:PsiDirectoryNode" />
-              <item name="ext" type="462c0819:PsiDirectoryNode" />
-              <item name="assets" type="462c0819:PsiDirectoryNode" />
-              <item name="js" type="462c0819:PsiDirectoryNode" />
-              <item name="viewstrats" type="462c0819:PsiDirectoryNode" />
-            </path>
-            <path>
-              <item name="TabX" type="b2602c69:ProjectViewProjectNode" />
-              <item name="TabX" type="462c0819:PsiDirectoryNode" />
-              <item name="ext" type="462c0819:PsiDirectoryNode" />
               <item name="chrome" type="462c0819:PsiDirectoryNode" />
             </path>
             <path>
@@ -744,23 +768,6 @@
               <item name="ext" type="462c0819:PsiDirectoryNode" />
               <item name="src" type="462c0819:PsiDirectoryNode" />
               <item name="lib" type="462c0819:PsiDirectoryNode" />
-            </path>
-            <path>
-              <item name="TabX" type="b2602c69:ProjectViewProjectNode" />
-              <item name="TabX" type="462c0819:PsiDirectoryNode" />
-              <item name="ext" type="462c0819:PsiDirectoryNode" />
-              <item name="src" type="462c0819:PsiDirectoryNode" />
-              <item name="lib" type="462c0819:PsiDirectoryNode" />
-              <item name="wordprediction" type="462c0819:PsiDirectoryNode" />
-            </path>
-            <path>
-              <item name="TabX" type="b2602c69:ProjectViewProjectNode" />
-              <item name="TabX" type="462c0819:PsiDirectoryNode" />
-              <item name="ext" type="462c0819:PsiDirectoryNode" />
-              <item name="src" type="462c0819:PsiDirectoryNode" />
-              <item name="lib" type="462c0819:PsiDirectoryNode" />
-              <item name="wordprediction" type="462c0819:PsiDirectoryNode" />
-              <item name="markov" type="462c0819:PsiDirectoryNode" />
             </path>
             <path>
               <item name="TabX" type="b2602c69:ProjectViewProjectNode" />
@@ -784,18 +791,21 @@
   <component name="PropertiesComponent">
     <property name="DefaultHtmlFileTemplate" value="HTML File" />
     <property name="Git.Branch.Popup.ShowAllRemotes" value="true" />
+    <property name="SearchEverywhereHistoryKey" value="&#9;FILE&#9;file://C:/Users/Khayyon/PycharmProjects/TabX/ext/src/models.js" />
     <property name="WebServerToolWindowFactoryState" value="false" />
     <property name="nodejs_interpreter_path.stuck_in_default_project" value="undefined stuck path" />
     <property name="nodejs_npm_path_reset_for_default_project" value="true" />
     <property name="settings.editor.selected.configurable" value="com.jetbrains.python.configuration.PyActiveSdkModuleConfigurable" />
   </component>
   <component name="RecentsManager">
-    <key name="CopyFile.RECENT_KEYS">
-      <recent name="C:\Users\Khayyon\PycharmProjects\TabX\ext\assets" />
-    </key>
     <key name="MoveFile.RECENT_KEYS">
+      <recent name="C:\Users\Khayyon\PycharmProjects\TabX\ext\src" />
+      <recent name="C:\Users\Khayyon\PycharmProjects\TabX\ext\browserspec\chrome" />
       <recent name="C:\Users\Khayyon\PycharmProjects\TabX\ext\assets" />
       <recent name="C:\Users\Khayyon\PycharmProjects\TabX\ext\chrome\assets\js" />
+    </key>
+    <key name="CopyFile.RECENT_KEYS">
+      <recent name="C:\Users\Khayyon\PycharmProjects\TabX\ext\assets" />
     </key>
   </component>
   <component name="RunDashboard">
@@ -863,7 +873,14 @@
       <option name="project" value="LOCAL" />
       <updated>1544065746895</updated>
     </task>
-    <option name="localTasksCounter" value="7" />
+    <task id="LOCAL-00007" summary="decoupled tabx app logic from view logic to allow indpendent development different views">
+      <created>1544220496328</created>
+      <option name="number" value="00007" />
+      <option name="presentableId" value="LOCAL-00007" />
+      <option name="project" value="LOCAL" />
+      <updated>1544220496328</updated>
+    </task>
+    <option name="localTasksCounter" value="8" />
     <servers />
   </component>
   <component name="TodoView">
@@ -879,18 +896,18 @@
     <frame x="-8" y="-8" width="1382" height="744" extended-state="6" />
     <editor active="true" />
     <layout>
-      <window_info active="true" content_ui="combo" id="Project" order="0" sideWeight="0.49756098" visible="true" weight="0.20726173" />
-      <window_info id="Structure" order="1" sideWeight="0.502439" side_tool="true" visible="true" weight="0.20726173" />
+      <window_info active="true" content_ui="combo" id="Project" order="0" sideWeight="0.4937656" visible="true" weight="0.15885022" />
+      <window_info id="Structure" order="1" sideWeight="0.5062344" side_tool="true" weight="0.4301413" />
       <window_info id="Favorites" order="2" side_tool="true" />
       <window_info anchor="bottom" id="Message" order="0" />
-      <window_info anchor="bottom" id="Find" order="1" />
+      <window_info anchor="bottom" id="Find" order="1" weight="0.32890365" />
       <window_info anchor="bottom" id="Run" order="2" />
       <window_info anchor="bottom" id="Debug" order="3" weight="0.4" />
       <window_info anchor="bottom" id="Cvs" order="4" weight="0.25" />
       <window_info anchor="bottom" id="Inspection" order="5" weight="0.4" />
       <window_info anchor="bottom" id="TODO" order="6" weight="0.3289689" />
       <window_info anchor="bottom" id="Docker" order="7" show_stripe_button="false" />
-      <window_info anchor="bottom" id="Version Control" order="8" visible="true" weight="0.3289689" />
+      <window_info anchor="bottom" id="Version Control" order="8" weight="0.33388704" />
       <window_info anchor="bottom" id="Database Changes" order="9" show_stripe_button="false" />
       <window_info anchor="bottom" id="Event Log" order="10" side_tool="true" />
       <window_info anchor="bottom" id="Terminal" order="11" />
@@ -898,32 +915,9 @@
       <window_info anchor="right" id="Commander" internal_type="SLIDING" order="0" type="SLIDING" weight="0.4" />
       <window_info anchor="right" id="Ant Build" order="1" weight="0.25" />
       <window_info anchor="right" content_ui="combo" id="Hierarchy" order="2" weight="0.25" />
-      <window_info anchor="right" id="SciView" order="3" />
+      <window_info anchor="right" id="SciView" order="3" visible="true" weight="0.09455371" />
       <window_info anchor="right" id="Database" order="4" />
     </layout>
-    <layout-to-restore>
-      <window_info active="true" content_ui="combo" id="Project" order="0" visible="true" weight="0.34114978" />
-      <window_info id="Structure" order="1" side_tool="true" weight="0.25" />
-      <window_info id="Favorites" order="2" side_tool="true" />
-      <window_info anchor="bottom" id="Message" order="0" />
-      <window_info anchor="bottom" id="Find" order="1" />
-      <window_info anchor="bottom" id="Run" order="2" />
-      <window_info anchor="bottom" id="Debug" order="3" weight="0.4" />
-      <window_info anchor="bottom" id="Cvs" order="4" weight="0.25" />
-      <window_info anchor="bottom" id="Inspection" order="5" weight="0.4" />
-      <window_info anchor="bottom" id="TODO" order="6" weight="0.3289689" />
-      <window_info anchor="bottom" id="Docker" order="7" show_stripe_button="false" />
-      <window_info anchor="bottom" id="Version Control" order="8" weight="0.3289689" />
-      <window_info anchor="bottom" id="Database Changes" order="9" show_stripe_button="false" />
-      <window_info anchor="bottom" id="Event Log" order="10" side_tool="true" />
-      <window_info anchor="bottom" id="Terminal" order="11" />
-      <window_info anchor="bottom" id="Python Console" order="12" />
-      <window_info anchor="right" id="Commander" internal_type="SLIDING" order="0" type="SLIDING" weight="0.4" />
-      <window_info anchor="right" id="Ant Build" order="1" weight="0.25" />
-      <window_info anchor="right" content_ui="combo" id="Hierarchy" order="2" weight="0.25" />
-      <window_info anchor="right" id="SciView" order="3" />
-      <window_info anchor="right" id="Database" order="4" />
-    </layout-to-restore>
   </component>
   <component name="TypeScriptGeneratedFilesManager">
     <option name="version" value="1" />
@@ -938,7 +932,20 @@
     <MESSAGE value="Added Nicole's Back-end model for next word prediction in the front-end" />
     <MESSAGE value="Added Display Table Test and added blur event listener" />
     <MESSAGE value="Added JavaScript CSS styling to the Tables and the table can be layered on top of webpages with less than 1000 elements" />
-    <option name="LAST_COMMIT_MESSAGE" value="Added JavaScript CSS styling to the Tables and the table can be layered on top of webpages with less than 1000 elements" />
+    <MESSAGE value="decoupled tabx app logic from view logic to allow indpendent development different views" />
+    <option name="LAST_COMMIT_MESSAGE" value="decoupled tabx app logic from view logic to allow indpendent development different views" />
+  </component>
+  <component name="XDebuggerManager">
+    <breakpoint-manager>
+      <breakpoints>
+        <line-breakpoint enabled="true" type="javascript">
+          <url>file://$PROJECT_DIR$/ext/src/tabx.js</url>
+          <line>52</line>
+          <properties lambdaOrdinal="-1" />
+          <option name="timeStamp" value="1" />
+        </line-breakpoint>
+      </breakpoints>
+    </breakpoint-manager>
   </component>
   <component name="editorHistoryManager">
     <entry file="file://$PROJECT_DIR$/ext/src/wordcompleteUI.js" />
@@ -977,24 +984,10 @@
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/ext/chrome/scripts/main.js">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="102">
-          <caret line="43232" column="29" selection-start-line="43232" selection-start-column="29" selection-end-line="43232" selection-end-column="29" />
-        </state>
-      </provider>
-    </entry>
     <entry file="file://$PROJECT_DIR$/ext/spec/getCurrentWordSpec.js">
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="325">
           <caret line="63" lean-forward="true" selection-start-line="63" selection-end-line="63" />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/ext/assets/html/popup.html">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="238">
-          <caret line="14" column="7" selection-start-line="14" selection-start-column="7" selection-end-line="14" selection-end-column="7" />
         </state>
       </provider>
     </entry>
@@ -1017,13 +1010,6 @@
     <entry file="file://$PROJECT_DIR$/ext/chrome/assets/html/settings.html">
       <provider selected="true" editor-type-id="text-editor" />
     </entry>
-    <entry file="file://$PROJECT_DIR$/ext/chrome/manifest.json">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="306">
-          <caret line="18" column="4" selection-start-line="18" selection-start-column="4" selection-end-line="18" selection-end-column="4" />
-        </state>
-      </provider>
-    </entry>
     <entry file="file://$PROJECT_DIR$/ext/chrome/assets/js/activated.js">
       <provider selected="true" editor-type-id="text-editor" />
     </entry>
@@ -1037,13 +1023,6 @@
     <entry file="file://$PROJECT_DIR$/ext/assets/package.json">
       <provider selected="true" editor-type-id="text-editor" />
     </entry>
-    <entry file="file://$PROJECT_DIR$/ext/webpack.config.js">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="697">
-          <caret line="41" column="34" selection-start-line="41" selection-start-column="34" selection-end-line="41" selection-end-column="34" />
-        </state>
-      </provider>
-    </entry>
     <entry file="file://$PROJECT_DIR$/ext/spec/WordPredictionSpec.js">
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="325">
@@ -1056,20 +1035,27 @@
         <state relative-caret-position="-153" />
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/ext/src/lib/wordprediction/markov/train-word-prediction.js">
-      <provider selected="true" editor-type-id="text-editor" />
+    <entry file="file://$PROJECT_DIR$/ext/assets/js/viewstrats/tablestrat.js">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="102">
+          <caret line="9" selection-start-line="9" selection-end-line="9" />
+        </state>
+      </provider>
     </entry>
     <entry file="file://$PROJECT_DIR$/ext/src/lib/wordprediction/markov/word-prediction.js">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="274">
+        <state relative-caret-position="580">
           <caret line="82" column="39" selection-start-line="82" selection-start-column="39" selection-end-line="82" selection-end-column="39" />
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/ext/test/html/test_input.html">
+    <entry file="file://$PROJECT_DIR$/ext/src/lib/wordprediction/markov/train-word-prediction.js">
+      <provider selected="true" editor-type-id="text-editor" />
+    </entry>
+    <entry file="file://$PROJECT_DIR$/ext/assets/html/popup.html">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="204">
-          <caret line="12" selection-start-line="12" selection-end-line="12" />
+        <state relative-caret-position="155">
+          <caret line="18" selection-start-line="18" selection-end-line="18" />
         </state>
       </provider>
     </entry>
@@ -1080,24 +1066,117 @@
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/ext/assets/js/viewstrats/tablestrat.js">
+    <entry file="file://$PROJECT_DIR$/ext/assets/js/button.js">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="119">
-          <caret line="10" column="20" lean-forward="true" selection-start-line="10" selection-start-column="20" selection-end-line="10" selection-end-column="20" />
+        <state relative-caret-position="170">
+          <caret line="22" selection-start-line="22" selection-end-line="22" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/ext/assets/js/activated.js">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="136">
+          <caret line="8" column="21" selection-start-line="8" selection-start-column="21" selection-end-line="8" selection-end-column="21" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/ext/browserspec/chrome/chromescriptexec.js">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="136">
+          <caret line="8" column="1" lean-forward="true" selection-start-line="8" selection-start-column="1" selection-end-line="8" selection-end-column="1" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/ext/browserspec/chrome/chromestorage.js">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="102">
+          <caret line="6" column="1" selection-start-line="6" selection-start-column="1" selection-end-line="6" selection-end-column="1" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/ext/chrome/scripts/loader.js">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="17">
+          <caret line="1" selection-start-line="1" selection-end-line="1" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/ext/chrome/scripts/main.js">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="2847009">
+          <caret line="172847" selection-start-line="172847" selection-end-line="172847" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/ext/webpack.config.js">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="255">
+          <caret line="15" selection-start-line="15" selection-end-line="15" />
         </state>
       </provider>
     </entry>
     <entry file="file://$PROJECT_DIR$/ext/src/tabx.js">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="187">
-          <caret line="11" column="10" selection-start-line="10" selection-start-column="5" selection-end-line="11" selection-end-column="10" />
+        <state relative-caret-position="246">
+          <caret line="65" column="19" selection-start-line="65" selection-start-column="19" selection-end-line="65" selection-end-column="19" />
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/ext/src/entry.js">
+    <entry file="file://$PROJECT_DIR$/ext/chrome/scripts/models.js">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="153">
-          <caret line="9" column="65" selection-start-line="9" selection-start-column="65" selection-end-line="9" selection-end-column="65" />
+        <state>
+          <folding>
+            <element signature="n#!!doc" expanded="true" />
+          </folding>
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/ext/chrome/scripts/loader.js">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="136">
+          <caret line="8" column="1" selection-start-line="8" selection-start-column="1" selection-end-line="8" selection-end-column="1" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/ext/chrome/manifest.json">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="102">
+          <caret line="6" column="36" selection-start-line="6" selection-start-column="36" selection-end-line="6" selection-end-column="36" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/ext/chrome/scripts/bgmsghandler.js">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="102">
+          <caret line="6" column="29" selection-start-line="6" selection-start-column="22" selection-end-line="6" selection-end-column="29" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/ext/chrome/scripts/tabx.js">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="-102">
+          <caret line="15" column="31" selection-start-line="15" selection-start-column="31" selection-end-line="15" selection-end-column="31" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/ext/test/html/test_input.html">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="170">
+          <caret line="10" column="7" selection-start-line="10" selection-start-column="7" selection-end-line="10" selection-end-column="7" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/ext/src/main.js">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="322">
+          <caret line="23" column="7" selection-start-line="23" selection-start-column="7" selection-end-line="23" selection-end-column="7" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/ext/src/models.js">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="357">
+          <caret line="21" lean-forward="true" selection-start-line="21" selection-end-line="21" />
         </state>
       </provider>
     </entry>

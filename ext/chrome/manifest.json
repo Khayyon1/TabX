@@ -2,20 +2,26 @@
   "name" : "TabX",
   "version" : "1.0",
   "description" : "Writing assistant for browsers",
+
   "background": {
-    "scripts": ["scripts/background.js"],
-    "persistent": false
+    "scripts": ["scripts/loader.js", "scripts/models.js"],
+    "persistent": true
   },
-  "permissions": ["storage"],
+
+  "permissions": ["storage",
+    "activeTab",
+    "<all_urls>"],
+
   "browser_action":
   {
     "default_popup": "./assets/html/popup.html"
   },
-  "content_scripts": [
-    {
-      "matches": ["<all_urls>"],
-      "js": ["scripts/main.js"]
-    }
-  ],
-  "manifest_version" : 2
+
+  "manifest_version": 2
 }
+
+//   "content_scripts": [
+//   {
+//     "matches": ["<all_urls>"],
+//     "js": ["main.js"]
+//   }],

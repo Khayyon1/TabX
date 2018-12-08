@@ -14,31 +14,34 @@ const TabX = class
         this.displayStrategy = displayStrategy;
         this.shortcuts = ["1", "2", "3"];
         this.document = document;
-        this.registerEventListeners();
     }
 
-    getAppropriateSuggestions()
+    setDocument(document)
+    {
+        this.document = document;
+    }
+
+    async getAppropriateSuggestions()
     {
         var elem = this.document.activeElement
         var previous = elem.value.charAt(elem.selectionStart - 1)
         if(previous != " ")
         {
-            return this.getSuggestions(this.getCurrentWord(elem))
+            return await this.getSuggestions(this.getCurrentWord(elem))
         }
         else
         {
-            return this.getNextWordSuggestion(elem.value)
+            return await this.getNextWordSuggestion(elem.value)
         }
     }
 
-    displaySuggestions(activeElement)
+    async displaySuggestions(activeElement)
     {
         if(!this.activeElementIsTextField())
         {
             return;
         }
 
-        this.displayStrategy.tearDown();
 
         if(this.document.activeElement.value == "" || this.getCurrentWord(this.document.activeElement) == "")
         {
@@ -46,7 +49,9 @@ const TabX = class
         }
 
         this.mappings = {};
-        let suggestions = this.getAppropriateSuggestions();
+
+        let suggestions = await this.getAppropriateSuggestions();
+
         for(let i = 0; i < suggestions.length; i++)
         {
             let shortcut = this.shortcuts[i];
@@ -57,6 +62,7 @@ const TabX = class
             this.mappings[shortcut] = suggestion;
         }
 
+        this.displayStrategy.tearDown();
         this.displayStrategy.display(this.mappings);
     }
 
@@ -66,7 +72,7 @@ const TabX = class
         return activeElement.tagName == 'INPUT';
     }
 
-    wordCompletion(activeElement, userChoice ='world')
+    wordCompletion(activeElement, userChoice)
     {
         activeElement.value = this.replaceWordAt(
             activeElement.value,
@@ -165,7 +171,7 @@ const TabX = class
         return this.inputHasCharactersOtherThanLetters(str) || this.inputIsEmpty(str);
     }
 
-    getSuggestions(incomplete_string)
+    async getSuggestions(incomplete_string)
     {
         if(this.inputIsNotValid(incomplete_string))
         {
@@ -174,26 +180,25 @@ const TabX = class
 
         else
         {
-            return this.wordCompleteModel.predictCurrentWord(incomplete_string);
+            return await this.wordCompleteModel.predictCurrentWord(incomplete_string);
         }
 
     }
 
 
-    getNextWordSuggestion(str)
+    async getNextWordSuggestion(str)
     {
         var caret_position = this.document.activeElement.selectionStart;
         var left_of_caret = caret_position - 1;
         var space_precedes_caret = str.charAt(left_of_caret) == " ";
         var currentWord = this.getCurrentWord(this.document.activeElement);
-
         if(this.inputIsNotValid(currentWord) || !space_precedes_caret)
         {
             return [];
         }
         else
         {
-            return this.wordPredictModel.predictNextWord(this.getCurrentWord(this.document.activeElement));
+            return await this.wordPredictModel.predictNextWord(this.getCurrentWord(this.document.activeElement));
         }
     }
 

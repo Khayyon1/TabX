@@ -20,6 +20,7 @@ function createButton(on)
          chrome.storage.local.set({'activated': false})
          let form = document.getElementById("settings");
          form.parentNode.removeChild(form);
+
       }
       else
       {

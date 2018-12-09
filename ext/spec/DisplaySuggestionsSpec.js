@@ -64,6 +64,7 @@ function DisplayTableSuite()
        return tabx.displaySuggestions();}, (results) => {
         doc.activeElement.blur();
         expect(doc.getElementById(display.ID)).toBeNull();});
+
 }
 
 describe("DisplayTable", DisplayTableSuite);

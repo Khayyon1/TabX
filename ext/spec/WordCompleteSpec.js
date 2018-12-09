@@ -10,29 +10,29 @@ const TabX =  require('../src/tabx');
 
 const mock = require('../src/lib/mock/wordcomplete_mock');
 
-const document = (new JSDOM(``)).window.document;
-const tabx = new TabX(mock, undefined, document);
+const doc = (new JSDOM(``)).window.document;
+const tabx = new TabX(mock, undefined, undefined, document=doc);
 
 describe('Word Complete', function()
 {
     var inputId = "mockInput"
 
     beforeEach(function(){
-      var field = document.createElement("input");
+      var field = doc.createElement("input");
       field.id = inputId;
-      document.body.appendChild(field);
+      doc.body.appendChild(field);
       field.focus();
    });
 
     afterEach(function(){
-      var input = document.getElementById(inputId);
+      var input = doc.getElementById(inputId);
       input.parentNode.removeChild(input);
     });
 
     it("word should appear in active input field", function () {
         var testword = "hello"
-        tabx.wordCompletion(document.activeElement, testword)
-        expect(document.activeElement.value.includes(testword)).toBe(true)
+        tabx.wordCompletion(doc.activeElement, testword)
+        expect(doc.activeElement.value.includes(testword)).toBe(true)
     });
 
     it("input field value should include words that come before the "
@@ -40,11 +40,11 @@ describe('Word Complete', function()
     function()
     {
       var teststring = "Hello wo";
-      document.activeElement.value = teststring;
-      document.activeElement.selectionStart = teststring.length;
-      tabx.wordCompletion(document.activeElement, "world");
+      doc.activeElement.value = teststring;
+      doc.activeElement.selectionStart = teststring.length;
+      tabx.wordCompletion(doc.activeElement, "world");
 
-      expect(document.activeElement.value).toEqual("Hello world");
+      expect(doc.activeElement.value).toEqual("Hello world");
     });
 
 
@@ -53,11 +53,11 @@ describe('Word Complete', function()
      function()
      {
           var teststring = "He world";
-          document.activeElement.value = teststring;
-          document.activeElement.selectionStart = 2;
-          tabx.wordCompletion(document.activeElement, "Hello");
+          doc.activeElement.value = teststring;
+          doc.activeElement.selectionStart = 2;
+          tabx.wordCompletion(doc.activeElement, "Hello");
 
-          expect(document.activeElement.value).toEqual("Hello world");
+          expect(doc.activeElement.value).toEqual("Hello world");
      });
 
      it("input field value should include words that come before "
@@ -65,20 +65,20 @@ describe('Word Complete', function()
      function()
      {
           var teststring = "Hello wo Hello";
-          document.activeElement.value = teststring;
-          document.activeElement.selectionStart = 8;
-          tabx.wordCompletion(document.activeElement, "world");
+          doc.activeElement.value = teststring;
+          doc.activeElement.selectionStart = 8;
+          tabx.wordCompletion(doc.activeElement, "world");
 
-          expect(document.activeElement.value).toEqual("Hello world Hello");
+          expect(doc.activeElement.value).toEqual("Hello world Hello");
      });
 
     it("should be a space if word completion happens in the middle of a word",
       function(){
       var teststring = "Hello world";
-      document.activeElement.value = teststring;
-      document.activeElement.selectionStart = teststring.length - 2;
-      tabx.wordCompletion(document.activeElement, "world");
+      doc.activeElement.value = teststring;
+      doc.activeElement.selectionStart = teststring.length - 2;
+      tabx.wordCompletion(doc.activeElement, "world");
 
-      expect(document.activeElement.value).toEqual("Hello world ld");
+      expect(doc.activeElement.value).toEqual("Hello world ld");
    });
 });

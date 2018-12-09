@@ -46,21 +46,21 @@ const TabX = class
 
     async displaySuggestions()
     {
-        if(!this.activeElementIsTextField())
+        if(!this.activeElementIsTextField()
+            ||
+            this.document.activeElement.value == ""
+            ||
+            this.getCurrentWord(this.document.activeElement) == "")
         {
+            this.displayStrategy.tearDown();
             return;
         }
-
-        if(this.document.activeElement.value == "" || this.getCurrentWord(this.document.activeElement) == "")
-        {
-            return;
-        }
-
 
         let suggestions = await this.getAppropriateSuggestions();
 
-        if(suggestions.length == 0)
+        if(suggestions == undefined || suggestions.length == 0)
         {
+            this.displayStrategy.tearDown();
             return;
         }
 
@@ -253,6 +253,7 @@ const TabX = class
             elem.addEventListener('blur', function()
             {
                this.displayStrategy.tearDown();
+               console.log(this.displayStrategy);
             }.bind(this));
         };
     }

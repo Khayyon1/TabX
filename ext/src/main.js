@@ -1,5 +1,5 @@
 const TabX = require('./tabx.js');
-const display = require("../assets/js/viewstrats/tablestrat");
+const TableView = require("../assets/js/viewstrats/tablestrat");
 require("../assets");
 
 var WordCompleteModel = {
@@ -21,7 +21,7 @@ chrome.storage.local.get(function(results)
     {
         console.log("Current word enabled: " + results["Current Word"]);
         console.log("Next word enables: " + results["Next Word"]);
-
+        let display = new TableView(document);
         tabx = new TabX(WordCompleteModel, WordPredictModel,
             display,
             document,
@@ -29,6 +29,7 @@ chrome.storage.local.get(function(results)
             wordPredictEnabled=results['Next Word']);
 
         tabx.registerListeners();
+
         if(!results['activated'])
         {
             console.log("Disabled upon init");

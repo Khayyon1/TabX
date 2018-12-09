@@ -93,7 +93,7 @@
 /***/ (function(module, exports, __webpack_require__) {
 
 const TabX = __webpack_require__(5);
-const display = __webpack_require__(6);
+const TableView = __webpack_require__(6);
 __webpack_require__(7);
 
 var WordCompleteModel = {
@@ -115,7 +115,7 @@ chrome.storage.local.get(function(results)
     {
         console.log("Current word enabled: " + results["Current Word"]);
         console.log("Next word enables: " + results["Next Word"]);
-
+        let display = new TableView(document);
         tabx = new TabX(WordCompleteModel, WordPredictModel,
             display,
             document,
@@ -123,6 +123,7 @@ chrome.storage.local.get(function(results)
             wordPredictEnabled=results['Next Word']);
 
         tabx.registerListeners();
+
         if(!results['activated'])
         {
             console.log("Disabled upon init");
@@ -242,24 +243,23 @@ const TabX = class
         }
     }
 
-    async displaySuggestions(activeElement)
+    async displaySuggestions()
     {
-        if(!this.activeElementIsTextField())
+        if(!this.activeElementIsTextField()
+            ||
+            this.document.activeElement.value == ""
+            ||
+            this.getCurrentWord(this.document.activeElement) == "")
         {
+            this.displayStrategy.tearDown();
             return;
         }
-
-
-        if(this.document.activeElement.value == "" || this.getCurrentWord(this.document.activeElement) == "")
-        {
-            return;
-        }
-
 
         let suggestions = await this.getAppropriateSuggestions();
 
-        if(suggestions.length == 0)
+        if(suggestions == undefined || suggestions.length == 0)
         {
+            this.displayStrategy.tearDown();
             return;
         }
 
@@ -391,11 +391,14 @@ const TabX = class
             return [];
         }
 
-        else
+        let results = this.wordCompleteModel.predictCurrentWord(incomplete_string);
+
+        if(typeof(results) == Promise)
         {
-            return await this.wordCompleteModel.predictCurrentWord(incomplete_string);
+            return await results;
         }
 
+        return results;
     }
 
 
@@ -410,9 +413,17 @@ const TabX = class
         {
             return [];
         }
+        
+        let results = this.wordPredictModel.predictNextWord(this.getCurrentWord(this.document.activeElement));
+
+        if(typeof(results) == Promise)
+        {
+            return await results;
+        }
+
         else
         {
-            return await this.wordPredictModel.predictNextWord(this.getCurrentWord(this.document.activeElement));
+            return results;
         }
     }
 
@@ -421,7 +432,7 @@ const TabX = class
 
         if (this.activeElementIsTextField() && this.enabled)
         {
-            this.displaySuggestions(this.document.activeElement);
+            this.displaySuggestions();
         }
     }
 
@@ -441,6 +452,7 @@ const TabX = class
             elem.addEventListener('blur', function()
             {
                this.displayStrategy.tearDown();
+               console.log(this.displayStrategy);
             }.bind(this));
         };
     }
@@ -496,67 +508,70 @@ module.exports = TabX;
 /* 6 */
 /***/ (function(module, exports) {
 
-var ID = "suggestions"
-var current_table = null;
-
-function createSuggestionsTable()
+const TableView = class
 {
-    let table = document.createElement("table");
-    table.id = ID;
-    table.className = "suggestions";
-    table.style.position = 'absolute';
+    constructor(dom)
+    {
+        this.dom = dom;
+        this.ID = "suggestions";
+        this.current_table = null;
+    }
 
-    let input_bounds = document.activeElement.getBoundingClientRect();
-    table.style.backgroundColor = "lightblue";
-    table.style.zIndex = 999;
-    table.style.left = (input_bounds.left).toString() + "px";
-    table.style.top = (input_bounds.top + input_bounds.height).toString()+"px";
+    createSuggestionsTable()
+    {
+        let dom = this.dom;
+        let table = dom.createElement("table");
+        table.id = this.ID;
+        table.className = "suggestions";
+        table.style.position = 'absolute';
 
-    current_table = table;
-    return table
+        let input_bounds = dom.activeElement.getBoundingClientRect();
+        table.style.backgroundColor = "lightblue";
+        table.style.zIndex = 999;
+        table.style.left = (input_bounds.left).toString() + "px";
+        table.style.top = (input_bounds.top + input_bounds.height).toString() + "px";
+
+        this.current_table = table;
+        return table
+    }
+
+    isActive()
+    {
+        return this.dom.getElementById(this.ID) != null;
+    }
+
+    tearDown()
+    {
+        if (this.isActive())
+        {
+            this.current_table.parentNode.removeChild(this.current_table);
+        }
+    }
+
+    display(mappings)
+    {
+        var dom = this.dom;
+        var table = this.createSuggestionsTable();
+
+        var suggestions = Object.values(mappings);
+        var shortcuts = Object.keys(mappings);
+
+        for (var i = 0; i < suggestions.length; i++) {
+            var row = dom.createElement("tr");
+            var shortcutColumn = dom.createElement("td");
+            var suggestionsColumn = dom.createElement("td");
+            shortcutColumn.appendChild(dom.createTextNode((shortcuts[i].toString())));
+            suggestionsColumn.appendChild(dom.createTextNode(suggestions[i]));
+            row.append(shortcutColumn);
+            row.append(suggestionsColumn);
+            table.appendChild(row);
+        }
+
+        dom.body.appendChild(table);
+    }
 }
 
-function isActive()
-{
-   return document.getElementById(ID) != null;
-}
-
-function tearDown()
-{
-   if(isActive())
-   {
-       current_table.parentNode.removeChild(current_table);
-   }
-}
-
-function display(mappings)
-{
-   var table = createSuggestionsTable();
-
-   var suggestions = Object.values(mappings);
-   var shortcuts = Object.keys(mappings);
-
-   for(var i = 0; i < suggestions.length; i++)
-   {
-       var row = document.createElement("tr");
-       var shortcutColumn = document.createElement("td");
-       var suggestionsColumn = document.createElement("td");
-       shortcutColumn.appendChild(document.createTextNode((shortcuts[i].toString())));
-       suggestionsColumn.appendChild(document.createTextNode(suggestions[i]));
-       row.append(shortcutColumn);
-       row.append(suggestionsColumn);
-       table.appendChild(row);
-   }
-
-   document.body.appendChild(table);
-
-}
-
-module.exports = {
-    isActive: isActive,
-    tearDown: tearDown,
-    display: display
-}
+module.exports = TableView;
 
 
 /***/ }),

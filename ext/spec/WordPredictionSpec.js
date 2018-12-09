@@ -5,6 +5,7 @@ const TabX =  require('../src/tabx');
 const mock = require('../src/lib/mock/nextword_mock');
 const doc = (new JSDOM('')).window.document;
 const tabx = new TabX(undefined, mock, undefined, document=doc);
+const async_it = require('./helpers/util/asyncit');
 
 function set_caret(caret_position)
 {
@@ -65,14 +66,4 @@ describe("Valid input", function()
 
 function getInput(){
     return doc.activeElement.value;
-}
-
-function async_it(msg, func, expec)
-{
-    it(msg, function(done)
-    {
-        let result = func();
-        result.then((result) => expec(result));
-        done();
-    });
 }

@@ -44,13 +44,12 @@ const TabX = class
         }
     }
 
-    async displaySuggestions(activeElement)
+    async displaySuggestions()
     {
         if(!this.activeElementIsTextField())
         {
             return;
         }
-
 
         if(this.document.activeElement.value == "" || this.getCurrentWord(this.document.activeElement) == "")
         {
@@ -215,8 +214,7 @@ const TabX = class
         {
             return [];
         }
-
-
+        
         let results = this.wordPredictModel.predictNextWord(this.getCurrentWord(this.document.activeElement));
 
         if(typeof(results) == Promise)
@@ -235,7 +233,7 @@ const TabX = class
 
         if (this.activeElementIsTextField() && this.enabled)
         {
-            this.displaySuggestions(this.document.activeElement);
+            this.displaySuggestions();
         }
     }
 

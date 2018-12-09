@@ -9,7 +9,9 @@ var tabx = null;
 
 const async_it = require('./helpers/util/asyncit');
 
-var mock_display = {};
+var display = require('../assets/js/viewstrats/tablestrat');
+display = new display(doc);
+
 function input(str)
 {
     doc.activeElement.value = str;
@@ -33,46 +35,35 @@ function DisplayTableSuite()
       doc.body.appendChild(field);
       field.focus();
 
-      tabx = new TabX(mock, undefined, undefined, document=doc);
+      tabx = new TabX(mock, undefined, display, document=doc);
+      tabx.registerListeners();
    });
 
-    afterEach(function()
-    {
-      var input = doc.getElementById(inputId);
-      input.parentNode.removeChild(input);
-      var current_table = doc.getElementById(tabx.SUGGESTIONS_TABLE);
-      if(current_table != null)
-      {
-            doc.body.removeChild(current_table);
-      }
-    });
+    afterEach(() => tabx.displayStrategy.tearDown());
 
-    async_it('should provide suggestions if there is an active element, ' +
-        'an editable text field with non-empty table', () => {
-        var str = "hello";
-        input(str);
-        spyOn(tabx, "getSuggestions").and.returnValue(["hi", "bye", "good"]);
-        tabx.displaySuggestions();
-    }, (results) => expect(doc.getElementById(tabx.SUGGESTIONS_TABLE)).not.toBe(null));
+    async_it('should display suggestions if there is an active element, ' +
+        'an editable text field with non-empty display', () => {
+        input("hello");
+        spyOn(tabx, "getSuggestions").and.returnValue(new Promise((resolve, reject) => resolve(["hi", "bye", "good"])));
+            return tabx.displaySuggestions();
+    }, (results) => expect(doc.getElementById(display.ID)).not.toBeNull());
 
-    it('should not display if there is no active element', function()
-    {
+    async_it('should not display if there is no active element', () => {
         var str = "hi";
         input(str);
         doc.activeElement.blur();
         spyOn(tabx, "getSuggestions").and.returnValue(["here"])
-        tabx.displaySuggestions(doc.activeElement);
-        expect(doc.getElementById(tabx.SUGGESTIONS_TABLE)).toBe(null);
-    });
+        return tabx.displaySuggestions();
+    }, (results) => expect(doc.getElementById(display.ID)).toBeNull());
 
-    it('should not display if active element is unfocused', function()
+    async_it('should tear down display if active element is unfocused', () =>
     {
        var str = "hi";
        input(str);
-       spyOn(tabx, "getSuggestions").and.returnValue(["here"])
-       tabx.displaySuggestions(doc.activeElement);
-       doc.activeElement.blur();
-       expect(doc.getElementById(tabx.SUGGESTIONS_TABLE)).toBe(null);
-    });
+       spyOn(tabx, "getSuggestions").and.returnValue(["here"]);
+       return tabx.displaySuggestions();}, (results) => {
+        doc.activeElement.blur();
+        expect(doc.getElementById(display.ID)).toBeNull();});
 }
+
 describe("DisplayTable", DisplayTableSuite);

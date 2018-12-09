@@ -193,11 +193,14 @@ const TabX = class
             return [];
         }
 
-        else
+        let results = this.wordCompleteModel.predictCurrentWord(incomplete_string);
+
+        if(typeof(results) == Promise)
         {
-            return await this.wordCompleteModel.predictCurrentWord(incomplete_string);
+            return await results;
         }
 
+        return results;
     }
 
 

@@ -266,7 +266,7 @@ Trie.remove = function(key) {
     		removeH(this.head, key, d);
     	}
 }
-
+Trie.predictCurrentWord = Trie.getWordCompletion
 // console.log(Trie.getSuggestion("the"));
 // console.log(Trie.getWordCompletion("the"));
 //console.log(Trie.getCorrectionSuggestions("the"));

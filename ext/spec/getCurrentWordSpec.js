@@ -2,11 +2,10 @@ const jsdom = require("jsdom");
 const { JSDOM } = jsdom;
 
 const TabX =  require('../src/tabx');
-
 const mock = require('../src/lib/mock/wordcomplete_mock');
 
-const document = (new JSDOM(``)).window.document;
-const tabx = new TabX(mock, undefined, document);
+const doc = (new JSDOM(``)).window.document;
+const tabx = new TabX(mock, undefined, undefined, document=doc);
 
 function getCurrentWordTestSuite()
 {
@@ -14,15 +13,15 @@ function getCurrentWordTestSuite()
 
     beforeEach(function()
     {
-      var field = document.createElement("input");
+      var field = doc.createElement("input");
       field.id = inputId;
-      document.body.appendChild(field);
+      doc.body.appendChild(field);
       field.focus();
    });
 
     afterEach(function()
     {
-      var input = document.getElementById(inputId);
+      var input = doc.getElementById(inputId);
       input.parentNode.removeChild(input);
     });
 
@@ -30,36 +29,36 @@ function getCurrentWordTestSuite()
    function()
    {
        var testwords = "hello world"
-       document.activeElement.value =  testwords
-       document.activeElement.selectionStart = 0
-       expect(tabx.getCurrentWord(document.activeElement)).toEqual("");
+       doc.activeElement.value =  testwords
+       doc.activeElement.selectionStart = 0
+       expect(tabx.getCurrentWord(doc.activeElement)).toEqual("");
    });
 
    it("should return the leftmost word when caret at end of input",
    function()
    {
        var testwords = "hello world"
-       document.activeElement.value =  testwords
-       document.activeElement.selectionStart = testwords.length;
-       expect(tabx.getCurrentWord(document.activeElement)).toEqual("world");
+       doc.activeElement.value =  testwords
+       doc.activeElement.selectionStart = testwords.length;
+       expect(tabx.getCurrentWord(doc.activeElement)).toEqual("world");
    });
 
    it("should capture text before the caret, delimited by space ",
    function()
    {
        var testwords = "hello worlds"
-       document.activeElement.value = testwords
-       document.activeElement.selectionStart = "hello".length;
-       expect(tabx.getCurrentWord(document.activeElement)).toEqual("hello");
+       doc.activeElement.value = testwords
+       doc.activeElement.selectionStart = "hello".length;
+       expect(tabx.getCurrentWord(doc.activeElement)).toEqual("hello");
    });
 
    it("should capture partial word text before the caret, delimited by space",
    function ()
    {
        var testwords = "hello worlds"
-       document.activeElement.value = testwords
-       document.activeElement.selectionStart = 3
-       expect(tabx.getCurrentWord(document.activeElement)).toEqual("hel");
+       doc.activeElement.value = testwords
+       doc.activeElement.selectionStart = 3
+       expect(tabx.getCurrentWord(doc.activeElement)).toEqual("hel");
    })
 
     it('should return the word that is before a space, which is '
@@ -67,9 +66,9 @@ function getCurrentWordTestSuite()
     function ()
     {
         var testwords = "hello "
-        document.activeElement.value = testwords
-        document.activeElement.selectionStart = testwords.length
-        expect(tabx.getCurrentWord(document.activeElement)).toEqual("hello");
+        doc.activeElement.value = testwords
+        doc.activeElement.selectionStart = testwords.length
+        expect(tabx.getCurrentWord(doc.activeElement)).toEqual("hello");
     });
 }
 

@@ -2,16 +2,11 @@
 <project version="4">
   <component name="ChangeListManager">
     <list default="true" id="23e51493-2fe8-4643-9db8-9b5eccab0d8c" name="Default Changelist" comment="">
-      <change afterPath="$PROJECT_DIR$/ext/chrome/assets/js/util.js" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/ext/assets/html/popup.html" beforeDir="false" afterPath="$PROJECT_DIR$/ext/assets/html/popup.html" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/ext/assets/js/button.js" beforeDir="false" afterPath="$PROJECT_DIR$/ext/assets/js/button.js" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/ext/chrome/assets/html/popup.html" beforeDir="false" afterPath="$PROJECT_DIR$/ext/chrome/assets/html/popup.html" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/ext/chrome/assets/js/activated.js" beforeDir="false" afterPath="$PROJECT_DIR$/ext/chrome/assets/js/activated.js" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/ext/chrome/assets/js/button.js" beforeDir="false" afterPath="$PROJECT_DIR$/ext/chrome/assets/js/button.js" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/ext/chrome/assets/js/form.js" beforeDir="false" afterPath="$PROJECT_DIR$/ext/chrome/assets/js/form.js" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/ext/chrome/manifest.json" beforeDir="false" afterPath="$PROJECT_DIR$/ext/chrome/manifest.json" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/ext/src/main.js" beforeDir="false" afterPath="$PROJECT_DIR$/ext/src/main.js" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/ext/spec/GetSuggestionsSpec.js" beforeDir="false" afterPath="$PROJECT_DIR$/ext/spec/GetSuggestionsSpec.js" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/ext/spec/getCurrentWordSpec.js" beforeDir="false" afterPath="$PROJECT_DIR$/ext/spec/getCurrentWordSpec.js" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/ext/src/lib/wordcompletion/triecomplete/wordCompletion/wordCompletionModel.js" beforeDir="false" afterPath="$PROJECT_DIR$/ext/src/lib/wordcompletion/triecomplete/wordCompletion/wordCompletionModel.js" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/ext/src/models.js" beforeDir="false" afterPath="$PROJECT_DIR$/ext/src/models.js" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/ext/src/tabx.js" beforeDir="false" afterPath="$PROJECT_DIR$/ext/src/tabx.js" afterDir="false" />
     </list>
     <option name="EXCLUDED_CONVERTED_TO_IGNORED" value="true" />
@@ -44,7 +39,7 @@
       <usages-collector id="statistics.file.extensions.open">
         <counts>
           <entry key="html" value="14" />
-          <entry key="js" value="73" />
+          <entry key="js" value="86" />
           <entry key="json" value="8" />
         </counts>
       </usages-collector>
@@ -52,52 +47,52 @@
         <counts>
           <entry key="HTML" value="14" />
           <entry key="JSON" value="8" />
-          <entry key="JavaScript" value="73" />
+          <entry key="JavaScript" value="86" />
         </counts>
       </usages-collector>
       <usages-collector id="statistics.file.extensions.edit">
         <counts>
           <entry key="html" value="522" />
-          <entry key="js" value="20922" />
+          <entry key="js" value="21275" />
           <entry key="json" value="337" />
-          <entry key="txt" value="793" />
+          <entry key="txt" value="819" />
         </counts>
       </usages-collector>
       <usages-collector id="statistics.file.types.edit">
         <counts>
           <entry key="HTML" value="522" />
           <entry key="JSON" value="337" />
-          <entry key="JavaScript" value="20922" />
-          <entry key="PLAIN_TEXT" value="793" />
+          <entry key="JavaScript" value="21275" />
+          <entry key="PLAIN_TEXT" value="819" />
         </counts>
       </usages-collector>
     </session>
   </component>
   <component name="FileEditorManager">
     <leaf SIDE_TABS_SIZE_LIMIT_KEY="300">
-      <file pinned="false" current-in-tab="false">
-        <entry file="file://$PROJECT_DIR$/ext/chrome/assets/html/popup.html">
+      <file pinned="false" current-in-tab="true">
+        <entry file="file://$PROJECT_DIR$/ext/src/tabx.js">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="238">
-              <caret line="14" selection-start-line="14" selection-end-line="14" />
+            <state relative-caret-position="493">
+              <caret line="203" column="5" lean-forward="true" selection-start-line="203" selection-start-column="5" selection-end-line="203" selection-end-column="5" />
             </state>
           </provider>
         </entry>
       </file>
       <file pinned="false" current-in-tab="false">
-        <entry file="file://$PROJECT_DIR$/ext/webpack.config.js">
+        <entry file="file://$PROJECT_DIR$/ext/spec/DisplayTableSpec.js">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="306">
-              <caret line="54" column="17" selection-start-line="54" selection-start-column="17" selection-end-line="54" selection-end-column="17" />
+            <state relative-caret-position="357">
+              <caret line="47" column="6" selection-start-line="41" selection-start-column="30" selection-end-line="47" selection-end-column="6" />
             </state>
           </provider>
         </entry>
       </file>
       <file pinned="false" current-in-tab="false">
-        <entry file="file://$PROJECT_DIR$/ext/assets/html/popup.html">
+        <entry file="file://$PROJECT_DIR$/ext/spec/getCurrentWordSpec.js">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="238">
-              <caret line="14" column="28" selection-start-line="14" selection-start-column="28" selection-end-line="14" selection-end-column="28" />
+            <state relative-caret-position="476">
+              <caret line="28" column="13" lean-forward="true" selection-start-line="28" selection-start-column="13" selection-end-line="28" selection-end-column="13" />
             </state>
           </provider>
         </entry>
@@ -112,28 +107,37 @@
         </entry>
       </file>
       <file pinned="false" current-in-tab="false">
-        <entry file="file://$PROJECT_DIR$/ext/src/models.js">
+        <entry file="file://$PROJECT_DIR$/ext/spec/GetSuggestionsSpec.js">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="323">
-              <caret line="19" column="5" selection-start-line="19" selection-start-column="5" selection-end-line="19" selection-end-column="5" />
+            <state relative-caret-position="135">
+              <caret line="14" column="25" lean-forward="true" selection-start-line="14" selection-start-column="25" selection-end-line="14" selection-end-column="25" />
             </state>
           </provider>
         </entry>
       </file>
       <file pinned="false" current-in-tab="false">
-        <entry file="file://$PROJECT_DIR$/ext/src/main.js">
+        <entry file="file://$PROJECT_DIR$/ext/src/lib/mock/wordcomplete_mock.js">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="866">
-              <caret line="78" column="36" selection-start-line="78" selection-start-column="36" selection-end-line="78" selection-end-column="36" />
+            <state relative-caret-position="68">
+              <caret line="4" column="1" lean-forward="true" selection-start-line="4" selection-start-column="1" selection-end-line="4" selection-end-column="1" />
             </state>
           </provider>
         </entry>
       </file>
-      <file pinned="false" current-in-tab="true">
-        <entry file="file://$PROJECT_DIR$/ext/chrome/assets/js/form.js">
+      <file pinned="false" current-in-tab="false">
+        <entry file="file://$PROJECT_DIR$/ext/src/lib/mock/nextword_mock.js">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="340">
-              <caret line="35" lean-forward="true" selection-start-line="35" selection-end-line="35" />
+            <state relative-caret-position="68">
+              <caret line="4" column="1" lean-forward="true" selection-start-line="4" selection-start-column="1" selection-end-line="4" selection-end-column="1" />
+            </state>
+          </provider>
+        </entry>
+      </file>
+      <file pinned="false" current-in-tab="false">
+        <entry file="file://$PROJECT_DIR$/ext/src/models.js">
+          <provider selected="true" editor-type-id="text-editor">
+            <state relative-caret-position="272">
+              <caret line="16" column="81" selection-start-line="16" selection-start-column="66" selection-end-line="16" selection-end-column="81" />
             </state>
           </provider>
         </entry>
@@ -151,7 +155,6 @@
   <component name="FindInProjectRecents">
     <findStrings>
       <find>document.activeElement.value</find>
-      <find>predictCurrentWord</find>
       <find>suggestionsTable</find>
       <find>wordComple</find>
       <find>c</find>
@@ -168,6 +171,7 @@
       <find>displaySuggestions</find>
       <find>getNextWordSuggestion</find>
       <find>GETsU</find>
+      <find>predictCurrentWord</find>
     </findStrings>
     <replaceStrings>
       <replace>getInput()</replace>
@@ -188,10 +192,8 @@
         <option value="$PROJECT_DIR$/ext/src/lib/mock/nextword_mock.js" />
         <option value="$PROJECT_DIR$/ext/src/lib/mock/wordcomplete_mock.js" />
         <option value="$PROJECT_DIR$/ext/spec/WordCompleteSpec.js" />
-        <option value="$PROJECT_DIR$/ext/spec/getCurrentWordSpec.js" />
         <option value="$PROJECT_DIR$/ext/spec/WordPredictionSpec.js" />
         <option value="$PROJECT_DIR$/ext/test/html/test_input.html" />
-        <option value="$PROJECT_DIR$/ext/spec/DisplayTableSpec.js" />
         <option value="$PROJECT_DIR$/ext/chrome/assets/popup.js" />
         <option value="$PROJECT_DIR$/ext/chrome/assets/html/popup_form.html" />
         <option value="$PROJECT_DIR$/ext/assets/index.js" />
@@ -208,10 +210,8 @@
         <option value="$PROJECT_DIR$/ext/src/entry.js" />
         <option value="$PROJECT_DIR$/ext/chrome/scripts/loader.js" />
         <option value="$PROJECT_DIR$/ext/chrome/scripts/bgmsghandler.js" />
-        <option value="$PROJECT_DIR$/ext/src/models.js" />
         <option value="$PROJECT_DIR$/ext/assets/js/button.js" />
         <option value="$PROJECT_DIR$/ext/chrome/manifest.json" />
-        <option value="$PROJECT_DIR$/ext/src/tabx.js" />
         <option value="$PROJECT_DIR$/ext/chrome/assets/js/util.js" />
         <option value="$PROJECT_DIR$/ext/chrome/assets/js/button.js" />
         <option value="$PROJECT_DIR$/ext/chrome/assets/html/popup.html" />
@@ -219,6 +219,12 @@
         <option value="$PROJECT_DIR$/ext/assets/html/popup.html" />
         <option value="$PROJECT_DIR$/ext/src/main.js" />
         <option value="$PROJECT_DIR$/ext/chrome/assets/js/form.js" />
+        <option value="$PROJECT_DIR$/ext/src/models.js" />
+        <option value="$PROJECT_DIR$/ext/src/lib/wordcompletion/triecomplete/wordCompletion/wordCompletionModel.js" />
+        <option value="$PROJECT_DIR$/ext/spec/DisplayTableSpec.js" />
+        <option value="$PROJECT_DIR$/ext/spec/getCurrentWordSpec.js" />
+        <option value="$PROJECT_DIR$/ext/spec/GetSuggestionsSpec.js" />
+        <option value="$PROJECT_DIR$/ext/src/tabx.js" />
       </list>
     </option>
   </component>
@@ -702,7 +708,7 @@
       <path value="$PROJECT_DIR$/ext/node_modules/yallist/package.json" />
       <path value="$PROJECT_DIR$/ext/node_modules/yargs-parser/package.json" />
       <path value="$PROJECT_DIR$/ext/node_modules/yargs/package.json" />
-      <path value="$PROJECT_DIR$/ext/src/lib/nn_wordprediction/package.json" />
+      <path value="$PROJECT_DIR$/ext/src/lib/wordcompletion/nn_wordprediction/package.json" />
       <path value="$PROJECT_DIR$/ext/src/lib/wordprediction/markov/node_modules/async/package.json" />
       <path value="$PROJECT_DIR$/ext/src/lib/wordprediction/markov/node_modules/markovchain/lodash/package.json" />
       <path value="$PROJECT_DIR$/ext/src/lib/wordprediction/markov/node_modules/markovchain/package.json" />
@@ -731,62 +737,39 @@
             <path>
               <item name="TabX" type="b2602c69:ProjectViewProjectNode" />
               <item name="TabX" type="462c0819:PsiDirectoryNode" />
+              <item name="dump" type="462c0819:PsiDirectoryNode" />
+            </path>
+            <path>
+              <item name="TabX" type="b2602c69:ProjectViewProjectNode" />
+              <item name="TabX" type="462c0819:PsiDirectoryNode" />
               <item name="ext" type="462c0819:PsiDirectoryNode" />
             </path>
             <path>
               <item name="TabX" type="b2602c69:ProjectViewProjectNode" />
               <item name="TabX" type="462c0819:PsiDirectoryNode" />
               <item name="ext" type="462c0819:PsiDirectoryNode" />
-              <item name="assets" type="462c0819:PsiDirectoryNode" />
-            </path>
-            <path>
-              <item name="TabX" type="b2602c69:ProjectViewProjectNode" />
-              <item name="TabX" type="462c0819:PsiDirectoryNode" />
-              <item name="ext" type="462c0819:PsiDirectoryNode" />
-              <item name="assets" type="462c0819:PsiDirectoryNode" />
-              <item name="html" type="462c0819:PsiDirectoryNode" />
-            </path>
-            <path>
-              <item name="TabX" type="b2602c69:ProjectViewProjectNode" />
-              <item name="TabX" type="462c0819:PsiDirectoryNode" />
-              <item name="ext" type="462c0819:PsiDirectoryNode" />
-              <item name="chrome" type="462c0819:PsiDirectoryNode" />
-            </path>
-            <path>
-              <item name="TabX" type="b2602c69:ProjectViewProjectNode" />
-              <item name="TabX" type="462c0819:PsiDirectoryNode" />
-              <item name="ext" type="462c0819:PsiDirectoryNode" />
-              <item name="chrome" type="462c0819:PsiDirectoryNode" />
-              <item name="assets" type="462c0819:PsiDirectoryNode" />
-            </path>
-            <path>
-              <item name="TabX" type="b2602c69:ProjectViewProjectNode" />
-              <item name="TabX" type="462c0819:PsiDirectoryNode" />
-              <item name="ext" type="462c0819:PsiDirectoryNode" />
-              <item name="chrome" type="462c0819:PsiDirectoryNode" />
-              <item name="assets" type="462c0819:PsiDirectoryNode" />
-              <item name="html" type="462c0819:PsiDirectoryNode" />
-            </path>
-            <path>
-              <item name="TabX" type="b2602c69:ProjectViewProjectNode" />
-              <item name="TabX" type="462c0819:PsiDirectoryNode" />
-              <item name="ext" type="462c0819:PsiDirectoryNode" />
-              <item name="chrome" type="462c0819:PsiDirectoryNode" />
-              <item name="assets" type="462c0819:PsiDirectoryNode" />
-              <item name="js" type="462c0819:PsiDirectoryNode" />
-            </path>
-            <path>
-              <item name="TabX" type="b2602c69:ProjectViewProjectNode" />
-              <item name="TabX" type="462c0819:PsiDirectoryNode" />
-              <item name="ext" type="462c0819:PsiDirectoryNode" />
-              <item name="chrome" type="462c0819:PsiDirectoryNode" />
-              <item name="scripts" type="462c0819:PsiDirectoryNode" />
+              <item name="spec" type="462c0819:PsiDirectoryNode" />
             </path>
             <path>
               <item name="TabX" type="b2602c69:ProjectViewProjectNode" />
               <item name="TabX" type="462c0819:PsiDirectoryNode" />
               <item name="ext" type="462c0819:PsiDirectoryNode" />
               <item name="src" type="462c0819:PsiDirectoryNode" />
+            </path>
+            <path>
+              <item name="TabX" type="b2602c69:ProjectViewProjectNode" />
+              <item name="TabX" type="462c0819:PsiDirectoryNode" />
+              <item name="ext" type="462c0819:PsiDirectoryNode" />
+              <item name="src" type="462c0819:PsiDirectoryNode" />
+              <item name="lib" type="462c0819:PsiDirectoryNode" />
+            </path>
+            <path>
+              <item name="TabX" type="b2602c69:ProjectViewProjectNode" />
+              <item name="TabX" type="462c0819:PsiDirectoryNode" />
+              <item name="ext" type="462c0819:PsiDirectoryNode" />
+              <item name="src" type="462c0819:PsiDirectoryNode" />
+              <item name="lib" type="462c0819:PsiDirectoryNode" />
+              <item name="mock" type="462c0819:PsiDirectoryNode" />
             </path>
           </expand>
           <select />
@@ -805,10 +788,11 @@
   </component>
   <component name="RecentsManager">
     <key name="MoveFile.RECENT_KEYS">
+      <recent name="C:\Users\Khayyon\PycharmProjects\TabX\ext\src\lib\wordcompletion" />
+      <recent name="C:\Users\Khayyon\PycharmProjects\TabX\ext\src\lib\wordprediction" />
       <recent name="C:\Users\Khayyon\PycharmProjects\TabX\ext\src" />
       <recent name="C:\Users\Khayyon\PycharmProjects\TabX\ext\browserspec\chrome" />
       <recent name="C:\Users\Khayyon\PycharmProjects\TabX\ext\assets" />
-      <recent name="C:\Users\Khayyon\PycharmProjects\TabX\ext\chrome\assets\js" />
     </key>
     <key name="CopyFile.RECENT_KEYS">
       <recent name="C:\Users\Khayyon\PycharmProjects\TabX\ext\chrome\assets\js" />
@@ -894,7 +878,14 @@
       <option name="project" value="LOCAL" />
       <updated>1544306645171</updated>
     </task>
-    <option name="localTasksCounter" value="9" />
+    <task id="LOCAL-00009" summary="Finished up the Settings">
+      <created>1544326480271</created>
+      <option name="number" value="00009" />
+      <option name="presentableId" value="LOCAL-00009" />
+      <option name="project" value="LOCAL" />
+      <updated>1544326480271</updated>
+    </task>
+    <option name="localTasksCounter" value="10" />
     <servers />
   </component>
   <component name="TodoView">
@@ -910,7 +901,7 @@
     <frame x="-8" y="-8" width="1382" height="744" extended-state="6" />
     <editor active="true" />
     <layout>
-      <window_info active="true" content_ui="combo" id="Project" order="0" sideWeight="0.4937656" visible="true" weight="0.15885022" />
+      <window_info active="true" content_ui="combo" id="Project" order="0" sideWeight="0.4937656" visible="true" weight="0.22617246" />
       <window_info id="Structure" order="1" sideWeight="0.5062344" side_tool="true" weight="0.4301413" />
       <window_info id="Favorites" order="2" side_tool="true" />
       <window_info anchor="bottom" id="Message" order="0" />
@@ -948,24 +939,11 @@
     <MESSAGE value="Added JavaScript CSS styling to the Tables and the table can be layered on top of webpages with less than 1000 elements" />
     <MESSAGE value="decoupled tabx app logic from view logic to allow indpendent development different views" />
     <MESSAGE value="made tabx async to allow background page to persist models" />
-    <option name="LAST_COMMIT_MESSAGE" value="made tabx async to allow background page to persist models" />
+    <MESSAGE value="Finished up the Settings" />
+    <option name="LAST_COMMIT_MESSAGE" value="Finished up the Settings" />
   </component>
   <component name="editorHistoryManager">
     <entry file="file://$PROJECT_DIR$/ext/src/wordcompleteUI.js" />
-    <entry file="file://$PROJECT_DIR$/ext/src/lib/mock/wordcomplete_mock.js">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="68">
-          <caret line="4" column="1" lean-forward="true" selection-start-line="4" selection-start-column="1" selection-end-line="4" selection-end-column="1" />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/ext/src/lib/mock/nextword_mock.js">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="68">
-          <caret line="4" column="1" lean-forward="true" selection-start-line="4" selection-start-column="1" selection-end-line="4" selection-end-column="1" />
-        </state>
-      </provider>
-    </entry>
     <entry file="file://$PROJECT_DIR$/ext/src/lib/wordcompletion/triecomplete.js">
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="9860">
@@ -984,20 +962,6 @@
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="119">
           <caret line="7" column="4" selection-start-line="7" selection-start-column="4" selection-end-line="7" selection-end-column="4" />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/ext/spec/getCurrentWordSpec.js">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="325">
-          <caret line="63" lean-forward="true" selection-start-line="63" selection-end-line="63" />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/ext/spec/DisplayTableSpec.js">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="476">
-          <caret line="28" column="25" selection-start-line="28" selection-start-column="25" selection-end-line="28" selection-end-column="25" />
         </state>
       </provider>
     </entry>
@@ -1126,13 +1090,6 @@
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/ext/src/tabx.js">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="357">
-          <caret line="21" column="31" selection-start-line="21" selection-start-column="13" selection-end-line="21" selection-end-column="31" />
-        </state>
-      </provider>
-    </entry>
     <entry file="file://$PROJECT_DIR$/ext/chrome/assets/js/activated.js">
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="187">
@@ -1185,10 +1142,48 @@
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/ext/src/models.js">
+    <entry file="file://$PROJECT_DIR$/ext/chrome/assets/js/form.js">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="323">
-          <caret line="19" column="5" selection-start-line="19" selection-start-column="5" selection-end-line="19" selection-end-column="5" />
+        <state relative-caret-position="629">
+          <caret line="40" column="22" selection-start-line="40" selection-start-column="22" selection-end-line="40" selection-end-column="22" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/ext/src/lib/wordcompletion/triecomplete/wordCompletion/trieModel.js">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="-149465" />
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/ext/src/lib/wordcompletion/triecomplete/word-completion.js">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="-663" />
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/ext/src/main.js">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="238">
+          <caret line="14" selection-start-line="14" selection-end-line="14" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/ext/src/lib/wordcompletion/triecomplete/wordCompletion/trieModelTrain.js">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="-323">
+          <caret line="17" column="17" selection-start-line="17" selection-start-column="17" selection-end-line="17" selection-end-column="17" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/ext/src/lib/wordcompletion/triecomplete/wordCompletion/wordCompletionModel.js">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="221">
+          <caret line="13" column="7" selection-start-line="13" selection-start-column="7" selection-end-line="13" selection-end-column="7" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/ext/spec/DisplayTableSpec.js">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="357">
+          <caret line="47" column="6" selection-start-line="41" selection-start-column="30" selection-end-line="47" selection-end-column="6" />
         </state>
       </provider>
     </entry>
@@ -1199,17 +1194,45 @@
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/ext/src/main.js">
+    <entry file="file://$PROJECT_DIR$/ext/spec/getCurrentWordSpec.js">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="866">
-          <caret line="78" column="36" selection-start-line="78" selection-start-column="36" selection-end-line="78" selection-end-column="36" />
+        <state relative-caret-position="476">
+          <caret line="28" column="13" lean-forward="true" selection-start-line="28" selection-start-column="13" selection-end-line="28" selection-end-column="13" />
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/ext/chrome/assets/js/form.js">
+    <entry file="file://$PROJECT_DIR$/ext/spec/GetSuggestionsSpec.js">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="340">
-          <caret line="35" lean-forward="true" selection-start-line="35" selection-end-line="35" />
+        <state relative-caret-position="135">
+          <caret line="14" column="25" lean-forward="true" selection-start-line="14" selection-start-column="25" selection-end-line="14" selection-end-column="25" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/ext/src/lib/mock/nextword_mock.js">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="68">
+          <caret line="4" column="1" lean-forward="true" selection-start-line="4" selection-start-column="1" selection-end-line="4" selection-end-column="1" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/ext/src/lib/mock/wordcomplete_mock.js">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="68">
+          <caret line="4" column="1" lean-forward="true" selection-start-line="4" selection-start-column="1" selection-end-line="4" selection-end-column="1" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/ext/src/models.js">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="272">
+          <caret line="16" column="81" selection-start-line="16" selection-start-column="66" selection-end-line="16" selection-end-column="81" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/ext/src/tabx.js">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="493">
+          <caret line="203" column="5" lean-forward="true" selection-start-line="203" selection-start-column="5" selection-end-line="203" selection-end-column="5" />
         </state>
       </provider>
     </entry>

@@ -5,24 +5,22 @@ const TabX =  require('../src/tabx');
 
 const mock = require('../src/lib/mock/wordcomplete_mock');
 
-const document = (new JSDOM(``)).window.document;
-const tabx = new TabX(mock, undefined, document);
-
-
+const doc = (new JSDOM(``)).window.document;
+const tabx = new TabX(mock, undefined, undefined, document=doc);
 
 describe("Get Suggestions", function()
 {
     var inputId = "mockInput"
 
     beforeEach(function(){
-      var field = document.createElement("input");
+      var field = doc.createElement("input");
       field.id = inputId;
-      document.body.appendChild(field);
+      doc.body.appendChild(field);
       field.focus();
    });
 
     afterEach(function(){
-      var input = document.getElementById(inputId);
+      var input = doc.getElementById(inputId);
       input.parentNode.removeChild(input);
     });
 

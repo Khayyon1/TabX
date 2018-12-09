@@ -1,4 +1,4 @@
-const WordCompleteModel = require("./lib/wordcompletion/triecomplete.js");
+const WordCompleteModel = require("./lib/wordcompletion/triecomplete/wordCompletion/wordCompletionModel");
 const WordPredictModel = require("./lib/wordprediction/markov/word-prediction");
 
 

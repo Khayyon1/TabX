@@ -39,8 +39,8 @@ Trie.add = function(key, validWord) {
 
         curChar = key.slice(0,1);
 		key = key.slice(1);
-
 	}
+
     // if (parNode.value != undefined && parNode.value != null){
     //     if (parNode.value.length != parNode.length ){
     //             er =  new Error('length is wrong ' + parNode.value + " " + parNode.length );

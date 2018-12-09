@@ -4,9 +4,15 @@
   "description" : "Writing assistant for browsers",
 
   "background": {
-    "scripts": ["scripts/loader.js", "scripts/models.js"],
+    "scripts": ["scripts/models.js"],
     "persistent": true
   },
+
+   "content_scripts": [
+   {
+     "matches": ["<all_urls>"],
+     "js": ["scripts/tabx.js"]
+   }],
 
   "permissions": ["storage",
     "activeTab",
@@ -19,9 +25,3 @@
 
   "manifest_version": 2
 }
-
-//   "content_scripts": [
-//   {
-//     "matches": ["<all_urls>"],
-//     "js": ["main.js"]
-//   }],

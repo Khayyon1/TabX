@@ -1,3 +1,5 @@
+
+
 function createButton(on)
 {
    let button = document.createElement("input");
@@ -20,6 +22,7 @@ function createButton(on)
          chrome.storage.local.set({'activated': false})
          let form = document.getElementById("settings");
          form.parentNode.removeChild(form);
+         sendMessageToAllTabs("disableTabX")
       }
       else
       {
@@ -27,6 +30,8 @@ function createButton(on)
          chrome.storage.local.set({'activated': true});
          createForm();
          loadSettings();
+         sendMessageToAllTabs("enableTabX")
+
       }
    });
 

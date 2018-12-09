@@ -13,7 +13,5 @@ chrome.storage.local.get('activated', function(results)
    {
       activated = false;
       createButton(activated);
-
    }
-
 });

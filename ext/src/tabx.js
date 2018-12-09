@@ -7,13 +7,21 @@ var _debug = false;
 
 const TabX = class
 {
-    constructor(wordCompleteModel, wordPredictModel, displayStrategy, document=document)
+    constructor(wordCompleteModel,
+                wordPredictModel,
+                displayStrategy,
+                document=document,
+                wordCompleteEnabled=true,
+                wordPredictEnabled=true)
     {
         this.wordCompleteModel = wordCompleteModel;
         this.wordPredictModel = wordPredictModel;
         this.displayStrategy = displayStrategy;
         this.shortcuts = ["1", "2", "3"];
         this.document = document;
+        this.wordPredictEnabled = wordPredictEnabled;
+        this.wordCompleteEnabled = wordCompleteEnabled;
+        this.enabled = true;
     }
 
     setDocument(document)
@@ -25,11 +33,12 @@ const TabX = class
     {
         var elem = this.document.activeElement
         var previous = elem.value.charAt(elem.selectionStart - 1)
-        if(previous != " ")
+        if(previous != " " && this.wordCompleteEnabled)
         {
             return await this.getSuggestions(this.getCurrentWord(elem))
         }
-        else
+
+        else if(this.wordPredictEnabled)
         {
             return await this.getNextWordSuggestion(elem.value)
         }
@@ -48,9 +57,15 @@ const TabX = class
             return;
         }
 
-        this.mappings = {};
 
         let suggestions = await this.getAppropriateSuggestions();
+
+        if(suggestions.length == 0)
+        {
+            return;
+        }
+
+        this.mappings = {};
 
         for(let i = 0; i < suggestions.length; i++)
         {
@@ -192,6 +207,7 @@ const TabX = class
         var left_of_caret = caret_position - 1;
         var space_precedes_caret = str.charAt(left_of_caret) == " ";
         var currentWord = this.getCurrentWord(this.document.activeElement);
+
         if(this.inputIsNotValid(currentWord) || !space_precedes_caret)
         {
             return [];
@@ -202,17 +218,16 @@ const TabX = class
         }
     }
 
-
-
     handleUserInput(event)
     {
-        if (this.activeElementIsTextField())
+
+        if (this.activeElementIsTextField() && this.enabled)
         {
             this.displaySuggestions(this.document.activeElement);
         }
     }
 
-    registerEventListeners()
+    registerListeners()
     {
         //Provide suggestions based on developing word
         this.document.addEventListener('keydown', this.handleWordComplete.bind(this));
@@ -232,8 +247,19 @@ const TabX = class
         };
     }
 
+    enable()
+    {
+        this.enabled = true;
+    }
+
+    disable()
+    {
+        this.enabled = false
+    }
+
     handleWordComplete(event)
     {
+        if(!this.enable){return;}
         var keyname = event.key;
         if(this.activeElementIsTextField() && this.shortcuts.includes(keyname) && this.displayStrategy.isActive())
         {
@@ -242,6 +268,27 @@ const TabX = class
             this.wordCompletion(this.document.activeElement, userChoice);
         };
     }
+
+    disableWordPrediction()
+    {
+        this.wordPredictEnabled = false;
+    }
+
+    disableWordCompletion()
+    {
+        this.wordCompleteEnabled = false;
+    }
+
+    enableWordPrediction()
+    {
+        this.wordPredictEnabled = true;
+    }
+
+    enableWordCompletion()
+    {
+        this.wordCompleteEnabled = true;
+    }
+
 };
 
 module.exports = TabX;

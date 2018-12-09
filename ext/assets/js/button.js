@@ -1,3 +1,15 @@
+function sendMessageToAllTabs(msg)
+{
+   chrome.tabs.query({}, function(results)
+         {
+            console.log(results)
+            for(var result in results)
+            {
+               chrome.tabs.sendMessage(result.id, msg);
+            }
+         });
+}
+
 function createButton(on)
 {
    let button = document.createElement("input");
@@ -20,7 +32,7 @@ function createButton(on)
          chrome.storage.local.set({'activated': false})
          let form = document.getElementById("settings");
          form.parentNode.removeChild(form);
-
+         sendMessageToAllTabs("enableTabX")
       }
       else
       {
@@ -28,6 +40,8 @@ function createButton(on)
          chrome.storage.local.set({'activated': true});
          createForm();
          loadSettings();
+         sendMessageToAllTabs("disableTabX")
+
       }
    });
 

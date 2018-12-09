@@ -215,9 +215,18 @@ const TabX = class
         {
             return [];
         }
+
+
+        let results = this.wordPredictModel.predictNextWord(this.getCurrentWord(this.document.activeElement));
+
+        if(typeof(results) == Promise)
+        {
+            return await results;
+        }
+
         else
         {
-            return await this.wordPredictModel.predictNextWord(this.getCurrentWord(this.document.activeElement));
+            return results;
         }
     }
 

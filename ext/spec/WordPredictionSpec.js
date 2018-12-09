@@ -3,71 +3,76 @@ const { JSDOM } = jsdom;
 
 const TabX =  require('../src/tabx');
 const mock = require('../src/lib/mock/nextword_mock');
-const document = (new JSDOM('')).window.document;
-const tabx = new TabX(undefined, mock, document);
+const doc = (new JSDOM('')).window.document;
+const tabx = new TabX(undefined, mock, undefined, document=doc);
 
 function set_caret(caret_position)
 {
-    document.activeElement.selectionStart = caret_position
+    doc.activeElement.selectionStart = caret_position
 }
 
 function input(str)
 {
-    document.activeElement.value = str;
+    doc.activeElement.value = str;
     set_caret(str.length)
 }
 
-describe("Get Next Word Suggestions", function()
-{
+describe("Get Next Word Suggestions", function() {
     var inputId = "mockInput";
 
-    beforeEach(function(){
-      var field = document.createElement("input");
-      field.id = inputId;
-      document.body.appendChild(field);
-      field.focus();
-   });
+    beforeEach(function () {
+        var field = doc.createElement("input");
+        field.id = inputId;
+        doc.body.appendChild(field);
+        field.focus();
+    });
 
-   afterEach(function(){
-      var input = document.getElementById(inputId);
-      input.parentNode.removeChild(input);
+    afterEach(function () {
+        var input = doc.getElementById(inputId);
+        input.parentNode.removeChild(input);
     });
 
 
-   it('should not return results if there is no space before the caret',
-   function()
-   {
-       input('Hi There');
-       expect(tabx.getNextWordSuggestion(getInput()).length == 0).toBe(true)
-   });
+    async_it('should not return results if there is no space before the caret',
+        () => {
+            input('Hi There');
+            return tabx.getNextWordSuggestion(getInput());
+        },
+        (result) => expect(result.length == 0).toBe(true));
 
-    it('should return results if current word is valid'
-        + ' and there is a space before the caret', function()
-    {
-       var testInput = 'Hello, there are 3 people here ';
-       input(testInput);
-       expect(tabx.getNextWordSuggestion(getInput()).length > 0).toBe(true);
-    });
+    async_it('should return results if current word is valid'
+        + ' and there is a space before the caret', () => {
+            input('Hello, there are 3 people here ');
+            return tabx.getNextWordSuggestion(getInput())
+        },
+        (result) => expect(result.length > 0).toBe(true));
 });
-
 
 describe("Valid input", function()
 {
-   it("should not return suggestions if caret is at position 0", function()
-   {
-      //var current_Active_Element = getInput() = 'hello ';
+   async_it("should not return suggestions if caret is at position 0", () => {
+       //var current_Active_Element = getInput() = 'hello ';
        set_caret(0);
-      expect(tabx.getNextWordSuggestion("hi ").length == 0).toBe(true);
-   });
+       return tabx.getNextWordSuggestion("hi ");
+   }, (result) => expect(result.length).toEqual(0));
 
-   it("should not return results if current word has a number", function ()
-   {
-     input("BigK99")
-     expect(tabx.getNextWordSuggestion(getInput()).length == 0).toBe(true);
-   });
+   async_it("should not return results if current word has a number", () => {
+       input("BigK99");
+       return tabx.getNextWordSuggestion(getInput());
+   }, (result) => expect(result.length).toEqual(0));
 });
 
 
 function getInput(){
-    return document.activeElement.value;
+    return doc.activeElement.value;
+}
+
+function async_it(msg, func, expec)
+{
+    it(msg, function(done)
+    {
+        let result = func();
+        result.then((result) => expec(result));
+        done();
+    });
 }

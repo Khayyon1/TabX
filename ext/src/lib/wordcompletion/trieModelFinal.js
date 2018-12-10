@@ -258,7 +258,6 @@ Trie.getWordCompletion = function(key){
     return finalArray
 }
 
-
 Trie.remove = function(key) {
     key = key.toLowerCase();
 	var d = this.search(key);
@@ -266,7 +265,7 @@ Trie.remove = function(key) {
     		removeH(this.head, key, d);
     	}
 }
-Trie.predictCurrentWord = Trie.getWordCompletion
+Trie.predictCurrentWord = Trie.getWordCompletion;
 // console.log(Trie.getSuggestion("the"));
 // console.log(Trie.getWordCompletion("the"));
 //console.log(Trie.getCorrectionSuggestions("the"));

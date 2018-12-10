@@ -9,6 +9,10 @@ const Style = class
         element.style.left = (input_bounds.left).toString() + "px";
         element.style.top = (input_bounds.top + input_bounds.height).toString() + "px";
     }
+    row(element, offset=6)
+    {
+        element.style.marginRight = offset.toString() + 'px';
+    }
 }
 
 module.exports = Style;

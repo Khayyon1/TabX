@@ -532,6 +532,7 @@ const TableView = class
 
         for (var i = 0; i < suggestions.length; i++) {
             var row = dom.createElement("tr");
+            this.style.row(row);
             var shortcutColumn = dom.createElement("td");
             var suggestionsColumn = dom.createElement("td");
             shortcutColumn.appendChild(dom.createTextNode((shortcuts[i].toString())));
@@ -558,10 +559,14 @@ const Style = class
     {
         element.style.display = 'flex';
         element.style.position = 'absolute';
-        element.style.backgroundColor = "yellow";
+        element.style.backgroundColor = "lightblue";
         element.style.zIndex = 999;
         element.style.left = (input_bounds.left).toString() + "px";
         element.style.top = (input_bounds.top + input_bounds.height).toString() + "px";
+    }
+    row(element, offset=6)
+    {
+        element.style.marginRight = offset.toString() + 'px';
     }
 }
 

@@ -45,6 +45,7 @@ const TableView = class
 
         for (var i = 0; i < suggestions.length; i++) {
             var row = dom.createElement("tr");
+            this.style.row(row);
             var shortcutColumn = dom.createElement("td");
             var suggestionsColumn = dom.createElement("td");
             shortcutColumn.appendChild(dom.createTextNode((shortcuts[i].toString())));

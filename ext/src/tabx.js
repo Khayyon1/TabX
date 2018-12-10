@@ -69,7 +69,7 @@ const TabX = class {
         }
 
         this.displayStrategy.tearDown();
-        this.displayStrategy.display(this.mappings);
+        this.displayStrategy.display(this.mappings, this.document.activeElement);
         this.autofill.fill(this.document.activeElement, this.mappings[1])
     }
 

@@ -245,7 +245,7 @@ const TabX = class {
         }
 
         this.displayStrategy.tearDown();
-        this.displayStrategy.display(this.mappings);
+        this.displayStrategy.display(this.mappings, this.document.activeElement);
         this.autofill.fill(this.document.activeElement, this.mappings[1])
     }
 
@@ -496,14 +496,14 @@ const TableView = class
         this.style = new Style();
     }
 
-    createSuggestionsTable()
+    createSuggestionsTable(textInputBox)
     {
         let dom = this.dom;
         let table = dom.createElement("table");
         table.id = this.ID;
         table.className = "suggestions";
         let input_bounds = dom.activeElement.getBoundingClientRect();
-        this.style.table(table, input_bounds);
+        this.style.table(table, input_bounds, textInputBox);
         this.current_table = table;
         return table
     }
@@ -521,10 +521,10 @@ const TableView = class
         }
     }
 
-    display(mappings)
+    display(mappings, textInputBox)
     {
         var dom = this.dom;
-        var table = this.createSuggestionsTable();
+        var table = this.createSuggestionsTable(textInputBox);
 
         var suggestions = Object.values(mappings);
         var shortcuts = Object.keys(mappings);
@@ -554,18 +554,95 @@ module.exports = TableView;
 
 const Style = class
 {
-    table(element, input_bounds)
+    constructor(){
+        this.cache = {};
+        // const size = this.calcSize('Hello world!', {
+        //     font: 'Arial',
+        //     fontSize: '12px'
+        // })
+        // console.log("MWIDTH",size.width) // 140
+        // console.log("MHEIFGHT",size.height) // 20
+    }
+    table(element, input_bounds, textInputBox)
     {
+        console.log('textInputBox', textInputBox)
         element.style.display = 'flex';
         element.style.position = 'absolute';
         element.style.backgroundColor = "lightblue";
         element.style.zIndex = 999;
         element.style.left = (input_bounds.left).toString() + "px";
         element.style.top = (input_bounds.top + input_bounds.height).toString() + "px";
+        if (textInputBox != undefined){
+            const cursorPosition = textInputBox.selectionStart;
+            let font = window.getComputedStyle(textInputBox, "").font;
+            let fontSize = window.getComputedStyle(textInputBox, "").fontSize;
+            // const offset = parseInt(style.slice(0, 2))/2 * parseInt(cursorPosition);
+            // console.log(offset);
+            const txt = textInputBox.value.slice(0, cursorPosition);
+            const size = this.calcSize(txt, {
+                font: font,
+                fontSize: fontSize
+            });
+            element.style.transform = "translate(" + size.width + "px)";
+        }
     }
     row(element, offset=6)
     {
         element.style.marginRight = offset.toString() + 'px';
+    }
+    calcSize(text, options = {}) {
+
+        const cacheKey = JSON.stringify({ text: text, options: options })
+
+        if (this.cache[cacheKey]) {
+            return this.cache[cacheKey]
+        }
+
+        // prepare options
+        options.font = options.font || 'Times'
+        options.fontSize = options.fontSize || '16px'
+        options.fontWeight = options.fontWeight || 'normal'
+        options.lineHeight = options.lineHeight || 'normal'
+        options.width = options.width || 'auto'
+        options.wordBreak = options.wordBreak || 'normal'
+
+        const element = this.createDummyElement(text, options)
+
+        const size = {
+            width: element.offsetWidth,
+            height: element.offsetHeight,
+        }
+
+        this.destroyElement(element)
+
+        this.cache[cacheKey] = size
+
+        return size
+    }
+    destroyElement(element) {
+        element.parentNode.removeChild(element)
+    }
+    createDummyElement(text, options) {
+        const element = document.createElement('div')
+        const textNode = document.createTextNode(text)
+
+        element.appendChild(textNode)
+
+        element.style.fontFamily = options.font
+        element.style.fontSize = options.fontSize
+        element.style.fontWeight = options.fontWeight
+        element.style.lineHeight = options.lineHeight
+        element.style.position = 'absolute'
+        element.style.visibility = 'hidden'
+        element.style.left = '-999px'
+        element.style.top = '-999px'
+        element.style.width = options.width
+        element.style.height = 'auto'
+        element.style.wordBreak = options.wordBreak
+
+        document.body.appendChild(element)
+
+        return element
     }
 }
 

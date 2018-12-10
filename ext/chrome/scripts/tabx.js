@@ -94,8 +94,8 @@
 
 const TabX = __webpack_require__(5);
 const TableView = __webpack_require__(6);
-__webpack_require__(7);
-const config = __webpack_require__(15);
+__webpack_require__(8);
+const config = __webpack_require__(16);
 
 var WordCompleteModel = {
     predictCurrentWord: function(input){return messageBackgroundPage("WORD_COMPLETE", input)}
@@ -483,7 +483,9 @@ module.exports = TabX;
 
 /***/ }),
 /* 6 */
-/***/ (function(module, exports) {
+/***/ (function(module, exports, __webpack_require__) {
+
+const Style = __webpack_require__(7);
 
 const TableView = class
 {
@@ -492,6 +494,7 @@ const TableView = class
         this.dom = dom;
         this.ID = "suggestions";
         this.current_table = null;
+        this.style = new Style();
     }
 
     createSuggestionsTable()
@@ -500,14 +503,8 @@ const TableView = class
         let table = dom.createElement("table");
         table.id = this.ID;
         table.className = "suggestions";
-        table.style.position = 'absolute';
-
         let input_bounds = dom.activeElement.getBoundingClientRect();
-        table.style.backgroundColor = "lightblue";
-        table.style.zIndex = 999;
-        table.style.left = (input_bounds.left).toString() + "px";
-        table.style.top = (input_bounds.top + input_bounds.height).toString() + "px";
-
+        this.style.table(table, input_bounds);
         this.current_table = table;
         return table
     }
@@ -553,6 +550,25 @@ module.exports = TableView;
 
 /***/ }),
 /* 7 */
+/***/ (function(module, exports) {
+
+const Style = class
+{
+    table(element, input_bounds)
+    {
+        element.style.display = 'flex';
+        element.style.position = 'absolute';
+        element.style.backgroundColor = "yellow";
+        element.style.zIndex = 999;
+        element.style.left = (input_bounds.left).toString() + "px";
+        element.style.top = (input_bounds.top + input_bounds.height).toString() + "px";
+    }
+}
+
+module.exports = Style;
+
+/***/ }),
+/* 8 */
 /***/ (function(module, exports, __webpack_require__) {
 
 html = ['settings', 'popup'];
@@ -560,94 +576,59 @@ img = ['logo256.png'];
 js = ['activated', 'button', 'form', 'settings'];
 css = ['popup'];
 
-html.forEach((html) => __webpack_require__(8)("./" + html + ".html"));
-img.forEach((img) => __webpack_require__(11)("./" + img));
-css.forEach((css) => __webpack_require__(13)("./" + css + ".css"));
+html.forEach((html) => __webpack_require__(9)("./" + html + ".html"));
+img.forEach((img) => __webpack_require__(12)("./" + img));
+css.forEach((css) => __webpack_require__(14)("./" + css + ".css"));
 
-
-/***/ }),
-/* 8 */
-/***/ (function(module, exports, __webpack_require__) {
-
-var map = {
-	"./popup.html": 9,
-	"./settings.html": 10
-};
-
-
-function webpackContext(req) {
-	var id = webpackContextResolve(req);
-	return __webpack_require__(id);
-}
-function webpackContextResolve(req) {
-	var id = map[req];
-	if(!(id + 1)) { // check for number or string
-		var e = new Error("Cannot find module '" + req + "'");
-		e.code = 'MODULE_NOT_FOUND';
-		throw e;
-	}
-	return id;
-}
-webpackContext.keys = function webpackContextKeys() {
-	return Object.keys(map);
-};
-webpackContext.resolve = webpackContextResolve;
-module.exports = webpackContext;
-webpackContext.id = 8;
 
 /***/ }),
 /* 9 */
 /***/ (function(module, exports, __webpack_require__) {
 
-module.exports = __webpack_require__.p + "../assets/html/popup.html";
+var map = {
+	"./popup.html": 10,
+	"./settings.html": 11
+};
+
+
+function webpackContext(req) {
+	var id = webpackContextResolve(req);
+	return __webpack_require__(id);
+}
+function webpackContextResolve(req) {
+	var id = map[req];
+	if(!(id + 1)) { // check for number or string
+		var e = new Error("Cannot find module '" + req + "'");
+		e.code = 'MODULE_NOT_FOUND';
+		throw e;
+	}
+	return id;
+}
+webpackContext.keys = function webpackContextKeys() {
+	return Object.keys(map);
+};
+webpackContext.resolve = webpackContextResolve;
+module.exports = webpackContext;
+webpackContext.id = 9;
 
 /***/ }),
 /* 10 */
 /***/ (function(module, exports, __webpack_require__) {
 
-module.exports = __webpack_require__.p + "../assets/html/settings.html";
+module.exports = __webpack_require__.p + "../assets/html/popup.html";
 
 /***/ }),
 /* 11 */
 /***/ (function(module, exports, __webpack_require__) {
 
-var map = {
-	"./logo256.png": 12
-};
-
-
-function webpackContext(req) {
-	var id = webpackContextResolve(req);
-	return __webpack_require__(id);
-}
-function webpackContextResolve(req) {
-	var id = map[req];
-	if(!(id + 1)) { // check for number or string
-		var e = new Error("Cannot find module '" + req + "'");
-		e.code = 'MODULE_NOT_FOUND';
-		throw e;
-	}
-	return id;
-}
-webpackContext.keys = function webpackContextKeys() {
-	return Object.keys(map);
-};
-webpackContext.resolve = webpackContextResolve;
-module.exports = webpackContext;
-webpackContext.id = 11;
+module.exports = __webpack_require__.p + "../assets/html/settings.html";
 
 /***/ }),
 /* 12 */
 /***/ (function(module, exports, __webpack_require__) {
 
-module.exports = __webpack_require__.p + "../assets/img/logo256.png";
-
-/***/ }),
-/* 13 */
-/***/ (function(module, exports, __webpack_require__) {
-
 var map = {
-	"./popup.css": 14
+	"./logo256.png": 13
 };
 
 
@@ -669,16 +650,51 @@ webpackContext.keys = function webpackContextKeys() {
 };
 webpackContext.resolve = webpackContextResolve;
 module.exports = webpackContext;
-webpackContext.id = 13;
+webpackContext.id = 12;
+
+/***/ }),
+/* 13 */
+/***/ (function(module, exports, __webpack_require__) {
+
+module.exports = __webpack_require__.p + "../assets/img/logo256.png";
 
 /***/ }),
 /* 14 */
 /***/ (function(module, exports, __webpack_require__) {
 
-module.exports = __webpack_require__.p + "../assets/css/popup.css";
+var map = {
+	"./popup.css": 15
+};
+
+
+function webpackContext(req) {
+	var id = webpackContextResolve(req);
+	return __webpack_require__(id);
+}
+function webpackContextResolve(req) {
+	var id = map[req];
+	if(!(id + 1)) { // check for number or string
+		var e = new Error("Cannot find module '" + req + "'");
+		e.code = 'MODULE_NOT_FOUND';
+		throw e;
+	}
+	return id;
+}
+webpackContext.keys = function webpackContextKeys() {
+	return Object.keys(map);
+};
+webpackContext.resolve = webpackContextResolve;
+module.exports = webpackContext;
+webpackContext.id = 14;
 
 /***/ }),
 /* 15 */
+/***/ (function(module, exports, __webpack_require__) {
+
+module.exports = __webpack_require__.p + "../assets/css/popup.css";
+
+/***/ }),
+/* 16 */
 /***/ (function(module, exports) {
 
 function config(tabx) {

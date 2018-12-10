@@ -1,5 +1,5 @@
 const TabX = require('./tabx.js');
-const TableView = require("../assets/js/viewstrats/tablestrat");
+const TableView = require("../assets/js/viewstrats/tablestrat-ui");
 require("../assets");
 const config = require("../browserspec/chrome/settings");
 

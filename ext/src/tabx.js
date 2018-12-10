@@ -236,6 +236,7 @@ const TabX = class {
     handleWordComplete(event) {
         if (!this.enable) { return; }
         var keyname = event.key;
+        this.autofill.keyPressed(keyname);
         if (this.activeElementIsTextField() && this.shortcuts.includes(keyname) && this.displayStrategy.isActive()) {
             event.preventDefault();
             this.autofill.shortcutPressed(this.document.activeElement);

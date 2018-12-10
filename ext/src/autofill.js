@@ -3,12 +3,13 @@ class Autofill
     constructor(){
         this.completion = true;
         this.lastWord = '';
+        this.active = false;
     }
     toggle(val){
         this.completion = val;
     }
     fill(el, suggestion) {
-        if (suggestion != undefined) {
+        if (suggestion != undefined && this.active) {
             if (this.completion) {
                 const prefix = el.value.split(" ").pop();
                 suggestion = suggestion.substring(prefix.length);
@@ -23,6 +24,9 @@ class Autofill
     }
     shortcutPressed(el){
         el.value = el.value.substring(0, el.value.length - this.lastWord.length);
+    }
+    keyPressed(key){
+        this.active = key.length == 1;
     }
 }
 

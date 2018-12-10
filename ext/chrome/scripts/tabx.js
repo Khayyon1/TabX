@@ -412,6 +412,7 @@ const TabX = class {
     handleWordComplete(event) {
         if (!this.enable) { return; }
         var keyname = event.key;
+        this.autofill.keyPressed(keyname);
         if (this.activeElementIsTextField() && this.shortcuts.includes(keyname) && this.displayStrategy.isActive()) {
             event.preventDefault();
             this.autofill.shortcutPressed(this.document.activeElement);
@@ -450,12 +451,13 @@ class Autofill
     constructor(){
         this.completion = true;
         this.lastWord = '';
+        this.active = false;
     }
     toggle(val){
         this.completion = val;
     }
     fill(el, suggestion) {
-        if (suggestion != undefined) {
+        if (suggestion != undefined && this.active) {
             if (this.completion) {
                 const prefix = el.value.split(" ").pop();
                 suggestion = suggestion.substring(prefix.length);
@@ -470,7 +472,9 @@ class Autofill
     }
     shortcutPressed(el){
         el.value = el.value.substring(0, el.value.length - this.lastWord.length);
-        el.value += ' ';
+    }
+    keyPressed(key){
+        this.active = key.length == 1;
     }
 }
 

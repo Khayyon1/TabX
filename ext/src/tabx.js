@@ -2,6 +2,7 @@
 
 var _current_word = "";
 
+const Autofill = require('./autofill');
 //import {wordCompleteModel} from './models/wordcomplete.js';
 var _debug = false;
 
@@ -20,7 +21,7 @@ const TabX = class {
         this.wordPredictEnabled = wordPredictEnabled;
         this.wordCompleteEnabled = wordCompleteEnabled;
         this.enabled = true;
-        this.completion = true;
+        this.autofill = new Autofill();
     }
 
     setDocument(document) {
@@ -69,19 +70,7 @@ const TabX = class {
 
         this.displayStrategy.tearDown();
         this.displayStrategy.display(this.mappings);
-        this.autofill(this.document.activeElement, this.mappings[1]);
-    }
-
-    autofill(el, suggestion){
-        if (suggestion != undefined){
-            if (this.completion) {
-                const prefix = el.value.split(" ").pop();
-                suggestion = suggestion.substring(prefix.length);
-            }
-            el.value += suggestion;
-            el.selectionStart = el.value.length - suggestion.length;
-            el.selectionEnd = el.value.length;
-        }
+        this.autofill.fill(this.document.activeElement, this.mappings[1])
     }
 
     activeElementIsTextField() {
@@ -179,7 +168,7 @@ const TabX = class {
         }
 
         let results = this.wordCompleteModel.predictCurrentWord(incomplete_string);
-        this.completion = true;
+        this.autofill.toggle(true);
 
         if (typeof (results) == Promise) {
             return await results;
@@ -200,7 +189,7 @@ const TabX = class {
         }
 
         let results = this.wordPredictModel.predictNextWord(this.getCurrentWord(this.document.activeElement));
-        this.completion = false;
+        this.autofill.toggle(false);
 
         if (typeof (results) == Promise) {
             return await results;
@@ -249,6 +238,7 @@ const TabX = class {
         var keyname = event.key;
         if (this.activeElementIsTextField() && this.shortcuts.includes(keyname) && this.displayStrategy.isActive()) {
             event.preventDefault();
+            this.autofill.shortcutPressed(this.document.activeElement);
             var userChoice = this.mappings[keyname];
             this.wordCompletion(this.document.activeElement, userChoice);
         };

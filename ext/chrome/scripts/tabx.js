@@ -93,9 +93,9 @@
 /***/ (function(module, exports, __webpack_require__) {
 
 const TabX = __webpack_require__(5);
-const TableView = __webpack_require__(6);
-__webpack_require__(8);
-const config = __webpack_require__(16);
+const TableView = __webpack_require__(7);
+__webpack_require__(9);
+const config = __webpack_require__(17);
 
 var WordCompleteModel = {
     predictCurrentWord: function(input){return messageBackgroundPage("WORD_COMPLETE", input)}
@@ -172,12 +172,13 @@ async function messageBackgroundPage(request, input)
 
 /***/ }),
 /* 5 */
-/***/ (function(module, exports) {
+/***/ (function(module, exports, __webpack_require__) {
 
 // this.document.addEventListener("keyup", displaySuggestions);
 
 var _current_word = "";
 
+const Autofill = __webpack_require__(6);
 //import {wordCompleteModel} from './models/wordcomplete.js';
 var _debug = false;
 
@@ -196,7 +197,7 @@ const TabX = class {
         this.wordPredictEnabled = wordPredictEnabled;
         this.wordCompleteEnabled = wordCompleteEnabled;
         this.enabled = true;
-        this.completion = true;
+        this.autofill = new Autofill();
     }
 
     setDocument(document) {
@@ -245,19 +246,7 @@ const TabX = class {
 
         this.displayStrategy.tearDown();
         this.displayStrategy.display(this.mappings);
-        this.autofill(this.document.activeElement, this.mappings[1]);
-    }
-
-    autofill(el, suggestion){
-        if (suggestion != undefined){
-            if (this.completion) {
-                const prefix = el.value.split(" ").pop();
-                suggestion = suggestion.substring(prefix.length);
-            }
-            el.value += suggestion;
-            el.selectionStart = el.value.length - suggestion.length;
-            el.selectionEnd = el.value.length;
-        }
+        this.autofill.fill(this.document.activeElement, this.mappings[1])
     }
 
     activeElementIsTextField() {
@@ -355,7 +344,7 @@ const TabX = class {
         }
 
         let results = this.wordCompleteModel.predictCurrentWord(incomplete_string);
-        this.completion = true;
+        this.autofill.toggle(true);
 
         if (typeof (results) == Promise) {
             return await results;
@@ -376,7 +365,7 @@ const TabX = class {
         }
 
         let results = this.wordPredictModel.predictNextWord(this.getCurrentWord(this.document.activeElement));
-        this.completion = false;
+        this.autofill.toggle(false);
 
         if (typeof (results) == Promise) {
             return await results;
@@ -425,6 +414,7 @@ const TabX = class {
         var keyname = event.key;
         if (this.activeElementIsTextField() && this.shortcuts.includes(keyname) && this.displayStrategy.isActive()) {
             event.preventDefault();
+            this.autofill.shortcutPressed(this.document.activeElement);
             var userChoice = this.mappings[keyname];
             this.wordCompletion(this.document.activeElement, userChoice);
         };
@@ -453,9 +443,44 @@ module.exports = TabX;
 
 /***/ }),
 /* 6 */
+/***/ (function(module, exports) {
+
+class Autofill
+{
+    constructor(){
+        this.completion = true;
+        this.lastWord = '';
+    }
+    toggle(val){
+        this.completion = val;
+    }
+    fill(el, suggestion) {
+        if (suggestion != undefined) {
+            if (this.completion) {
+                const prefix = el.value.split(" ").pop();
+                suggestion = suggestion.substring(prefix.length);
+            }
+            this.lastWord = suggestion;
+            el.value += suggestion;
+            el.selectionStart = el.value.length - suggestion.length;
+            el.selectionEnd = el.value.length;
+        }else{
+            this.lastWord = '';
+        }
+    }
+    shortcutPressed(el){
+        el.value = el.value.substring(0, el.value.length - this.lastWord.length);
+        el.value += ' ';
+    }
+}
+
+module.exports = Autofill;
+
+/***/ }),
+/* 7 */
 /***/ (function(module, exports, __webpack_require__) {
 
-const Style = __webpack_require__(7);
+const Style = __webpack_require__(8);
 
 const TableView = class
 {
@@ -520,7 +545,7 @@ module.exports = TableView;
 
 
 /***/ }),
-/* 7 */
+/* 8 */
 /***/ (function(module, exports) {
 
 const Style = class
@@ -543,7 +568,7 @@ const Style = class
 module.exports = Style;
 
 /***/ }),
-/* 8 */
+/* 9 */
 /***/ (function(module, exports, __webpack_require__) {
 
 html = ['settings', 'popup'];
@@ -551,94 +576,59 @@ img = ['logo256.png'];
 js = ['activated', 'button', 'form', 'settings'];
 css = ['popup'];
 
-html.forEach((html) => __webpack_require__(9)("./" + html + ".html"));
-img.forEach((img) => __webpack_require__(12)("./" + img));
-css.forEach((css) => __webpack_require__(14)("./" + css + ".css"));
+html.forEach((html) => __webpack_require__(10)("./" + html + ".html"));
+img.forEach((img) => __webpack_require__(13)("./" + img));
+css.forEach((css) => __webpack_require__(15)("./" + css + ".css"));
 
-
-/***/ }),
-/* 9 */
-/***/ (function(module, exports, __webpack_require__) {
-
-var map = {
-	"./popup.html": 10,
-	"./settings.html": 11
-};
-
-
-function webpackContext(req) {
-	var id = webpackContextResolve(req);
-	return __webpack_require__(id);
-}
-function webpackContextResolve(req) {
-	var id = map[req];
-	if(!(id + 1)) { // check for number or string
-		var e = new Error("Cannot find module '" + req + "'");
-		e.code = 'MODULE_NOT_FOUND';
-		throw e;
-	}
-	return id;
-}
-webpackContext.keys = function webpackContextKeys() {
-	return Object.keys(map);
-};
-webpackContext.resolve = webpackContextResolve;
-module.exports = webpackContext;
-webpackContext.id = 9;
 
 /***/ }),
 /* 10 */
 /***/ (function(module, exports, __webpack_require__) {
 
-module.exports = __webpack_require__.p + "../assets/html/popup.html";
+var map = {
+	"./popup.html": 11,
+	"./settings.html": 12
+};
+
+
+function webpackContext(req) {
+	var id = webpackContextResolve(req);
+	return __webpack_require__(id);
+}
+function webpackContextResolve(req) {
+	var id = map[req];
+	if(!(id + 1)) { // check for number or string
+		var e = new Error("Cannot find module '" + req + "'");
+		e.code = 'MODULE_NOT_FOUND';
+		throw e;
+	}
+	return id;
+}
+webpackContext.keys = function webpackContextKeys() {
+	return Object.keys(map);
+};
+webpackContext.resolve = webpackContextResolve;
+module.exports = webpackContext;
+webpackContext.id = 10;
 
 /***/ }),
 /* 11 */
 /***/ (function(module, exports, __webpack_require__) {
 
-module.exports = __webpack_require__.p + "../assets/html/settings.html";
+module.exports = __webpack_require__.p + "../assets/html/popup.html";
 
 /***/ }),
 /* 12 */
 /***/ (function(module, exports, __webpack_require__) {
 
-var map = {
-	"./logo256.png": 13
-};
-
-
-function webpackContext(req) {
-	var id = webpackContextResolve(req);
-	return __webpack_require__(id);
-}
-function webpackContextResolve(req) {
-	var id = map[req];
-	if(!(id + 1)) { // check for number or string
-		var e = new Error("Cannot find module '" + req + "'");
-		e.code = 'MODULE_NOT_FOUND';
-		throw e;
-	}
-	return id;
-}
-webpackContext.keys = function webpackContextKeys() {
-	return Object.keys(map);
-};
-webpackContext.resolve = webpackContextResolve;
-module.exports = webpackContext;
-webpackContext.id = 12;
+module.exports = __webpack_require__.p + "../assets/html/settings.html";
 
 /***/ }),
 /* 13 */
 /***/ (function(module, exports, __webpack_require__) {
 
-module.exports = __webpack_require__.p + "../assets/img/logo256.png";
-
-/***/ }),
-/* 14 */
-/***/ (function(module, exports, __webpack_require__) {
-
 var map = {
-	"./popup.css": 15
+	"./logo256.png": 14
 };
 
 
@@ -660,16 +650,51 @@ webpackContext.keys = function webpackContextKeys() {
 };
 webpackContext.resolve = webpackContextResolve;
 module.exports = webpackContext;
-webpackContext.id = 14;
+webpackContext.id = 13;
+
+/***/ }),
+/* 14 */
+/***/ (function(module, exports, __webpack_require__) {
+
+module.exports = __webpack_require__.p + "../assets/img/logo256.png";
 
 /***/ }),
 /* 15 */
 /***/ (function(module, exports, __webpack_require__) {
 
-module.exports = __webpack_require__.p + "../assets/css/popup.css";
+var map = {
+	"./popup.css": 16
+};
+
+
+function webpackContext(req) {
+	var id = webpackContextResolve(req);
+	return __webpack_require__(id);
+}
+function webpackContextResolve(req) {
+	var id = map[req];
+	if(!(id + 1)) { // check for number or string
+		var e = new Error("Cannot find module '" + req + "'");
+		e.code = 'MODULE_NOT_FOUND';
+		throw e;
+	}
+	return id;
+}
+webpackContext.keys = function webpackContextKeys() {
+	return Object.keys(map);
+};
+webpackContext.resolve = webpackContextResolve;
+module.exports = webpackContext;
+webpackContext.id = 15;
 
 /***/ }),
 /* 16 */
+/***/ (function(module, exports, __webpack_require__) {
+
+module.exports = __webpack_require__.p + "../assets/css/popup.css";
+
+/***/ }),
+/* 17 */
 /***/ (function(module, exports) {
 
 function config(tabx) {

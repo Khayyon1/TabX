@@ -93,9 +93,9 @@
 /***/ (function(module, exports, __webpack_require__) {
 
 const TabX = __webpack_require__(5);
-const TableView = __webpack_require__(6);
-__webpack_require__(7);
-const config = __webpack_require__(15);
+const TableView = __webpack_require__(7);
+__webpack_require__(8);
+const config = __webpack_require__(16);
 
 var WordCompleteModel = {
     predictCurrentWord: function(input){return messageBackgroundPage("WORD_COMPLETE", input)}
@@ -181,10 +181,11 @@ async function messageBackgroundPage(request, input)
 
 /***/ }),
 /* 5 */
-/***/ (function(module, exports) {
+/***/ (function(module, exports, __webpack_require__) {
 
 // TabX Shortcuts
 
+var serviceabletags = __webpack_require__(6);
 var _current_word = "";
 
 //import {wordCompleteModel} from './models/wordcomplete.js';
@@ -215,11 +216,6 @@ const TabX = class
         this.document = document;
     }
 
-    getServicableElements()
-    {
-        return this.document.querySelectorAll('input[type=text], textarea, [contenteditable=true]');
-    }
-
     async getAppropriateSuggestions()
     {
         var elem = this.document.activeElement
@@ -239,7 +235,7 @@ const TabX = class
 
     async displaySuggestions()
     {
-        if(!this.activeElementIsTextField()
+        if(!serviceabletags.activeElementIsServiceable()
             ||
             this.document.activeElement.value == ""
             ||
@@ -273,11 +269,7 @@ const TabX = class
         this.displayStrategy.display(this.mappings);
     }
 
-    activeElementIsTextField()
-    {
-        var activeElement = this.document.activeElement;
-        return activeElement.tagName == 'INPUT' || activeElement.tagName == 'TEXTAREA';
-    }
+
 
     wordCompletion(activeElement, userChoice)
     {
@@ -432,7 +424,7 @@ const TabX = class
     handleUserInput(event)
     {
 
-        if (this.activeElementIsTextField() && this.enabled)
+        if (serviceabletags.activeElementIsServiceable() && this.enabled)
         {
             this.displaySuggestions();
         }
@@ -443,7 +435,7 @@ const TabX = class
     {
         if(!this.enable){return;}
         var keyname = event.key;
-        if(this.activeElementIsTextField() && this.shortcuts.includes(keyname) && this.displayStrategy.isActive())
+        if(serviceabletags.activeElementIsServiceable() && this.shortcuts.includes(keyname) && this.displayStrategy.isActive())
         {
             event.preventDefault();
             var userChoice = this.mappings[keyname];
@@ -458,7 +450,7 @@ const TabX = class
 
         //Shows suggestions
         this.document.addEventListener('keyup', this.handleUserInput.bind(this));
-        var serviceableElements = this.getServicableElements();
+        var serviceableElements = serviceabletags.getServicableElements();
 
         //Listens for when active elements lose focus
         for(var i = 0; i < serviceableElements.length; i++)
@@ -509,6 +501,43 @@ module.exports = TabX;
 
 /***/ }),
 /* 6 */
+/***/ (function(module, exports) {
+
+var selector = 'input[type=text], textarea, [contenteditable=true], [contenteditable]';
+
+var serviceableTags = [
+    "input[type=text]",
+    'textarea',
+    "[contenteditable=true]",
+    "[contenteditable]"
+]
+
+function getServicableElements()
+{
+    return document.querySelectorAll(selector);
+}
+
+function activeElementIsServiceable()
+{
+    let activeElement = document.activeElement;
+    for(let i = 0; i < serviceableTags.length; i++)
+    {
+        if(activeElement.matches(serviceableTags[i]))
+        {
+            return true;
+        }
+    }
+
+    return false;
+}
+
+module.exports = {
+    getServicableElements: getServicableElements,
+    activeElementIsServiceable: activeElementIsServiceable
+}
+
+/***/ }),
+/* 7 */
 /***/ (function(module, exports) {
 
 const TableView = class
@@ -578,7 +607,7 @@ module.exports = TableView;
 
 
 /***/ }),
-/* 7 */
+/* 8 */
 /***/ (function(module, exports, __webpack_require__) {
 
 html = ['settings', 'popup'];
@@ -586,94 +615,59 @@ img = ['logo256.png'];
 js = ['activated', 'button', 'form', 'settings'];
 css = ['popup'];
 
-html.forEach((html) => __webpack_require__(8)("./" + html + ".html"));
-img.forEach((img) => __webpack_require__(11)("./" + img));
-css.forEach((css) => __webpack_require__(13)("./" + css + ".css"));
+html.forEach((html) => __webpack_require__(9)("./" + html + ".html"));
+img.forEach((img) => __webpack_require__(12)("./" + img));
+css.forEach((css) => __webpack_require__(14)("./" + css + ".css"));
 
-
-/***/ }),
-/* 8 */
-/***/ (function(module, exports, __webpack_require__) {
-
-var map = {
-	"./popup.html": 9,
-	"./settings.html": 10
-};
-
-
-function webpackContext(req) {
-	var id = webpackContextResolve(req);
-	return __webpack_require__(id);
-}
-function webpackContextResolve(req) {
-	var id = map[req];
-	if(!(id + 1)) { // check for number or string
-		var e = new Error("Cannot find module '" + req + "'");
-		e.code = 'MODULE_NOT_FOUND';
-		throw e;
-	}
-	return id;
-}
-webpackContext.keys = function webpackContextKeys() {
-	return Object.keys(map);
-};
-webpackContext.resolve = webpackContextResolve;
-module.exports = webpackContext;
-webpackContext.id = 8;
 
 /***/ }),
 /* 9 */
 /***/ (function(module, exports, __webpack_require__) {
 
-module.exports = __webpack_require__.p + "../assets/html/popup.html";
+var map = {
+	"./popup.html": 10,
+	"./settings.html": 11
+};
+
+
+function webpackContext(req) {
+	var id = webpackContextResolve(req);
+	return __webpack_require__(id);
+}
+function webpackContextResolve(req) {
+	var id = map[req];
+	if(!(id + 1)) { // check for number or string
+		var e = new Error("Cannot find module '" + req + "'");
+		e.code = 'MODULE_NOT_FOUND';
+		throw e;
+	}
+	return id;
+}
+webpackContext.keys = function webpackContextKeys() {
+	return Object.keys(map);
+};
+webpackContext.resolve = webpackContextResolve;
+module.exports = webpackContext;
+webpackContext.id = 9;
 
 /***/ }),
 /* 10 */
 /***/ (function(module, exports, __webpack_require__) {
 
-module.exports = __webpack_require__.p + "../assets/html/settings.html";
+module.exports = __webpack_require__.p + "../assets/html/popup.html";
 
 /***/ }),
 /* 11 */
 /***/ (function(module, exports, __webpack_require__) {
 
-var map = {
-	"./logo256.png": 12
-};
-
-
-function webpackContext(req) {
-	var id = webpackContextResolve(req);
-	return __webpack_require__(id);
-}
-function webpackContextResolve(req) {
-	var id = map[req];
-	if(!(id + 1)) { // check for number or string
-		var e = new Error("Cannot find module '" + req + "'");
-		e.code = 'MODULE_NOT_FOUND';
-		throw e;
-	}
-	return id;
-}
-webpackContext.keys = function webpackContextKeys() {
-	return Object.keys(map);
-};
-webpackContext.resolve = webpackContextResolve;
-module.exports = webpackContext;
-webpackContext.id = 11;
+module.exports = __webpack_require__.p + "../assets/html/settings.html";
 
 /***/ }),
 /* 12 */
 /***/ (function(module, exports, __webpack_require__) {
 
-module.exports = __webpack_require__.p + "../assets/img/logo256.png";
-
-/***/ }),
-/* 13 */
-/***/ (function(module, exports, __webpack_require__) {
-
 var map = {
-	"./popup.css": 14
+	"./logo256.png": 13
 };
 
 
@@ -695,16 +689,51 @@ webpackContext.keys = function webpackContextKeys() {
 };
 webpackContext.resolve = webpackContextResolve;
 module.exports = webpackContext;
-webpackContext.id = 13;
+webpackContext.id = 12;
+
+/***/ }),
+/* 13 */
+/***/ (function(module, exports, __webpack_require__) {
+
+module.exports = __webpack_require__.p + "../assets/img/logo256.png";
 
 /***/ }),
 /* 14 */
 /***/ (function(module, exports, __webpack_require__) {
 
-module.exports = __webpack_require__.p + "../assets/css/popup.css";
+var map = {
+	"./popup.css": 15
+};
+
+
+function webpackContext(req) {
+	var id = webpackContextResolve(req);
+	return __webpack_require__(id);
+}
+function webpackContextResolve(req) {
+	var id = map[req];
+	if(!(id + 1)) { // check for number or string
+		var e = new Error("Cannot find module '" + req + "'");
+		e.code = 'MODULE_NOT_FOUND';
+		throw e;
+	}
+	return id;
+}
+webpackContext.keys = function webpackContextKeys() {
+	return Object.keys(map);
+};
+webpackContext.resolve = webpackContextResolve;
+module.exports = webpackContext;
+webpackContext.id = 14;
 
 /***/ }),
 /* 15 */
+/***/ (function(module, exports, __webpack_require__) {
+
+module.exports = __webpack_require__.p + "../assets/css/popup.css";
+
+/***/ }),
+/* 16 */
 /***/ (function(module, exports) {
 
 function config(tabx) {

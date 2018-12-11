@@ -1,4 +1,4 @@
-var MarkovChain = require('markovchain');
+var MarkovChain = require('markovchainplus');
 var fs = require('fs');
 var util = require('util');
 
@@ -7,5 +7,5 @@ function train(textFile) {
     return model;
 }
 
-console.log(util.inspect(train('fake.txt'), {showHidden: false, depth: null}));
+console.log(util.inspect(train('text/blogs2.txt'), {showHidden: false, depth: null}));
     

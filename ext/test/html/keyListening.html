@@ -1,0 +1,23 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Title</title>
+</head>
+<body>
+<script>
+    function pevent(name, event)
+    {
+        console.log(name + ": "+event.key)
+        console.log(name + ": "+event.keyCode)
+    }
+    s
+    document.addEventListener("keydown", function (event) {
+        if(event.ctrlKey && event.key == 'l')
+        {
+            alert("Ctrl + l was entered");
+        }
+    })
+</script>
+</body>
+</html>

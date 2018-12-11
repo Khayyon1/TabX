@@ -174,7 +174,7 @@ async function messageBackgroundPage(request, input)
 /* 5 */
 /***/ (function(module, exports) {
 
-// this.document.addEventListener("keyup", displaySuggestions);
+// TabX Shortcuts
 
 var _current_word = "";
 
@@ -189,6 +189,7 @@ const TabX = class
                 document=document,
                 wordCompleteEnabled=true,
                 wordPredictEnabled=true)
+
     {
         this.wordCompleteModel = wordCompleteModel;
         this.wordPredictModel = wordPredictModel;
@@ -208,7 +209,9 @@ const TabX = class
     async getAppropriateSuggestions()
     {
         var elem = this.document.activeElement
-        var previous = elem.value.charAt(elem.selectionStart - 1)
+        var previous = elem.value.charAt(elem.selectionStart - 1);
+        var charAtCaret = elem.value.charAt(elem.selectionStart)
+
         if(previous != " " && this.wordCompleteEnabled)
         {
             return await this.getSuggestions(this.getCurrentWord(elem))
@@ -259,7 +262,7 @@ const TabX = class
     activeElementIsTextField()
     {
         var activeElement = this.document.activeElement;
-        return activeElement.tagName == 'INPUT';
+        return activeElement.tagName == 'INPUT' || activeElement.tagName == 'TEXTAREA';
     }
 
     wordCompletion(activeElement, userChoice)
@@ -384,9 +387,17 @@ const TabX = class
         var caret_position = this.document.activeElement.selectionStart;
         var left_of_caret = caret_position - 1;
         var space_precedes_caret = str.charAt(left_of_caret) == " ";
+        var char_at_caret = (str.charAt(caret_position) != " " && str.charAt(caret_position) != "");
+
         var currentWord = this.getCurrentWord(this.document.activeElement);
 
-        if(this.inputIsNotValid(currentWord) || !space_precedes_caret)
+        console.log("input        : " + str + "(" + caret_position + ")");
+        console.log("before caret : " + str.charAt(left_of_caret));
+        console.log("at caret     : " + str.charAt(caret_position));
+        console.log("space before caret: " + space_precedes_caret);
+        console.log("char at caret: " + char_at_caret);
+
+        if(this.inputIsNotValid(currentWord) || !space_precedes_caret || char_at_caret)
         {
             return [];
         }
@@ -413,6 +424,19 @@ const TabX = class
         }
     }
 
+
+    handleWordComplete(event)
+    {
+        if(!this.enable){return;}
+        var keyname = event.key;
+        if(this.activeElementIsTextField() && this.shortcuts.includes(keyname) && this.displayStrategy.isActive())
+        {
+            event.preventDefault();
+            var userChoice = this.mappings[keyname];
+            this.wordCompletion(this.document.activeElement, userChoice);
+        };
+    }
+
     registerListeners()
     {
         //Provide suggestions based on developing word
@@ -420,7 +444,7 @@ const TabX = class
 
         //Shows suggestions
         this.document.addEventListener('keyup', this.handleUserInput.bind(this));
-        var serviceableElements = this.document.querySelectorAll("input[type=text]");
+        var serviceableElements = this.document.querySelectorAll("input, textarea");
 
         //Listens for when active elements lose focus
         for(var i = 0; i < serviceableElements.length; i++)
@@ -442,18 +466,6 @@ const TabX = class
     disable()
     {
         this.enabled = false
-    }
-
-    handleWordComplete(event)
-    {
-        if(!this.enable){return;}
-        var keyname = event.key;
-        if(this.activeElementIsTextField() && this.shortcuts.includes(keyname) && this.displayStrategy.isActive())
-        {
-            event.preventDefault();
-            var userChoice = this.mappings[keyname];
-            this.wordCompletion(this.document.activeElement, userChoice);
-        };
     }
 
     disableWordPrediction()

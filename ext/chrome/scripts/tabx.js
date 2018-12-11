@@ -93,9 +93,9 @@
 /***/ (function(module, exports, __webpack_require__) {
 
 const TabX = __webpack_require__(5);
-const TableView = __webpack_require__(6);
-__webpack_require__(7);
-const config = __webpack_require__(15);
+const TableView = __webpack_require__(7);
+__webpack_require__(9);
+const config = __webpack_require__(17);
 
 var WordCompleteModel = {
     predictCurrentWord: function(input){return messageBackgroundPage("WORD_COMPLETE", input)}
@@ -172,17 +172,17 @@ async function messageBackgroundPage(request, input)
 
 /***/ }),
 /* 5 */
-/***/ (function(module, exports) {
+/***/ (function(module, exports, __webpack_require__) {
 
 // TabX Shortcuts
 
 var _current_word = "";
 
+const Autofill = __webpack_require__(6);
 //import {wordCompleteModel} from './models/wordcomplete.js';
 var _debug = false;
 
-const TabX = class
-{
+const TabX = class {
     constructor(wordCompleteModel,
                 wordPredictModel,
                 displayStrategy,
@@ -199,15 +199,14 @@ const TabX = class
         this.wordPredictEnabled = wordPredictEnabled;
         this.wordCompleteEnabled = wordCompleteEnabled;
         this.enabled = true;
+        this.autofill = new Autofill();
     }
 
-    setDocument(document)
-    {
+    setDocument(document) {
         this.document = document;
     }
 
-    async getAppropriateSuggestions()
-    {
+    async getAppropriateSuggestions() {
         var elem = this.document.activeElement
         var previous = elem.value.charAt(elem.selectionStart - 1);
         var charAtCaret = elem.value.charAt(elem.selectionStart)
@@ -217,36 +216,31 @@ const TabX = class
             return await this.getSuggestions(this.getCurrentWord(elem))
         }
 
-        else if(this.wordPredictEnabled)
-        {
+        else if (this.wordPredictEnabled) {
             return await this.getNextWordSuggestion(elem.value)
         }
     }
 
-    async displaySuggestions()
-    {
-        if(!this.activeElementIsTextField()
+    async displaySuggestions() {
+        if (!this.activeElementIsTextField()
             ||
             this.document.activeElement.value == ""
             ||
-            this.getCurrentWord(this.document.activeElement) == "")
-        {
+            this.getCurrentWord(this.document.activeElement) == "") {
             this.displayStrategy.tearDown();
             return;
         }
 
         let suggestions = await this.getAppropriateSuggestions();
 
-        if(suggestions == undefined || suggestions.length == 0)
-        {
+        if (suggestions == undefined || suggestions.length == 0) {
             this.displayStrategy.tearDown();
             return;
         }
 
         this.mappings = {};
 
-        for(let i = 0; i < suggestions.length; i++)
-        {
+        for (let i = 0; i < suggestions.length; i++) {
             let shortcut = this.shortcuts[i];
             let suggestion = suggestions[i];
 
@@ -256,37 +250,33 @@ const TabX = class
         }
 
         this.displayStrategy.tearDown();
-        this.displayStrategy.display(this.mappings);
+        this.displayStrategy.display(this.mappings, this.document.activeElement);
+        this.autofill.fill(this.document.activeElement, this.mappings[1])
     }
 
-    activeElementIsTextField()
-    {
+    activeElementIsTextField() {
         var activeElement = this.document.activeElement;
         return activeElement.tagName == 'INPUT' || activeElement.tagName == 'TEXTAREA';
     }
 
-    wordCompletion(activeElement, userChoice)
-    {
+    wordCompletion(activeElement, userChoice) {
         activeElement.value = this.replaceWordAt(
             activeElement.value,
             activeElement.selectionStart,
             userChoice);
     }
 
-    replaceWordAt(str, i, word, delimiter=' ')
-    {
+    replaceWordAt(str, i, word, delimiter = ' ') {
         var startOfWord = str.lastIndexOf(delimiter, i - 1);
         var before = str.substring(0, startOfWord);
 
-        if (before != "" && before != null)
-        {
+        if (before != "" && before != null) {
             before += " "
         }
 
-        var after  = str.substring(i);
+        var after = str.substring(i);
 
-        if(after.charAt(0) != "" && after.charAt(0) != " ")
-        {
+        if (after.charAt(0) != "" && after.charAt(0) != " ") {
             after = " " + after;
         }
 
@@ -294,13 +284,11 @@ const TabX = class
     }
 
     //Assumes that the caret is at the end of a word in a text field
-    getCurrentWord(inputField)
-    {
+    getCurrentWord(inputField) {
         var text = inputField.value;
         var caret = inputField.selectionStart;
 
-        if(caret == 0)
-        {
+        if (caret == 0) {
             return "";
         }
 
@@ -309,72 +297,61 @@ const TabX = class
         //word be the word that comes before a whitespace
         //Ex. "hello |" -> "hello"
         var prev = text.charAt(caret - 1);
-        if(prev === " "){
+        if (prev === " ") {
             prev = text.charAt(caret - 2);
             caret -= 1;
         }
 
         //Make sure caret is at the end of a developing word
-        if(prev.match(/\w/))
-        {
+        if (prev.match(/\w/)) {
             //Iterate backwards to find the first instance of a white space
             // 0 to caret
             var startOfWord = this.indexOfStartOfCurrentWord(text, caret);
 
-            if(startOfWord == 0)
-            {
+            if (startOfWord == 0) {
                 return text.substring(0, caret);
             }
-            else
-            {
+            else {
                 return text.substring(startOfWord, caret);
             }
         }
 
-        else
-        {
+        else {
             return "";
         }
     }
 
-    indexOfStartOfCurrentWord(text, caret)
-    {
+    indexOfStartOfCurrentWord(text, caret) {
         //Iterate backwards to find the first instance of a white space
         var i = caret;
-        while(i > 0 && text.charAt(i - 1).match(/\w/))
-        {
+        while (i > 0 && text.charAt(i - 1).match(/\w/)) {
             i--;
         }
 
         return i;
     }
 
-    inputHasCharactersOtherThanLetters(string)
-    {
+    inputHasCharactersOtherThanLetters(string) {
         return (/[^a-zA-Z\s]/).test(string)
     }
 
-    inputIsEmpty(string)
-    {
+    inputIsEmpty(string) {
         return string === "";
     }
 
-    inputIsNotValid(str)
-    {
+    inputIsNotValid(str) {
         return this.inputHasCharactersOtherThanLetters(str) || this.inputIsEmpty(str);
     }
 
-    async getSuggestions(incomplete_string)
-    {
-        if(this.inputIsNotValid(incomplete_string))
-        {
+    async getSuggestions(incomplete_string) {
+        if (this.inputIsNotValid(incomplete_string)) {
             return [];
         }
 
         let results = this.wordCompleteModel.predictCurrentWord(incomplete_string);
+        this.autofill.toggle(true);
 
-        if(typeof(results) == Promise)
-        {
+        if (typeof (results) == Promise) {
             return await results;
         }
 
@@ -382,8 +359,7 @@ const TabX = class
     }
 
 
-    async getNextWordSuggestion(str)
-    {
+    async getNextWordSuggestion(str) {
         var caret_position = this.document.activeElement.selectionStart;
         var left_of_caret = caret_position - 1;
         var space_precedes_caret = str.charAt(left_of_caret) == " ";
@@ -401,25 +377,22 @@ const TabX = class
         {
             return [];
         }
-        
-        let results = this.wordPredictModel.predictNextWord(this.getCurrentWord(this.document.activeElement));
 
-        if(typeof(results) == Promise)
-        {
+        let results = this.wordPredictModel.predictNextWord(this.getCurrentWord(this.document.activeElement));
+        this.autofill.toggle(false);
+
+        if (typeof (results) == Promise) {
             return await results;
         }
 
-        else
-        {
+        else {
             return results;
         }
     }
 
-    handleUserInput(event)
-    {
+    handleUserInput(event) {
 
-        if (this.activeElementIsTextField() && this.enabled)
-        {
+        if (this.activeElementIsTextField() && this.enabled) {
             this.displaySuggestions();
         }
     }
@@ -447,24 +420,20 @@ const TabX = class
         var serviceableElements = this.document.querySelectorAll("input, textarea");
 
         //Listens for when active elements lose focus
-        for(var i = 0; i < serviceableElements.length; i++)
-        {
+        for (var i = 0; i < serviceableElements.length; i++) {
             var elem = serviceableElements[i];
-            elem.addEventListener('blur', function()
-            {
-               this.displayStrategy.tearDown();
-               console.log(this.displayStrategy);
+            elem.addEventListener('blur', function () {
+                this.displayStrategy.tearDown();
+                console.log(this.displayStrategy);
             }.bind(this));
         };
     }
 
-    enable()
-    {
+    enable() {
         this.enabled = true;
     }
 
-    disable()
-    {
+    disable() {
         this.enabled = false
     }
 
@@ -473,18 +442,15 @@ const TabX = class
         this.wordPredictEnabled = false;
     }
 
-    disableWordCompletion()
-    {
+    disableWordCompletion() {
         this.wordCompleteEnabled = false;
     }
 
-    enableWordPrediction()
-    {
+    enableWordPrediction() {
         this.wordPredictEnabled = true;
     }
 
-    enableWordCompletion()
-    {
+    enableWordCompletion() {
         this.wordCompleteEnabled = true;
     }
 
@@ -497,6 +463,46 @@ module.exports = TabX;
 /* 6 */
 /***/ (function(module, exports) {
 
+class Autofill
+{
+    constructor(){
+        this.completion = true;
+        this.lastWord = '';
+        this.active = false;
+    }
+    toggle(val){
+        this.completion = val;
+    }
+    fill(el, suggestion) {
+        if (suggestion != undefined && this.active) {
+            if (this.completion) {
+                const prefix = el.value.split(" ").pop();
+                suggestion = suggestion.substring(prefix.length);
+            }
+            this.lastWord = suggestion;
+            el.value += suggestion;
+            el.selectionStart = el.value.length - suggestion.length;
+            el.selectionEnd = el.value.length;
+        }else{
+            this.lastWord = '';
+        }
+    }
+    shortcutPressed(el){
+        el.value = el.value.substring(0, el.value.length - this.lastWord.length);
+    }
+    keyPressed(key){
+        this.active = key.length == 1;
+    }
+}
+
+module.exports = Autofill;
+
+/***/ }),
+/* 7 */
+/***/ (function(module, exports, __webpack_require__) {
+
+const Style = __webpack_require__(8);
+
 const TableView = class
 {
     constructor(dom)
@@ -504,22 +510,17 @@ const TableView = class
         this.dom = dom;
         this.ID = "suggestions";
         this.current_table = null;
+        this.style = new Style();
     }
 
-    createSuggestionsTable()
+    createSuggestionsTable(textInputBox)
     {
         let dom = this.dom;
         let table = dom.createElement("table");
         table.id = this.ID;
         table.className = "suggestions";
-        table.style.position = 'absolute';
-
         let input_bounds = dom.activeElement.getBoundingClientRect();
-        table.style.backgroundColor = "lightblue";
-        table.style.zIndex = 999;
-        table.style.left = (input_bounds.left).toString() + "px";
-        table.style.top = (input_bounds.top + input_bounds.height).toString() + "px";
-
+        this.style.table(table, input_bounds, textInputBox);
         this.current_table = table;
         return table
     }
@@ -537,16 +538,17 @@ const TableView = class
         }
     }
 
-    display(mappings)
+    display(mappings, textInputBox)
     {
         var dom = this.dom;
-        var table = this.createSuggestionsTable();
+        var table = this.createSuggestionsTable(textInputBox);
 
         var suggestions = Object.values(mappings);
         var shortcuts = Object.keys(mappings);
 
         for (var i = 0; i < suggestions.length; i++) {
             var row = dom.createElement("tr");
+            this.style.row(row);
             var shortcutColumn = dom.createElement("td");
             var suggestionsColumn = dom.createElement("td");
             shortcutColumn.appendChild(dom.createTextNode((shortcuts[i].toString())));
@@ -564,7 +566,99 @@ module.exports = TableView;
 
 
 /***/ }),
-/* 7 */
+/* 8 */
+/***/ (function(module, exports) {
+
+const Style = class
+{
+    constructor(){
+        this.cache = {};
+    }
+    table(element, input_bounds, textInputBox)
+    {
+        console.log('textInputBox', textInputBox)
+        element.style.display = 'flex';
+        element.style.position = 'absolute';
+        element.style.backgroundColor = "lightblue";
+        element.style.zIndex = 999;
+        element.style.left = (input_bounds.left).toString() + "px";
+        element.style.top = (input_bounds.top + input_bounds.height).toString() + "px";
+        if (textInputBox != undefined){
+            const cursorPosition = textInputBox.selectionStart;
+            let font = window.getComputedStyle(textInputBox, "").font;
+            let fontSize = window.getComputedStyle(textInputBox, "").fontSize;
+            const txt = textInputBox.value.slice(0, cursorPosition+1);
+            const size = this.calcSize(txt, {
+                font: font,
+                fontSize: fontSize
+            });
+            element.style.transform = "translate(" + size.width + "px)";
+        }
+    }
+    row(element, offset=6)
+    {
+        element.style.marginRight = offset.toString() + 'px';
+    }
+    calcSize(text, options = {}) {
+
+        const cacheKey = JSON.stringify({ text: text, options: options })
+
+        if (this.cache[cacheKey]) {
+            return this.cache[cacheKey]
+        }
+
+        // prepare options
+        options.font = options.font || 'Times'
+        options.fontSize = options.fontSize || '16px'
+        options.fontWeight = options.fontWeight || 'normal'
+        options.lineHeight = options.lineHeight || 'normal'
+        options.width = options.width || 'auto'
+        options.wordBreak = options.wordBreak || 'normal'
+
+        const element = this.createDummyElement(text, options)
+
+        const size = {
+            width: element.offsetWidth,
+            height: element.offsetHeight,
+        }
+
+        this.destroyElement(element)
+
+        this.cache[cacheKey] = size
+
+        return size
+    }
+    destroyElement(element) {
+        element.parentNode.removeChild(element)
+    }
+    createDummyElement(text, options) {
+        const element = document.createElement('div')
+        const textNode = document.createTextNode(text)
+
+        element.appendChild(textNode)
+
+        element.style.fontFamily = options.font
+        element.style.fontSize = options.fontSize
+        element.style.fontWeight = options.fontWeight
+        element.style.lineHeight = options.lineHeight
+        element.style.position = 'absolute'
+        element.style.visibility = 'hidden'
+        element.style.left = '-999px'
+        element.style.top = '-999px'
+        element.style.width = options.width
+        element.style.height = 'auto'
+        element.style.wordBreak = options.wordBreak
+
+        document.body.appendChild(element)
+
+        return element
+    }
+}
+
+module.exports = Style;
+
+/***/ }),
+/* 9 */
 /***/ (function(module, exports, __webpack_require__) {
 
 html = ['settings', 'popup'];
@@ -572,59 +666,18 @@ img = ['logo256.png'];
 js = ['activated', 'button', 'form', 'settings'];
 css = ['popup'];
 
-html.forEach((html) => __webpack_require__(8)("./" + html + ".html"));
-img.forEach((img) => __webpack_require__(11)("./" + img));
-css.forEach((css) => __webpack_require__(13)("./" + css + ".css"));
+html.forEach((html) => __webpack_require__(10)("./" + html + ".html"));
+img.forEach((img) => __webpack_require__(13)("./" + img));
+css.forEach((css) => __webpack_require__(15)("./" + css + ".css"));
 
-
-/***/ }),
-/* 8 */
-/***/ (function(module, exports, __webpack_require__) {
-
-var map = {
-	"./popup.html": 9,
-	"./settings.html": 10
-};
-
-
-function webpackContext(req) {
-	var id = webpackContextResolve(req);
-	return __webpack_require__(id);
-}
-function webpackContextResolve(req) {
-	var id = map[req];
-	if(!(id + 1)) { // check for number or string
-		var e = new Error("Cannot find module '" + req + "'");
-		e.code = 'MODULE_NOT_FOUND';
-		throw e;
-	}
-	return id;
-}
-webpackContext.keys = function webpackContextKeys() {
-	return Object.keys(map);
-};
-webpackContext.resolve = webpackContextResolve;
-module.exports = webpackContext;
-webpackContext.id = 8;
-
-/***/ }),
-/* 9 */
-/***/ (function(module, exports, __webpack_require__) {
-
-module.exports = __webpack_require__.p + "../assets/html/popup.html";
 
 /***/ }),
 /* 10 */
 /***/ (function(module, exports, __webpack_require__) {
 
-module.exports = __webpack_require__.p + "../assets/html/settings.html";
-
-/***/ }),
-/* 11 */
-/***/ (function(module, exports, __webpack_require__) {
-
 var map = {
-	"./logo256.png": 12
+	"./popup.html": 11,
+	"./settings.html": 12
 };
 
 
@@ -646,20 +699,26 @@ webpackContext.keys = function webpackContextKeys() {
 };
 webpackContext.resolve = webpackContextResolve;
 module.exports = webpackContext;
-webpackContext.id = 11;
+webpackContext.id = 10;
+
+/***/ }),
+/* 11 */
+/***/ (function(module, exports, __webpack_require__) {
+
+module.exports = __webpack_require__.p + "../assets/html/popup.html";
 
 /***/ }),
 /* 12 */
 /***/ (function(module, exports, __webpack_require__) {
 
-module.exports = __webpack_require__.p + "../assets/img/logo256.png";
+module.exports = __webpack_require__.p + "../assets/html/settings.html";
 
 /***/ }),
 /* 13 */
 /***/ (function(module, exports, __webpack_require__) {
 
 var map = {
-	"./popup.css": 14
+	"./logo256.png": 14
 };
 
 
@@ -687,10 +746,45 @@ webpackContext.id = 13;
 /* 14 */
 /***/ (function(module, exports, __webpack_require__) {
 
-module.exports = __webpack_require__.p + "../assets/css/popup.css";
+module.exports = __webpack_require__.p + "../assets/img/logo256.png";
 
 /***/ }),
 /* 15 */
+/***/ (function(module, exports, __webpack_require__) {
+
+var map = {
+	"./popup.css": 16
+};
+
+
+function webpackContext(req) {
+	var id = webpackContextResolve(req);
+	return __webpack_require__(id);
+}
+function webpackContextResolve(req) {
+	var id = map[req];
+	if(!(id + 1)) { // check for number or string
+		var e = new Error("Cannot find module '" + req + "'");
+		e.code = 'MODULE_NOT_FOUND';
+		throw e;
+	}
+	return id;
+}
+webpackContext.keys = function webpackContextKeys() {
+	return Object.keys(map);
+};
+webpackContext.resolve = webpackContextResolve;
+module.exports = webpackContext;
+webpackContext.id = 15;
+
+/***/ }),
+/* 16 */
+/***/ (function(module, exports, __webpack_require__) {
+
+module.exports = __webpack_require__.p + "../assets/css/popup.css";
+
+/***/ }),
+/* 17 */
 /***/ (function(module, exports) {
 
 function config(tabx) {

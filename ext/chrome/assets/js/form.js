@@ -9,7 +9,6 @@ function createForm()
    form = document.createElement("form");
    form.id = "settings"
 
-
    currentWord = document.createElement("input");
    currentWord.type = "checkbox";
    currentWord.name = "feature";
@@ -54,7 +53,7 @@ function createForm()
    form.appendChild(nextWord);
    form.appendChild(document.createTextNode("Next Word"));
 
-   document.body.appendChild(form);
+   document.querySelector("div#service-settings").appendChild(form);
 }
 
 function save()

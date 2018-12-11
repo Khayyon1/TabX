@@ -1,40 +1,55 @@
+chrome.storage.local.get('activated', function(results)
+{
+   var activated;
+   if(results['activated'])
+   {
+      activated = true;
+   }
+
+   else
+   {
+      activated = false;
+   }
+
+   createButton(activated);
+});
 
 
 function createButton(on)
 {
-   let button = document.createElement("input");
-   button.type = "button";
-   button.className = "activate"
+   let button = document.querySelector("li#activate");
+   let text;
 
    if(on)
    {
-         button.value = "Turn off"
+       text = "Turn off"
+       button.setAttribute("activated", true);
    }
    else
    {
-         button.value = "Turn on"
+         text = "Turn on"
+         button.setAttribute("activated", false);
    }
 
+   let node = document.createTextNode(text);
+   button.querySelector("a").append(node);
+
    button.addEventListener('click', function(){
-      if(this.value == "Turn off")
+      if(this.getAttribute("activated") == "true")
       {
-         button.value = "Turn on"
+         button.querySelector("a").innerHTML = "Turn on";
          chrome.storage.local.set({'activated': false})
-         let form = document.getElementById("settings");
-         form.parentNode.removeChild(form);
-         sendMessageToAllTabs("disableTabX")
+         sendMessageToAllTabs("disableTabX");
+         button.setAttribute("activated", false);
+
       }
+
       else
       {
-         button.value = "Turn off"
+         button.querySelector("a").innerHTML = "Turn off";
          chrome.storage.local.set({'activated': true});
-         createForm();
-         loadSettings();
          sendMessageToAllTabs("enableTabX")
-
+          button.setAttribute("activated", true);
       }
    });
-
-   document.body.appendChild(button);
-
 }

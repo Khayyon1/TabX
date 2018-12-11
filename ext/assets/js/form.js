@@ -9,19 +9,43 @@ function createForm()
    form = document.createElement("form");
    form.id = "settings"
 
-
    currentWord = document.createElement("input");
    currentWord.type = "checkbox";
    currentWord.name = "feature";
    currentWord.value = "Current Word";
-   currentWord.addEventListener('click', save)
+   currentWord.addEventListener('change', function()
+   {
+      save.bind(this)();
+      console.log("save after current word " + this.checked);
+
+      if(this.checked)
+      {
+         sendMessageToAllTabs("enableWordCompletion");
+      }
+      else
+      {
+         sendMessageToAllTabs("disableWordCompletion");
+      }
+   });
 
    nextWord = document.createElement("input");
    nextWord.type = "checkbox";
    nextWord.name = "feature";
    nextWord.value = "Next Word";
 
-   nextWord.addEventListener('click', save)
+   nextWord.addEventListener('change',function()
+   {
+      save.bind(this)();
+      console.log("save after next word" + this.checked);
+      if(this.checked)
+      {
+         sendMessageToAllTabs("enableWordPrediction");
+      }
+      else
+      {
+         sendMessageToAllTabs("disableWordPrediction");
+      }
+   })
    form.appendChild(p);
    form.appendChild(currentWord);
    form.appendChild(document.createTextNode("Current Word"));
@@ -29,24 +53,17 @@ function createForm()
    form.appendChild(nextWord);
    form.appendChild(document.createTextNode("Next Word"));
 
-   document.body.appendChild(form);
+   document.querySelector("div#service-settings").appendChild(form);
 }
 
 function save()
 {
-   if(this.checked == "true")
-   {
-      this.checked == "false";
-   }
-   else
-   {
-      this.checked == "true"
-   }
-
-   data = {}
+   data = {};
+   console.log(this.toString() + this.checked);
    data[this.value] = this.checked;
    chrome.storage.local.set(data);
 }
+
 
 //<form id="settings">
 //    <p class="popup">Select what writing assistant features you want to use</p>

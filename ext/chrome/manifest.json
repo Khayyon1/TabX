@@ -11,7 +11,7 @@
    "content_scripts": [
    {
      "matches": ["<all_urls>"],
-     "js": ["scripts/tabx.js"]
+     "js": [ "scripts/jquery-3.3.1.min.js","scripts/tabx.js"]
    }],
 
   "permissions": ["storage",
@@ -22,6 +22,7 @@
   {
     "default_popup": "./assets/html/popup.html"
   },
+
 
   "manifest_version": 2
 }

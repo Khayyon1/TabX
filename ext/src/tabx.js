@@ -1,5 +1,6 @@
 // TabX Shortcuts
 
+var serviceabletags = require('./serviceabletags');
 var _current_word = "";
 
 //import {wordCompleteModel} from './models/wordcomplete.js';
@@ -49,7 +50,7 @@ const TabX = class
 
     async displaySuggestions()
     {
-        if(!this.activeElementIsTextField()
+        if(!serviceabletags.activeElementIsServiceable()
             ||
             this.document.activeElement.value == ""
             ||
@@ -83,11 +84,7 @@ const TabX = class
         this.displayStrategy.display(this.mappings);
     }
 
-    activeElementIsTextField()
-    {
-        var activeElement = this.document.activeElement;
-        return activeElement.tagName == 'INPUT' || activeElement.tagName == 'TEXTAREA';
-    }
+
 
     wordCompletion(activeElement, userChoice)
     {
@@ -242,7 +239,7 @@ const TabX = class
     handleUserInput(event)
     {
 
-        if (this.activeElementIsTextField() && this.enabled)
+        if (serviceabletags.activeElementIsServiceable() && this.enabled)
         {
             this.displaySuggestions();
         }
@@ -253,7 +250,7 @@ const TabX = class
     {
         if(!this.enable){return;}
         var keyname = event.key;
-        if(this.activeElementIsTextField() && this.shortcuts.includes(keyname) && this.displayStrategy.isActive())
+        if(serviceabletags.activeElementIsServiceable() && this.shortcuts.includes(keyname) && this.displayStrategy.isActive())
         {
             event.preventDefault();
             var userChoice = this.mappings[keyname];
@@ -268,7 +265,7 @@ const TabX = class
 
         //Shows suggestions
         this.document.addEventListener('keyup', this.handleUserInput.bind(this));
-        var serviceableElements = this.document.querySelectorAll("input, textarea");
+        var serviceableElements = serviceabletags.getServicableElements();
 
         //Listens for when active elements lose focus
         for(var i = 0; i < serviceableElements.length; i++)

@@ -18,6 +18,15 @@ let tabx = new TabX(WordCompleteModel, WordPredictModel,
 tabx.registerListeners();
 config(tabx);
 
+$('div').each(function () {
+    let elem = $(this)
+    console.log("Getting divs");
+    if(elem.is(':input'))
+    {
+        console.log(elem);
+    }
+});
+
 chrome.runtime.onMessage.addListener(function(message, sender, sendResponse)
 {
     console.log("received message: " + message)

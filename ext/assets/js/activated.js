@@ -4,7 +4,6 @@ chrome.storage.local.get('activated', function(results)
    if(results['activated'])
    {
       activated = true;
-      createButton(activated);
       createForm();
       loadSettings();
    }
@@ -12,6 +11,5 @@ chrome.storage.local.get('activated', function(results)
    else
    {
       activated = false;
-      createButton(activated);
    }
 });

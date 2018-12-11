@@ -556,12 +556,6 @@ const Style = class
 {
     constructor(){
         this.cache = {};
-        // const size = this.calcSize('Hello world!', {
-        //     font: 'Arial',
-        //     fontSize: '12px'
-        // })
-        // console.log("MWIDTH",size.width) // 140
-        // console.log("MHEIFGHT",size.height) // 20
     }
     table(element, input_bounds, textInputBox)
     {
@@ -576,9 +570,7 @@ const Style = class
             const cursorPosition = textInputBox.selectionStart;
             let font = window.getComputedStyle(textInputBox, "").font;
             let fontSize = window.getComputedStyle(textInputBox, "").fontSize;
-            // const offset = parseInt(style.slice(0, 2))/2 * parseInt(cursorPosition);
-            // console.log(offset);
-            const txt = textInputBox.value.slice(0, cursorPosition);
+            const txt = textInputBox.value.slice(0, cursorPosition+1);
             const size = this.calcSize(txt, {
                 font: font,
                 fontSize: fontSize

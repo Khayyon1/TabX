@@ -24,10 +24,9 @@
       <div id="font-settings">
          <h2> Display Settings </h2>
          <div class="row" style="background-color:lightgrey">
-
                <div id="font-select-container" class="column" style="background-color:lightgrey">
                    <label>Font Name:
-                      <input class="font" list="font" name="font" />
+                      <input readonly id="font-input" class="font" list="font" name="font" />
                    </label>
                    <select id="font-select" class="font" size=5 style="background-color:#aaa">
                      <option value="Times New Roman">Times New Roman</option>
@@ -39,8 +38,8 @@
 
                <div id="font-style-container" class="column">
                    <label>Font Style:
-                   <input class="font-style" list="font_style" name="font_style"/></label>
-                   <select class="font-style" size=5 style="background-color:#bbb">
+                   <input readonly id="font-style-input" class="font-style" list="font_style" name="font_style"/></label>
+                   <select id="font-style-select" class="font-style" size=5 style="background-color:#bbb">
                        <option value="Regular">Regular</option>
                        <option value="Italic">Italic</option>
                        <option value="Bold">Bold</option>
@@ -50,8 +49,8 @@
 
                <div id="font-size-container" class="column">
                  <label>Font Size
-                   <input class="font-size" list="sizes" name="sizes"  /></label>
-                   <select class="font-size" size=5 style="background-color:#ccc">
+                   <input readonly id="font-size-input" class="font-size" list="sizes" name="sizes"  /></label>
+                   <select id="font-size-select" class="font-size" size=5 style="background-color:#ccc">
                      <option value="8">8</option>
                      <option value="9">9</option>
                      <option value="10">10</option>
@@ -66,9 +65,10 @@
 
                <div id=font-color-container class="column">
                   <label>Font Color
-                     <input type="color">
+                     <input id="font-color-input" type="color">
                   </label>
                </div>
+               <script src="fontsettings.js"></script>
          </div>
       </div>
 

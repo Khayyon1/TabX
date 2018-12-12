@@ -1,20 +1,26 @@
 const TabX = require('./tabx.js');
 const TableView = require("../assets/js/viewstrats/tablestrat-ui");
-require("../assets");
 const config = require("../browserspec/chrome/settings");
 
 var WordCompleteModel = {
-    predictCurrentWord: function(input){return messageBackgroundPage("WORD_COMPLETE", input)}
+    predictCurrentWord: function(input)
+    {
+      return messageBackgroundPage("WORD_COMPLETE", input)
+    }
 }
 
 var WordPredictModel = {
-    predictNextWord: function(input){return messageBackgroundPage("WORD_PREDICT", input)}
+    predictNextWord: function(input)
+    {
+      return messageBackgroundPage("WORD_PREDICT", input)
+    }
 }
 
 let display = new TableView(document);
 let tabx = new TabX(WordCompleteModel, WordPredictModel,
     display,
     document)
+
 tabx.registerListeners();
 config(tabx);
 
@@ -30,6 +36,7 @@ $('div').each(function () {
 chrome.runtime.onMessage.addListener(function(message, sender, sendResponse)
 {
     console.log("received message: " + message)
+
     if(message == "enableTabX") {
         tabx.enable();
         console.log("I was enabled");
@@ -65,13 +72,29 @@ chrome.runtime.onMessage.addListener(function(message, sender, sendResponse)
 
         tabx.disableWordCompletion();
     }
+
+    else if(message == "updateDisplay")
+    {
+      chrome.storage.local.get(function(results){
+         let config = {
+            font: results["Font"],
+            fontsize: results["Font Size"],
+            fontstyle: results["Font Style"],
+            fontcolor: results["Font Color"]
+         };
+
+         tabx.configureDisplay(config);
+      });
+
+    }
 });
 
 async function messageBackgroundPage(request, input)
 {
     let response = new Promise(function(resolve, reject)
     {
-        chrome.runtime.sendMessage({"TabxOp": request, "TabxInput": input}, function (response) {
+        chrome.runtime.sendMessage({"TabxOp": request, "TabxInput": input},
+         function (response) {
             resolve(response.TabxResults);
         });
     });
@@ -82,4 +105,3 @@ async function messageBackgroundPage(request, input)
 
     return results;
 }
-

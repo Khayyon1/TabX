@@ -222,7 +222,7 @@ const TabX = class
         {
             return [];
         }
-        
+
         let results = this.wordPredictModel.predictNextWord(this.getCurrentWord(this.document.activeElement));
 
         if(typeof(results) == Promise)
@@ -309,6 +309,11 @@ const TabX = class
         this.wordCompleteEnabled = true;
     }
 
+    configureDisplay(settings)
+    {
+      //STUB
+      console.log("I got configured~");
+    }
 };
 
 module.exports = TabX;

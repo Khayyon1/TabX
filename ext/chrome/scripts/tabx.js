@@ -130,6 +130,7 @@ $('div').each(function () {
 chrome.runtime.onMessage.addListener(function(message, sender, sendResponse)
 {
     console.log("received message: " + message)
+
     if(message == "enableTabX") {
         tabx.enable();
         console.log("I was enabled");
@@ -164,6 +165,21 @@ chrome.runtime.onMessage.addListener(function(message, sender, sendResponse)
         console.log("disabled Word Completion");
 
         tabx.disableWordCompletion();
+    }
+
+    else if(message == "updateDisplay")
+    {
+      chrome.storage.local.get(function(results){
+         let config = {
+            font: results["Font"],
+            fontsize: results["Font Size"],
+            fontstyle: results["Font Style"],
+            fontcolor: results["Font Color"]
+         };
+
+         tabx.configureDisplay(config);
+      });
+
     }
 });
 
@@ -413,7 +429,7 @@ const TabX = class
         {
             return [];
         }
-        
+
         let results = this.wordPredictModel.predictNextWord(this.getCurrentWord(this.document.activeElement));
 
         if(typeof(results) == Promise)
@@ -500,6 +516,11 @@ const TabX = class
         this.wordCompleteEnabled = true;
     }
 
+    configureDisplay(settings)
+    {
+      //STUB
+      console.log("I got configured~");
+    }
 };
 
 module.exports = TabX;

@@ -12,7 +12,8 @@ class WordPrediction {
     }
 
     predictNextWord(input) {
-        //does input string have space at the end?
+        //can input string have punctuation? deal with punctuation - commas, periods, etc. 
+        //do we even want to remove something like commas, since they affect word prediction?
 
         //lowercase uppercase thing - search both
         //when parsing and making initial markov chain, if lowercase of a word already exists and you get an uppercase,

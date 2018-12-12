@@ -34,8 +34,8 @@ const TabX = class
     async getAppropriateSuggestions()
     {
         var elem = this.document.activeElement
-        var previous = elem.innerText.charAt(elem.selectionStart - 1);
-        var charAtCaret = elem.innerText.charAt(elem.selectionStart)
+        var previous = elem.value.charAt(elem.selectionStart - 1);
+        var charAtCaret = elem.value.charAt(elem.selectionStart)
 
         if(previous != " " && this.wordCompleteEnabled)
         {

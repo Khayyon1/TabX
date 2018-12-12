@@ -1,13 +1,9 @@
 var MarkovChain = require('markovchainplus');
 var models = [];
-models.push(require('./models/fake-model'));
-models.push(require('./models/poe-model'));
-models.push(require('./models/library-model'));
-models.push(require('./models/news-model'));
-models.push(require('./models/blogs-model'));
-models.push(require('./models/brown-model'));
-models.push(require('./models/blogs-model1'));
-models.push(require('./models/model2'));
+models.push(require('./models/library-model2'));
+models.push(require('./models/blogs-model2'));
+models.push(require('./models/library-model3'));
+models.push(require('./models/blogs-model3'));
 var mock = new MarkovChain("");
 
 class WordPrediction {
@@ -82,19 +78,11 @@ for (var i = 0; i < models.length; i++) {
     models[i] = current;
 }
 
-//takes too much time to load all
-
-var fakeModel = new WordPrediction(models[0]);
-module.exports.fakeModel = fakeModel;
-var poeModel = new WordPrediction(models[1]);
-module.exports.poeModel = poeModel;
-var libraryModel = new WordPrediction(models[2]);
+var libraryModel = new WordPrediction(models[0]);
 module.exports.libraryModel = libraryModel;
-var newsModel = new WordPrediction(models[3]);
-module.exports.newsModel = newsModel;
-var blogsModel = new WordPrediction(models[4]);
+var blogsModel = new WordPrediction(models[1]);
 module.exports.blogsModel = blogsModel;
-var brownModel = new WordPrediction(models[5]);
-module.exports.brownModel = brownModel;
-var blogsModel2 = new WordPrediction(models[6]);
-module.exports.blogsModel2 = blogsModel2;
+var libraryModelLarge = new WordPrediction(models[2]);
+module.exports.libraryModelLarge = libraryModelLarge;
+var blogsModelLarge = new WordPrediction(models[3]);
+module.exports.blogsModelLarge = blogsModelLarge;

@@ -1,3 +1,5 @@
+const getCaretCoordinates = require('textarea-caret');
+
 const Style = class
 {
     constructor(){
@@ -5,7 +7,7 @@ const Style = class
     }
     table(element, input_bounds, textInputBox)
     {
-        console.log('textInputBox', textInputBox)
+        console.log('MISHIIINPUT', textInputBox)
         element.style.display = 'flex';
         element.style.position = 'absolute';
         element.style.backgroundColor = "lightblue";
@@ -13,15 +15,12 @@ const Style = class
         element.style.left = (input_bounds.left).toString() + "px";
         element.style.top = (input_bounds.top + input_bounds.height).toString() + "px";
         if (textInputBox != undefined){
-            const cursorPosition = textInputBox.selectionStart;
-            let font = window.getComputedStyle(textInputBox, "").font;
-            let fontSize = window.getComputedStyle(textInputBox, "").fontSize;
-            const txt = textInputBox.value.slice(0, cursorPosition+1);
-            const size = this.calcSize(txt, {
-                font: font,
-                fontSize: fontSize
-            });
-            element.style.transform = "translate(" + size.width + "px)";
+            const rect = textInputBox.getBoundingClientRect();
+            console.log(rect.top, rect.right, rect.bottom, rect.left);
+            const caret = getCaretCoordinates(textInputBox, textInputBox.selectionStart);
+            console.log('Caret is:', caret);
+            element.style.top = (rect.top + caret.top).toString()+'px';
+            element.style.left = (rect.left + caret.left).toString() + 'px';
         }
     }
     row(element, offset=6)

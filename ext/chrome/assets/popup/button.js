@@ -12,6 +12,7 @@ chrome.storage.local.get('activated', function(results)
    }
 
    createButton(activated);
+
 });
 
 function createButton(on)
@@ -48,7 +49,14 @@ function createButton(on)
          button.querySelector("a").innerHTML = "Turn off";
          chrome.storage.local.set({'activated': true});
          sendMessageToAllTabs("enableTabX")
-          button.setAttribute("activated", true);
+         button.setAttribute("activated", true);
       }
    });
 }
+
+document.getElementById("settings").addEventListener('click', function(e){
+  chrome.windows.create({
+     url: chrome.runtime.getURL("assets/settingspage/settings.html"),
+     type: "popup"
+  });
+})

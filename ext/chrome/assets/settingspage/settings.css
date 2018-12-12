@@ -7,8 +7,8 @@ body
 #settings-container
 {
    background-color: lightgrey;
-   padding-left: 250px;
-   padding-right: 250px;
+   padding-left: 100px;
+   padding-right: 100px;
    padding-bottom: 50px;
    background-clip: content-box;
 }

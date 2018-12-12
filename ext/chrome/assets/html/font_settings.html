@@ -2,12 +2,14 @@
 <html>
 <link rel="stylesheet" type="text/css" href="../css/font_settings.css">
   <body>
+     <h1> Display Settings </h1>
     <div class="row" style="background-color:lightgrey">
 
-      <div class="column" style="background-color:lightgrey">
+      <div id="font-select" class="column" style="background-color:lightgrey">
           <label>Font Name:
-          <input list="font" name="font" /></label>
-          <select id="font" size=5 style="background-color:#aaa">
+             <input class="font" list="font" name="font" />
+          </label>
+          <select class="font" size=5 style="background-color:#aaa">
             <option value="Times New Roman">Times New Roman</option>
             <option value="Calibri">Calibri</option>
             <option value="Georgia">Georgia</option>
@@ -15,21 +17,21 @@
           </select>
       </div>
 
-      <div class="column">
+      <div id="font-style-select" class="column">
           <label>Font Style:
-          <input list="font_style" name="font_style"/></label>
-          <select id="font_style" size=5 style="background-color:#bbb">
+          <input class="font-style" list="font_style" name="font_style"/></label>
+          <select class="font-style" size=5 style="background-color:#bbb">
               <option value="Regular">Regular</option>
               <option value="Italic">Italic</option>
               <option value="Bold">Bold</option>
               <option value="Bold Italic">Bold Italic</option>
           </select>
       </div>
-
-      <div class="column">
+      <br>
+      <div id="font-size-select" class="column">
         <label>Font Size
-          <input list="sizes" name="sizes"  /></label>
-          <select id="sizes" size=5 style="background-color:#ccc">
+          <input class="font-size" list="sizes" name="sizes"  /></label>
+          <select class="font-size" size=5 style="background-color:#ccc">
             <option value="8">8</option>
             <option value="9">9</option>
             <option value="10">10</option>

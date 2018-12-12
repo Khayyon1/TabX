@@ -13,16 +13,16 @@ class WordPrediction {
 
     predictNextWord(input) {
         //does input string have space at the end?
+
         //lowercase uppercase thing - search both
         //when parsing and making initial markov chain, if lowercase of a word already exists and you get an uppercase,
         // or vice versa, then combine all entries into only the lowercase
+
         //upgrade markov model to parse actual punctuation... ; and () ....
         // *figure out the undefined thing for new model
+
         //cite text data sets used
 
-        //var word = input.split(" ").pop();
-        // var split = input.split(" ");
-        // var phrase = split[split.length-3] + " " + split[split.length-2] + " " + split[split.length-1];
         var suggestions = this.model.start(input).end(1).process(this.predictTopThree);
         return suggestions;
     }

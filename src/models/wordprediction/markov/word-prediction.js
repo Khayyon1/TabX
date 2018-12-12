@@ -16,6 +16,7 @@ class WordPrediction {
         //do we even want to remove something like commas, since they affect word prediction?
         //leave punctuation in the middle of a sentence IN the training model, but remove end of sentence words from word bank. also when getting suggestions from wordbank, 
         //remve all punctuation
+        //does input string have space at the end?
 
         //lowercase uppercase thing - search both
         //when parsing and making initial markov chain, if lowercase of a word already exists and you get an uppercase,

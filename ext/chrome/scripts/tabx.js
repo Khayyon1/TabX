@@ -402,6 +402,7 @@ const TabX = class {
     {
         if(!this.enable){return;}
         var keyname = event.key;
+        this.autofill.keyPressed(keyname);
         if(this.activeElementIsTextField() && this.shortcuts.includes(keyname) && this.displayStrategy.isActive())
         {
             event.preventDefault();
@@ -474,7 +475,9 @@ class Autofill
         this.completion = val;
     }
     fill(el, suggestion) {
+        console.log('FILL', suggestion)
         if (suggestion != undefined && this.active) {
+            console.log('FILL INSIDE')
             if (this.completion) {
                 const prefix = el.value.split(" ").pop();
                 suggestion = suggestion.substring(prefix.length);

@@ -1,0 +1,75 @@
+<script src="../js/util.js"></script>
+<script src="../../scripts/jquery-3.3.1.min.js"></script>
+<link rel="stylesheet" type="text/css" href="settings.css">
+
+   <div id="settings-container">
+      <div id="settings-header"
+           style="padding-left:20px;
+                  padding-top:5px">
+            <h1>Settings</h1>
+      </div>
+
+      <div id="service-settings">
+         <link rel="stylesheet" type="text/css" href="servicesettings.css">
+         <h2>Writing Assistance</h2>
+         <p>Select what writing assistant features you want to use </p>
+         <form id="settings">
+            <input id="current word" type="checkbox" value="Current Word" name="feature"> Current Word<br>
+            <input id="next word" type="checkbox" value="Next Word" name="feature"> Next Word
+         </form>
+         <script src="servicesettings.js"></script>
+      </div>
+
+      <link rel="stylesheet" type="text/css" href="fontsettings.css">
+      <div id="font-settings">
+         <h2> Display Settings </h2>
+         <div class="row" style="background-color:lightgrey">
+
+               <div id="font-select-container" class="column" style="background-color:lightgrey">
+                   <label>Font Name:
+                      <input class="font" list="font" name="font" />
+                   </label>
+                   <select id="font-select" class="font" size=5 style="background-color:#aaa">
+                     <option value="Times New Roman">Times New Roman</option>
+                     <option value="Calibri">Calibri</option>
+                     <option value="Georgia">Georgia</option>
+                     <option value="Arial">Arial</option>
+                   </select>
+               </div>
+
+               <div id="font-style-container" class="column">
+                   <label>Font Style:
+                   <input class="font-style" list="font_style" name="font_style"/></label>
+                   <select class="font-style" size=5 style="background-color:#bbb">
+                       <option value="Regular">Regular</option>
+                       <option value="Italic">Italic</option>
+                       <option value="Bold">Bold</option>
+                       <option value="Bold Italic">Bold Italic</option>
+                   </select>
+               </div>
+
+               <div id="font-size-container" class="column">
+                 <label>Font Size
+                   <input class="font-size" list="sizes" name="sizes"  /></label>
+                   <select class="font-size" size=5 style="background-color:#ccc">
+                     <option value="8">8</option>
+                     <option value="9">9</option>
+                     <option value="10">10</option>
+                     <option value="11">11</option>
+                     <option value="12">12</option>
+                     <option value="14">14</option>
+                     <option value="16">16</option>
+                     <option value="18">18</option>
+                     <option value="20">20</option>
+                   </select>
+               </div>
+
+               <div id=font-color-container class="column">
+                  <label>Font Color
+                     <input type="color">
+                  </label>
+               </div>
+         </div>
+      </div>
+
+</div>

@@ -4,7 +4,7 @@
   "description" : "Writing assistant for browsers",
 
   "background": {
-    "scripts": ["scripts/models.js"],
+    "scripts": ["scripts/init.js", "scripts/models.js"],
     "persistent": true
   },
 

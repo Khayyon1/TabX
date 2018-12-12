@@ -93,8 +93,9 @@
 /***/ (function(module, exports, __webpack_require__) {
 
 const TabX = __webpack_require__(5);
-const display = __webpack_require__(6);
-__webpack_require__(7);
+const TableView = __webpack_require__(7);
+__webpack_require__(8);
+const config = __webpack_require__(16);
 
 var WordCompleteModel = {
     predictCurrentWord: function(input){return messageBackgroundPage("WORD_COMPLETE", input)}
@@ -104,35 +105,21 @@ var WordPredictModel = {
     predictNextWord: function(input){return messageBackgroundPage("WORD_PREDICT", input)}
 }
 
-//Before Constructor is called
-//      Check Settings for what features are enabled
+let display = new TableView(document);
+let tabx = new TabX(WordCompleteModel, WordPredictModel,
+    display,
+    document)
+tabx.registerListeners();
+config(tabx);
 
-var tabx;
-
-chrome.storage.local.get(function(results)
-{
-    if(results != null)
+$('div').each(function () {
+    let elem = $(this)
+    console.log("Getting divs");
+    if(elem.is(':input'))
     {
-        console.log("Current word enabled: " + results["Current Word"]);
-        console.log("Next word enables: " + results["Next Word"]);
-
-        tabx = new TabX(WordCompleteModel, WordPredictModel,
-            display,
-            document,
-            wordCompleteEnabled=results["Current Word"],
-            wordPredictEnabled=results['Next Word']);
-
-        tabx.registerListeners();
-        if(!results['activated'])
-        {
-            console.log("Disabled upon init");
-            tabx.disable();
-        }
-
-        console.log("I was created");
+        console.log(elem);
     }
 });
-
 
 chrome.runtime.onMessage.addListener(function(message, sender, sendResponse)
 {
@@ -166,7 +153,7 @@ chrome.runtime.onMessage.addListener(function(message, sender, sendResponse)
         tabx.disableWordPrediction();
     }
 
-        else if(message == "disableWordCompletion")
+    else if(message == "disableWordCompletion")
     {
         console.log("disabled Word Completion");
 
@@ -194,10 +181,11 @@ async function messageBackgroundPage(request, input)
 
 /***/ }),
 /* 5 */
-/***/ (function(module, exports) {
+/***/ (function(module, exports, __webpack_require__) {
 
-// this.document.addEventListener("keyup", displaySuggestions);
+// TabX Shortcuts
 
+var serviceabletags = __webpack_require__(6);
 var _current_word = "";
 
 //import {wordCompleteModel} from './models/wordcomplete.js';
@@ -211,6 +199,7 @@ const TabX = class
                 document=document,
                 wordCompleteEnabled=true,
                 wordPredictEnabled=true)
+
     {
         this.wordCompleteModel = wordCompleteModel;
         this.wordPredictModel = wordPredictModel;
@@ -230,7 +219,9 @@ const TabX = class
     async getAppropriateSuggestions()
     {
         var elem = this.document.activeElement
-        var previous = elem.value.charAt(elem.selectionStart - 1)
+        var previous = elem.value.charAt(elem.selectionStart - 1);
+        var charAtCaret = elem.value.charAt(elem.selectionStart)
+
         if(previous != " " && this.wordCompleteEnabled)
         {
             return await this.getSuggestions(this.getCurrentWord(elem))
@@ -242,24 +233,23 @@ const TabX = class
         }
     }
 
-    async displaySuggestions(activeElement)
+    async displaySuggestions()
     {
-        if(!this.activeElementIsTextField())
+        if(!serviceabletags.activeElementIsServiceable()
+            ||
+            this.document.activeElement.value == ""
+            ||
+            this.getCurrentWord(this.document.activeElement) == "")
         {
+            this.displayStrategy.tearDown();
             return;
         }
-
-
-        if(this.document.activeElement.value == "" || this.getCurrentWord(this.document.activeElement) == "")
-        {
-            return;
-        }
-
 
         let suggestions = await this.getAppropriateSuggestions();
 
-        if(suggestions.length == 0)
+        if(suggestions == undefined || suggestions.length == 0)
         {
+            this.displayStrategy.tearDown();
             return;
         }
 
@@ -279,11 +269,7 @@ const TabX = class
         this.displayStrategy.display(this.mappings);
     }
 
-    activeElementIsTextField()
-    {
-        var activeElement = this.document.activeElement;
-        return activeElement.tagName == 'INPUT';
-    }
+
 
     wordCompletion(activeElement, userChoice)
     {
@@ -391,11 +377,14 @@ const TabX = class
             return [];
         }
 
-        else
+        let results = this.wordCompleteModel.predictCurrentWord(incomplete_string);
+
+        if(typeof(results) == Promise)
         {
-            return await this.wordCompleteModel.predictCurrentWord(incomplete_string);
+            return await results;
         }
 
+        return results;
     }
 
 
@@ -404,25 +393,54 @@ const TabX = class
         var caret_position = this.document.activeElement.selectionStart;
         var left_of_caret = caret_position - 1;
         var space_precedes_caret = str.charAt(left_of_caret) == " ";
+        var char_at_caret = (str.charAt(caret_position) != " " && str.charAt(caret_position) != "");
+
         var currentWord = this.getCurrentWord(this.document.activeElement);
 
-        if(this.inputIsNotValid(currentWord) || !space_precedes_caret)
+        console.log("input        : " + str + "(" + caret_position + ")");
+        console.log("before caret : " + str.charAt(left_of_caret));
+        console.log("at caret     : " + str.charAt(caret_position));
+        console.log("space before caret: " + space_precedes_caret);
+        console.log("char at caret: " + char_at_caret);
+
+        if(this.inputIsNotValid(currentWord) || !space_precedes_caret || char_at_caret)
         {
             return [];
         }
+        
+        let results = this.wordPredictModel.predictNextWord(this.getCurrentWord(this.document.activeElement));
+
+        if(typeof(results) == Promise)
+        {
+            return await results;
+        }
+
         else
         {
-            return await this.wordPredictModel.predictNextWord(this.getCurrentWord(this.document.activeElement));
+            return results;
         }
     }
 
     handleUserInput(event)
     {
 
-        if (this.activeElementIsTextField() && this.enabled)
+        if (serviceabletags.activeElementIsServiceable() && this.enabled)
         {
-            this.displaySuggestions(this.document.activeElement);
+            this.displaySuggestions();
         }
+    }
+
+
+    handleWordComplete(event)
+    {
+        if(!this.enable){return;}
+        var keyname = event.key;
+        if(serviceabletags.activeElementIsServiceable() && this.shortcuts.includes(keyname) && this.displayStrategy.isActive())
+        {
+            event.preventDefault();
+            var userChoice = this.mappings[keyname];
+            this.wordCompletion(this.document.activeElement, userChoice);
+        };
     }
 
     registerListeners()
@@ -432,7 +450,7 @@ const TabX = class
 
         //Shows suggestions
         this.document.addEventListener('keyup', this.handleUserInput.bind(this));
-        var serviceableElements = this.document.querySelectorAll("input[type=text]");
+        var serviceableElements = serviceabletags.getServicableElements();
 
         //Listens for when active elements lose focus
         for(var i = 0; i < serviceableElements.length; i++)
@@ -441,6 +459,7 @@ const TabX = class
             elem.addEventListener('blur', function()
             {
                this.displayStrategy.tearDown();
+               console.log(this.displayStrategy);
             }.bind(this));
         };
     }
@@ -453,18 +472,6 @@ const TabX = class
     disable()
     {
         this.enabled = false
-    }
-
-    handleWordComplete(event)
-    {
-        if(!this.enable){return;}
-        var keyname = event.key;
-        if(this.activeElementIsTextField() && this.shortcuts.includes(keyname) && this.displayStrategy.isActive())
-        {
-            event.preventDefault();
-            var userChoice = this.mappings[keyname];
-            this.wordCompletion(this.document.activeElement, userChoice);
-        };
     }
 
     disableWordPrediction()
@@ -496,71 +503,111 @@ module.exports = TabX;
 /* 6 */
 /***/ (function(module, exports) {
 
-var ID = "suggestions"
-var current_table = null;
+var selector = 'input[type=text], textarea, [contenteditable=true], [contenteditable]';
 
-function createSuggestionsTable()
+var serviceableTags = [
+    "input[type=text]",
+    'textarea',
+    "[contenteditable=true]",
+    "[contenteditable]"
+]
+
+function getServicableElements()
 {
-    let table = document.createElement("table");
-    table.id = ID;
-    table.className = "suggestions";
-    table.style.position = 'absolute';
-
-    let input_bounds = document.activeElement.getBoundingClientRect();
-    table.style.backgroundColor = "lightblue";
-    table.style.zIndex = 999;
-    table.style.left = (input_bounds.left).toString() + "px";
-    table.style.top = (input_bounds.top + input_bounds.height).toString()+"px";
-
-    current_table = table;
-    return table
+    return document.querySelectorAll(selector);
 }
 
-function isActive()
+function activeElementIsServiceable()
 {
-   return document.getElementById(ID) != null;
-}
+    let activeElement = document.activeElement;
+    for(let i = 0; i < serviceableTags.length; i++)
+    {
+        if(activeElement.matches(serviceableTags[i]))
+        {
+            return true;
+        }
+    }
 
-function tearDown()
-{
-   if(isActive())
-   {
-       current_table.parentNode.removeChild(current_table);
-   }
-}
-
-function display(mappings)
-{
-   var table = createSuggestionsTable();
-
-   var suggestions = Object.values(mappings);
-   var shortcuts = Object.keys(mappings);
-
-   for(var i = 0; i < suggestions.length; i++)
-   {
-       var row = document.createElement("tr");
-       var shortcutColumn = document.createElement("td");
-       var suggestionsColumn = document.createElement("td");
-       shortcutColumn.appendChild(document.createTextNode((shortcuts[i].toString())));
-       suggestionsColumn.appendChild(document.createTextNode(suggestions[i]));
-       row.append(shortcutColumn);
-       row.append(suggestionsColumn);
-       table.appendChild(row);
-   }
-
-   document.body.appendChild(table);
-
+    return false;
 }
 
 module.exports = {
-    isActive: isActive,
-    tearDown: tearDown,
-    display: display
+    getServicableElements: getServicableElements,
+    activeElementIsServiceable: activeElementIsServiceable
 }
-
 
 /***/ }),
 /* 7 */
+/***/ (function(module, exports) {
+
+const TableView = class
+{
+    constructor(dom)
+    {
+        this.dom = dom;
+        this.ID = "suggestions";
+        this.current_table = null;
+    }
+
+    createSuggestionsTable()
+    {
+        let dom = this.dom;
+        let table = dom.createElement("table");
+        table.id = this.ID;
+        table.className = "suggestions";
+        table.style.position = 'absolute';
+
+        let input_bounds = dom.activeElement.getBoundingClientRect();
+        table.style.backgroundColor = "lightblue";
+        table.style.zIndex = 999;
+        table.style.left = (input_bounds.left).toString() + "px";
+        table.style.top = (input_bounds.top + input_bounds.height).toString() + "px";
+
+        this.current_table = table;
+        return table
+    }
+
+    isActive()
+    {
+        return this.dom.getElementById(this.ID) != null;
+    }
+
+    tearDown()
+    {
+        if (this.isActive())
+        {
+            this.current_table.parentNode.removeChild(this.current_table);
+        }
+    }
+
+    display(mappings)
+    {
+        var dom = this.dom;
+        var table = this.createSuggestionsTable();
+
+        var suggestions = Object.values(mappings);
+        var shortcuts = Object.keys(mappings);
+
+        for (var i = 0; i < suggestions.length; i++) {
+            var row = dom.createElement("tr");
+            var shortcutColumn = dom.createElement("td");
+            var suggestionsColumn = dom.createElement("td");
+            shortcutColumn.appendChild(dom.createTextNode((shortcuts[i].toString())));
+            suggestionsColumn.appendChild(dom.createTextNode(suggestions[i]));
+            row.append(shortcutColumn);
+            row.append(suggestionsColumn);
+            table.appendChild(row);
+        }
+
+        dom.body.appendChild(table);
+    }
+}
+
+module.exports = TableView;
+
+
+/***/ }),
+/* 8 */
 /***/ (function(module, exports, __webpack_require__) {
 
 html = ['settings', 'popup'];
@@ -568,94 +615,59 @@ img = ['logo256.png'];
 js = ['activated', 'button', 'form', 'settings'];
 css = ['popup'];
 
-html.forEach((html) => __webpack_require__(8)("./" + html + ".html"));
-img.forEach((img) => __webpack_require__(11)("./" + img));
-css.forEach((css) => __webpack_require__(13)("./" + css + ".css"));
+html.forEach((html) => __webpack_require__(9)("./" + html + ".html"));
+img.forEach((img) => __webpack_require__(12)("./" + img));
+css.forEach((css) => __webpack_require__(14)("./" + css + ".css"));
 
-
-/***/ }),
-/* 8 */
-/***/ (function(module, exports, __webpack_require__) {
-
-var map = {
-	"./popup.html": 9,
-	"./settings.html": 10
-};
-
-
-function webpackContext(req) {
-	var id = webpackContextResolve(req);
-	return __webpack_require__(id);
-}
-function webpackContextResolve(req) {
-	var id = map[req];
-	if(!(id + 1)) { // check for number or string
-		var e = new Error("Cannot find module '" + req + "'");
-		e.code = 'MODULE_NOT_FOUND';
-		throw e;
-	}
-	return id;
-}
-webpackContext.keys = function webpackContextKeys() {
-	return Object.keys(map);
-};
-webpackContext.resolve = webpackContextResolve;
-module.exports = webpackContext;
-webpackContext.id = 8;
 
 /***/ }),
 /* 9 */
 /***/ (function(module, exports, __webpack_require__) {
 
-module.exports = __webpack_require__.p + "../assets/html/popup.html";
+var map = {
+	"./popup.html": 10,
+	"./settings.html": 11
+};
+
+
+function webpackContext(req) {
+	var id = webpackContextResolve(req);
+	return __webpack_require__(id);
+}
+function webpackContextResolve(req) {
+	var id = map[req];
+	if(!(id + 1)) { // check for number or string
+		var e = new Error("Cannot find module '" + req + "'");
+		e.code = 'MODULE_NOT_FOUND';
+		throw e;
+	}
+	return id;
+}
+webpackContext.keys = function webpackContextKeys() {
+	return Object.keys(map);
+};
+webpackContext.resolve = webpackContextResolve;
+module.exports = webpackContext;
+webpackContext.id = 9;
 
 /***/ }),
 /* 10 */
 /***/ (function(module, exports, __webpack_require__) {
 
-module.exports = __webpack_require__.p + "../assets/html/settings.html";
+module.exports = __webpack_require__.p + "../assets/html/popup.html";
 
 /***/ }),
 /* 11 */
 /***/ (function(module, exports, __webpack_require__) {
 
-var map = {
-	"./logo256.png": 12
-};
-
-
-function webpackContext(req) {
-	var id = webpackContextResolve(req);
-	return __webpack_require__(id);
-}
-function webpackContextResolve(req) {
-	var id = map[req];
-	if(!(id + 1)) { // check for number or string
-		var e = new Error("Cannot find module '" + req + "'");
-		e.code = 'MODULE_NOT_FOUND';
-		throw e;
-	}
-	return id;
-}
-webpackContext.keys = function webpackContextKeys() {
-	return Object.keys(map);
-};
-webpackContext.resolve = webpackContextResolve;
-module.exports = webpackContext;
-webpackContext.id = 11;
+module.exports = __webpack_require__.p + "../assets/html/settings.html";
 
 /***/ }),
 /* 12 */
 /***/ (function(module, exports, __webpack_require__) {
 
-module.exports = __webpack_require__.p + "../assets/img/logo256.png";
-
-/***/ }),
-/* 13 */
-/***/ (function(module, exports, __webpack_require__) {
-
 var map = {
-	"./popup.css": 14
+	"./logo256.png": 13
 };
 
 
@@ -677,13 +689,82 @@ webpackContext.keys = function webpackContextKeys() {
 };
 webpackContext.resolve = webpackContextResolve;
 module.exports = webpackContext;
-webpackContext.id = 13;
+webpackContext.id = 12;
+
+/***/ }),
+/* 13 */
+/***/ (function(module, exports, __webpack_require__) {
+
+module.exports = __webpack_require__.p + "../assets/img/logo256.png";
 
 /***/ }),
 /* 14 */
 /***/ (function(module, exports, __webpack_require__) {
 
+var map = {
+	"./popup.css": 15
+};
+
+
+function webpackContext(req) {
+	var id = webpackContextResolve(req);
+	return __webpack_require__(id);
+}
+function webpackContextResolve(req) {
+	var id = map[req];
+	if(!(id + 1)) { // check for number or string
+		var e = new Error("Cannot find module '" + req + "'");
+		e.code = 'MODULE_NOT_FOUND';
+		throw e;
+	}
+	return id;
+}
+webpackContext.keys = function webpackContextKeys() {
+	return Object.keys(map);
+};
+webpackContext.resolve = webpackContextResolve;
+module.exports = webpackContext;
+webpackContext.id = 14;
+
+/***/ }),
+/* 15 */
+/***/ (function(module, exports, __webpack_require__) {
+
 module.exports = __webpack_require__.p + "../assets/css/popup.css";
+
+/***/ }),
+/* 16 */
+/***/ (function(module, exports) {
+
+function config(tabx) {
+    chrome.storage.local.get(function (results)
+    {
+        if (results != null) {
+            console.log("Current word enabled: " + results["Current Word"]);
+            console.log("Next word enables: " + results["Next Word"]);
+
+            if (!results['activated'])
+            {
+                console.log("Disabled upon init");
+                tabx.disable();
+            }
+
+            if(!results["Current Word"])
+            {
+                tabx.disableWordCompletion();
+            }
+
+            if(!results["Next Word"])
+            {
+                tabx.disableWordPrediction();
+            }
+
+            console.log("I was created");
+        }
+    })
+};
+
+module.exports = config;
 
 /***/ })
 /******/ ]);

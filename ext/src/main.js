@@ -1,6 +1,7 @@
 const TabX = require('./tabx.js');
-const display = require("../assets/js/viewstrats/tablestrat");
+const TableView = require("../assets/js/viewstrats/tablestrat-ui");
 require("../assets");
+const config = require("../browserspec/chrome/settings");
 
 var WordCompleteModel = {
     predictCurrentWord: function(input){return messageBackgroundPage("WORD_COMPLETE", input)}
@@ -10,35 +11,21 @@ var WordPredictModel = {
     predictNextWord: function(input){return messageBackgroundPage("WORD_PREDICT", input)}
 }
 
-//Before Constructor is called
-//      Check Settings for what features are enabled
+let display = new TableView(document);
+let tabx = new TabX(WordCompleteModel, WordPredictModel,
+    display,
+    document)
+tabx.registerListeners();
+config(tabx);
 
-var tabx;
-
-chrome.storage.local.get(function(results)
-{
-    if(results != null)
+$('div').each(function () {
+    let elem = $(this)
+    console.log("Getting divs");
+    if(elem.is(':input'))
     {
-        console.log("Current word enabled: " + results["Current Word"]);
-        console.log("Next word enables: " + results["Next Word"]);
-
-        tabx = new TabX(WordCompleteModel, WordPredictModel,
-            display,
-            document,
-            wordCompleteEnabled=results["Current Word"],
-            wordPredictEnabled=results['Next Word']);
-
-        tabx.registerListeners();
-        if(!results['activated'])
-        {
-            console.log("Disabled upon init");
-            tabx.disable();
-        }
-
-        console.log("I was created");
+        console.log(elem);
     }
 });
-
 
 chrome.runtime.onMessage.addListener(function(message, sender, sendResponse)
 {
@@ -72,7 +59,7 @@ chrome.runtime.onMessage.addListener(function(message, sender, sendResponse)
         tabx.disableWordPrediction();
     }
 
-        else if(message == "disableWordCompletion")
+    else if(message == "disableWordCompletion")
     {
         console.log("disabled Word Completion");
 

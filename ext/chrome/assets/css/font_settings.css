@@ -1,0 +1,19 @@
+/*.column {*/
+  /*float: left;*/
+  /*width: 50%;*/
+  /*align-content: stretch;*/
+/*}*/
+
+/*!* Clear floats after the columns *!*/
+/*.row:after {*/
+  /*content: "";*/
+  /*display: grid;*/
+  /*grid-template-columns: 3fr;*/
+/*}*/
+
+label
+{
+  display: inline-block;
+  float: left;
+  clear: left;
+}

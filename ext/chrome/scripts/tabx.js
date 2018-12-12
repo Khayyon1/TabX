@@ -885,15 +885,15 @@ webpackContext.id = 11;
 
 /***/ }),
 /* 12 */
-/***/ (function(module, exports, __webpack_require__) {
+/***/ (function(module, exports) {
 
-module.exports = __webpack_require__.p + "../assets/html/popup.html";
+throw new Error("Module parse failed: Unexpected token (1:0)\nYou may need an appropriate loader to handle this file type.\n> <!DOCTYPE html>\n| <html lang=\"en\">\n| <link rel=\"stylesheet\" type=\"text/css\" href=\"../css/popup.css\">");
 
 /***/ }),
 /* 13 */
-/***/ (function(module, exports, __webpack_require__) {
+/***/ (function(module, exports) {
 
-module.exports = __webpack_require__.p + "../assets/html/settings.html";
+throw new Error("Module parse failed: Unexpected token (1:0)\nYou may need an appropriate loader to handle this file type.\n> <h1>Settings</h1>\n| \n| <link rel=\"stylesheet\" type=\"text/css\" href=\"../css/popup.css\">");
 
 /***/ }),
 /* 14 */
@@ -926,9 +926,9 @@ webpackContext.id = 14;
 
 /***/ }),
 /* 15 */
-/***/ (function(module, exports, __webpack_require__) {
+/***/ (function(module, exports) {
 
-module.exports = __webpack_require__.p + "../assets/img/logo256.png";
+throw new Error("Module parse failed: Unexpected character '�' (1:0)\nYou may need an appropriate loader to handle this file type.\n(Source code omitted for this binary file)");
 
 /***/ }),
 /* 16 */
@@ -961,9 +961,9 @@ webpackContext.id = 16;
 
 /***/ }),
 /* 17 */
-/***/ (function(module, exports, __webpack_require__) {
+/***/ (function(module, exports) {
 
-module.exports = __webpack_require__.p + "../assets/css/popup.css";
+throw new Error("Module parse failed: Unexpected token (1:5)\nYou may need an appropriate loader to handle this file type.\n> body {\n|     min-width: 200px; /* your desired width */\n|     max-width: 100%;");
 
 /***/ }),
 /* 18 */

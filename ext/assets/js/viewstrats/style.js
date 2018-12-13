@@ -5,25 +5,36 @@ const Style = class
     constructor(){
         this.cache = {};
     }
-    table(element, input_bounds, textInputBox)
+    table(element, textInputBox)
     {
+        const elRect = element.getBoundingClientRect();
+        console.log('MISHI', elRect)
         element.style.display = 'flex';
         element.style.position = 'absolute';
         element.style.backgroundColor = "lightblue";
         element.style.zIndex = 999;
-        element.style.left = (input_bounds.left).toString() + "px";
-        element.style.top = (input_bounds.top + input_bounds.height).toString() + "px";
-        if (textInputBox != undefined){
-            const rect = textInputBox.getBoundingClientRect();
-            const caret = getCaretCoordinates(textInputBox, textInputBox.selectionStart);
-            console.log(rect.top, rect.right, rect.bottom, rect.left);
-            console.log('Caret is:', caret);
-            element.style.top = (rect.top + caret.top).toString()+'px';
-            element.style.left = (rect.left + caret.left).toString() + 'px';
-            // TODO: handle edge cases
-            const w = window.innerWidth;
-            const h = window.innerHeight;
+
+        const rect = textInputBox.getBoundingClientRect();
+        const caret = getCaretCoordinates(textInputBox, textInputBox.selectionStart);
+        element.style.top = (rect.top + caret.top).toString()+'px';
+        element.style.left = (rect.left + caret.left).toString() + 'px';
+    }
+
+    updatePosition(element){
+        const w = window.innerWidth;
+        const h = window.innerHeight;
+
+        const elRect = element.getBoundingClientRect();
+        const left = this.pxToInt(element.style.left);
+
+        if (elRect.right > w) {
+            const offset_x = elRect.right - w;
+            element.style.left = (left - offset_x).toString() + 'px'
         }
+
+    }
+    pxToInt(px){
+        return parseInt(px.slice(0, px.length - 2))
     }
     row(element, offset=6)
     {

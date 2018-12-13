@@ -10,14 +10,13 @@ const TableView = class
         this.style = new Style();
     }
 
-    createSuggestionsTable(textInputBox)
+    createSuggestionsTable()
     {
         let dom = this.dom;
         let table = dom.createElement("table");
         table.id = this.ID;
         table.className = "suggestions";
-        let input_bounds = dom.activeElement.getBoundingClientRect();
-        this.style.table(table, input_bounds, textInputBox);
+        this.style.table(table, dom.activeElement);
         this.current_table = table;
         return table
     }
@@ -35,10 +34,10 @@ const TableView = class
         }
     }
 
-    display(mappings, textInputBox)
+    display(mappings)
     {
         var dom = this.dom;
-        var table = this.createSuggestionsTable(textInputBox);
+        var table = this.createSuggestionsTable();
 
         var suggestions = Object.values(mappings);
         var shortcuts = Object.keys(mappings);
@@ -56,6 +55,7 @@ const TableView = class
         }
 
         dom.body.appendChild(table);
+        this.style.updatePosition(table);
     }
 }
 

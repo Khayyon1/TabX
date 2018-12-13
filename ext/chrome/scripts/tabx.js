@@ -579,14 +579,13 @@ const TableView = class
         this.style = new Style();
     }
 
-    createSuggestionsTable(textInputBox)
+    createSuggestionsTable()
     {
         let dom = this.dom;
         let table = dom.createElement("table");
         table.id = this.ID;
         table.className = "suggestions";
-        let input_bounds = dom.activeElement.getBoundingClientRect();
-        this.style.table(table, input_bounds, textInputBox);
+        this.style.table(table, dom.activeElement);
         this.current_table = table;
         return table
     }
@@ -604,10 +603,10 @@ const TableView = class
         }
     }
 
-    display(mappings, textInputBox)
+    display(mappings)
     {
         var dom = this.dom;
-        var table = this.createSuggestionsTable(textInputBox);
+        var table = this.createSuggestionsTable();
 
         var suggestions = Object.values(mappings);
         var shortcuts = Object.keys(mappings);
@@ -625,6 +624,7 @@ const TableView = class
         }
 
         dom.body.appendChild(table);
+        this.style.updatePosition(table);
     }
 }
 
@@ -642,24 +642,47 @@ const Style = class
     constructor(){
         this.cache = {};
     }
-    table(element, input_bounds, textInputBox)
+    table(element, textInputBox)
     {
-        console.log('MISHIIINPUT', textInputBox)
+        const elRect = element.getBoundingClientRect();
+        console.log('MISHI', elRect)
         element.style.display = 'flex';
         element.style.position = 'absolute';
         element.style.backgroundColor = "lightblue";
         element.style.zIndex = 999;
-        element.style.left = (input_bounds.left).toString() + "px";
-        element.style.top = (input_bounds.top + input_bounds.height).toString() + "px";
-        if (textInputBox != undefined){
-            const rect = textInputBox.getBoundingClientRect();
-            const caret = getCaretCoordinates(textInputBox, textInputBox.selectionStart);
-            console.log(rect.top, rect.right, rect.bottom, rect.left);
-            console.log('Caret is:', caret);
-            element.style.top = (rect.top + caret.top).toString()+'px';
-            element.style.left = (rect.left + caret.left).toString() + 'px';
-            // TODO: handle edge cases
+
+        const rect = textInputBox.getBoundingClientRect();
+        const caret = getCaretCoordinates(textInputBox, textInputBox.selectionStart);
+        console.log(rect.top, rect.right, rect.bottom, rect.left);
+        console.log('Caret is:', caret);
+        element.style.top = (rect.top + caret.top).toString()+'px';
+        element.style.left = (rect.left + caret.left).toString() + 'px';
+        // TODO: handle edge cases
+        const w = window.innerWidth;
+        const h = window.innerHeight;
+
+        console.log(element, element.innerWidth)
+        // console.log('MISHII', elRect.right, w)
+        if (elRect.right > w){
+            const offset_x = w - elRect.right;
+            element.style.left = (rect.left + caret.left - offset_x).toString() + 'px'
         }
+
+    }
+    updatePosition(element){
+        const w = window.innerWidth;
+        const h = window.innerHeight;
+
+        const elRect = element.getBoundingClientRect();
+        var left = element.style.left;
+        left = parseInt(left.slice(0, left.length-2))
+
+        if (elRect.right > w) {
+            const offset_x = elRect.right - w;
+            element.style.left = (left - offset_x).toString() + 'px'
+        }
+
+        console.log("HAHA", elRect, left)
     }
     row(element, offset=6)
     {

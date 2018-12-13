@@ -629,7 +629,6 @@ const TableView = class
     }
     config(settings){
         this.style.settings = settings;
-        console.log('MISHII',settings)
     }
     
 }
@@ -651,7 +650,6 @@ const Style = class
     table(element, textInputBox)
     {
         const elRect = element.getBoundingClientRect();
-        console.log('MISHI', elRect)
         element.style.display = 'flex';
         element.style.position = 'absolute';
         element.style.backgroundColor = "lightblue";
@@ -682,7 +680,6 @@ const Style = class
     row(element, offset=6)
     {
         element.style.marginRight = offset.toString() + 'px';
-        console.log('Mishii', this.settings)
         if (this.settings){
             element.style.fontFamily = this.settings.font;
             element.style.fontSize = this.settings.fontsize+"px";
@@ -919,8 +916,15 @@ function config(tabx) {
             {
                 tabx.disableWordPrediction();
             }
+            
+            let config = {
+                font: results["Font"],
+                fontsize: results["Font Size"],
+                fontstyle: results["Font Style"],
+                fontcolor: results["Font Color"]
+            };
 
-            console.log("I was created");
+            tabx.configureDisplay(config);
         }
     })
 };

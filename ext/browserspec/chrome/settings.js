@@ -20,8 +20,15 @@ function config(tabx) {
             {
                 tabx.disableWordPrediction();
             }
+            
+            let config = {
+                font: results["Font"],
+                fontsize: results["Font Size"],
+                fontstyle: results["Font Style"],
+                fontcolor: results["Font Color"]
+            };
 
-            console.log("I was created");
+            tabx.configureDisplay(config);
         }
     })
 };

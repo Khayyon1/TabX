@@ -59,7 +59,6 @@ const TableView = class
     }
     config(settings){
         this.style.settings = settings;
-        console.log('MISHII',settings)
     }
     
 }

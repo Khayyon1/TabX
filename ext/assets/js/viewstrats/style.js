@@ -8,7 +8,6 @@ const Style = class
     table(element, textInputBox)
     {
         const elRect = element.getBoundingClientRect();
-        console.log('MISHI', elRect)
         element.style.display = 'flex';
         element.style.position = 'absolute';
         element.style.backgroundColor = "lightblue";
@@ -39,7 +38,6 @@ const Style = class
     row(element, offset=6)
     {
         element.style.marginRight = offset.toString() + 'px';
-        console.log('Mishii', this.settings)
         if (this.settings){
             element.style.fontFamily = this.settings.font;
             element.style.fontSize = this.settings.fontsize+"px";

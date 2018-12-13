@@ -7,7 +7,6 @@ const Style = class
     }
     table(element, textInputBox)
     {
-        const elRect = element.getBoundingClientRect();
         element.style.display = 'flex';
         element.style.position = 'absolute';
         element.style.backgroundColor = "lightblue";
@@ -15,7 +14,9 @@ const Style = class
 
         const rect = textInputBox.getBoundingClientRect();
         const caret = getCaretCoordinates(textInputBox, textInputBox.selectionStart);
-        element.style.top = (rect.top + caret.top).toString()+'px';
+        var offset_y = window.getComputedStyle(textInputBox, "").fontSize;
+        offset_y = this.pxToInt(offset_y);
+        element.style.top = (rect.top + caret.top + offset_y).toString() + 'px';
         element.style.left = (rect.left + caret.left).toString() + 'px';
     }
 

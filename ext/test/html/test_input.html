@@ -9,5 +9,49 @@
 </form>
 <textarea>Hi There</textarea>
 
+<div contenteditable="true" oninput="info(event)">contenteditable div</div>
+<div>INFO</div>
+<div id="info">
+   <div id=inner-text></div>
+   <div id=active-tag></div>
+</div>
+   <script>
+      function info(event)
+      {
+         document.getElementById("inner-text").innerHTML = "PARENT DIV: " + event.target.innerText;
+         console.log(window.getSelection());
+         document.getElementById("active-tag").innerHTML = "ACTIVE DIV: " + window.getSelection().baseNode.parentElement.innerHTML
+         console.log(caret(event.target, window.getSelection().baseNode.parentElement));
+      }
+
+      function caret(parentEditableDiv, targetDiv)
+      {
+         if(parentEditableDiv.children.length == 0)
+         {
+            return window.getSelection().anchorOffset;
+         }
+
+         let children = parentEditableDiv.children
+         let text = parentEditableDiv.childNodes[0].nodeValue;
+         let i = 0;
+         console.log(children);
+
+         for(; i < children.length; i++)
+         {
+            let child = children[i];
+            if(child == targetDiv)
+            {
+               break;
+            }
+
+            text += child.innerText;
+         }
+
+         let caret = (text.length + window.getSelection().anchorOffset)
+         console.log(text + "(" + text.length + ")");
+         console.log("Caret: " + caret);
+      }
+
+   </script>
 </body>
 </html>

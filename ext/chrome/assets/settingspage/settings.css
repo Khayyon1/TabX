@@ -1,0 +1,14 @@
+body
+{
+    position: absolute;
+    background-color: #696969;
+}
+
+#settings-container
+{
+   background-color: lightgrey;
+   padding-left: 100px;
+   padding-right: 100px;
+   padding-bottom: 50px;
+   background-clip: content-box;
+}

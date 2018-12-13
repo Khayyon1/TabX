@@ -94,21 +94,27 @@
 
 const TabX = __webpack_require__(5);
 const TableView = __webpack_require__(7);
-__webpack_require__(10);
-const config = __webpack_require__(18);
+const config = __webpack_require__(10);
 
 var WordCompleteModel = {
-    predictCurrentWord: function(input){return messageBackgroundPage("WORD_COMPLETE", input)}
+    predictCurrentWord: function(input)
+    {
+      return messageBackgroundPage("WORD_COMPLETE", input)
+    }
 }
 
 var WordPredictModel = {
-    predictNextWord: function(input){return messageBackgroundPage("WORD_PREDICT", input)}
+    predictNextWord: function(input)
+    {
+      return messageBackgroundPage("WORD_PREDICT", input)
+    }
 }
 
 let display = new TableView(document);
 let tabx = new TabX(WordCompleteModel, WordPredictModel,
     display,
     document)
+
 tabx.registerListeners();
 config(tabx);
 
@@ -124,6 +130,7 @@ $('div').each(function () {
 chrome.runtime.onMessage.addListener(function(message, sender, sendResponse)
 {
     console.log("received message: " + message)
+
     if(message == "enableTabX") {
         tabx.enable();
         console.log("I was enabled");
@@ -159,13 +166,29 @@ chrome.runtime.onMessage.addListener(function(message, sender, sendResponse)
 
         tabx.disableWordCompletion();
     }
+
+    else if(message == "updateDisplay")
+    {
+      chrome.storage.local.get(function(results){
+         let config = {
+            font: results["Font"],
+            fontsize: results["Font Size"],
+            fontstyle: results["Font Style"],
+            fontcolor: results["Font Color"]
+         };
+
+         tabx.configureDisplay(config);
+      });
+
+    }
 });
 
 async function messageBackgroundPage(request, input)
 {
     let response = new Promise(function(resolve, reject)
     {
-        chrome.runtime.sendMessage({"TabxOp": request, "TabxInput": input}, function (response) {
+        chrome.runtime.sendMessage({"TabxOp": request, "TabxInput": input},
+         function (response) {
             resolve(response.TabxResults);
         });
     });
@@ -176,7 +199,6 @@ async function messageBackgroundPage(request, input)
 
     return results;
 }
-
 
 
 /***/ }),
@@ -407,7 +429,7 @@ const TabX = class
         {
             return [];
         }
-        
+
         let results = this.wordPredictModel.predictNextWord(this.getCurrentWord(this.document.activeElement));
 
         if(typeof(results) == Promise)
@@ -494,6 +516,11 @@ const TabX = class
         this.wordCompleteEnabled = true;
     }
 
+    configureDisplay(settings)
+    {
+      //STUB
+      console.log("I got configured~");
+    }
 };
 
 module.exports = TabX;
@@ -696,6 +723,7 @@ const Style = class
 
 module.exports = Style;
 
+
 /***/ }),
 /* 9 */
 /***/ (function(module, exports, __webpack_require__) {
@@ -842,132 +870,6 @@ if ( true && typeof module.exports != 'undefined') {
 
 /***/ }),
 /* 10 */
-/***/ (function(module, exports, __webpack_require__) {
-
-html = ['settings', 'popup'];
-img = ['logo256.png'];
-js = ['activated', 'button', 'form', 'settings'];
-css = ['popup'];
-
-html.forEach((html) => __webpack_require__(11)("./" + html + ".html"));
-img.forEach((img) => __webpack_require__(14)("./" + img));
-css.forEach((css) => __webpack_require__(16)("./" + css + ".css"));
-
-
-/***/ }),
-/* 11 */
-/***/ (function(module, exports, __webpack_require__) {
-
-var map = {
-	"./popup.html": 12,
-	"./settings.html": 13
-};
-
-
-function webpackContext(req) {
-	var id = webpackContextResolve(req);
-	return __webpack_require__(id);
-}
-function webpackContextResolve(req) {
-	var id = map[req];
-	if(!(id + 1)) { // check for number or string
-		var e = new Error("Cannot find module '" + req + "'");
-		e.code = 'MODULE_NOT_FOUND';
-		throw e;
-	}
-	return id;
-}
-webpackContext.keys = function webpackContextKeys() {
-	return Object.keys(map);
-};
-webpackContext.resolve = webpackContextResolve;
-module.exports = webpackContext;
-webpackContext.id = 11;
-
-/***/ }),
-/* 12 */
-/***/ (function(module, exports) {
-
-throw new Error("Module parse failed: Unexpected token (1:0)\nYou may need an appropriate loader to handle this file type.\n> <!DOCTYPE html>\n| <html lang=\"en\">\n| <link rel=\"stylesheet\" type=\"text/css\" href=\"../css/popup.css\">");
-
-/***/ }),
-/* 13 */
-/***/ (function(module, exports) {
-
-throw new Error("Module parse failed: Unexpected token (1:0)\nYou may need an appropriate loader to handle this file type.\n> <h1>Settings</h1>\n| \n| <link rel=\"stylesheet\" type=\"text/css\" href=\"../css/popup.css\">");
-
-/***/ }),
-/* 14 */
-/***/ (function(module, exports, __webpack_require__) {
-
-var map = {
-	"./logo256.png": 15
-};
-
-
-function webpackContext(req) {
-	var id = webpackContextResolve(req);
-	return __webpack_require__(id);
-}
-function webpackContextResolve(req) {
-	var id = map[req];
-	if(!(id + 1)) { // check for number or string
-		var e = new Error("Cannot find module '" + req + "'");
-		e.code = 'MODULE_NOT_FOUND';
-		throw e;
-	}
-	return id;
-}
-webpackContext.keys = function webpackContextKeys() {
-	return Object.keys(map);
-};
-webpackContext.resolve = webpackContextResolve;
-module.exports = webpackContext;
-webpackContext.id = 14;
-
-/***/ }),
-/* 15 */
-/***/ (function(module, exports) {
-
-throw new Error("Module parse failed: Unexpected character '�' (1:0)\nYou may need an appropriate loader to handle this file type.\n(Source code omitted for this binary file)");
-
-/***/ }),
-/* 16 */
-/***/ (function(module, exports, __webpack_require__) {
-
-var map = {
-	"./popup.css": 17
-};
-
-
-function webpackContext(req) {
-	var id = webpackContextResolve(req);
-	return __webpack_require__(id);
-}
-function webpackContextResolve(req) {
-	var id = map[req];
-	if(!(id + 1)) { // check for number or string
-		var e = new Error("Cannot find module '" + req + "'");
-		e.code = 'MODULE_NOT_FOUND';
-		throw e;
-	}
-	return id;
-}
-webpackContext.keys = function webpackContextKeys() {
-	return Object.keys(map);
-};
-webpackContext.resolve = webpackContextResolve;
-module.exports = webpackContext;
-webpackContext.id = 16;
-
-/***/ }),
-/* 17 */
-/***/ (function(module, exports) {
-
-throw new Error("Module parse failed: Unexpected token (1:5)\nYou may need an appropriate loader to handle this file type.\n> body {\n|     min-width: 200px; /* your desired width */\n|     max-width: 100%;");
-
-/***/ }),
-/* 18 */
 /***/ (function(module, exports) {
 
 function config(tabx) {

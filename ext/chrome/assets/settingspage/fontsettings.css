@@ -1,0 +1,43 @@
+/*.column {*/
+  /*float: left;*/
+  /*width: 50%;*/
+  /*align-content: stretch;*/
+/*}*/
+
+/*!* Clear floats after the columns *!*/
+/*.row:after {*/
+  /*content: "";*/
+  /*display: grid;*/
+  /*grid-template-columns: 3fr;*/
+/*}*/
+
+
+label
+{
+   position: relative;
+   display: inline-block;
+   float: left;
+   clear: left;
+}
+
+.column
+{
+   padding-left: 20px;
+   padding-bottom: 20px;
+}
+
+#font-settings
+{
+   padding-left: 20px;
+}
+
+#font-select-container, #font-size-container, #font-style-container, #font-color-container
+{
+   display: inline-block;
+   width: 150px;
+}
+
+.font, .font-style, .font-size
+{
+   width: 100%;
+}

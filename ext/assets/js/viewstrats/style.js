@@ -39,6 +39,13 @@ const Style = class
     row(element, offset=6)
     {
         element.style.marginRight = offset.toString() + 'px';
+        console.log('Mishii', this.settings)
+        if (this.settings){
+            element.style.fontFamily = this.settings.font;
+            element.style.fontSize = this.settings.fontsize+"px";
+            element.style.color = this.settings.fontcolor;
+            element.style.fontWeight = this.settings.fontstyle.toLowerCase();
+        }
     }
     calcSize(text, options = {}) {
 

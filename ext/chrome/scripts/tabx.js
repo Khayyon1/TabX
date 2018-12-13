@@ -520,6 +520,7 @@ const TabX = class
     {
       //STUB
       console.log("I got configured~");
+        this.displayStrategy.config(settings);
     }
 };
 
@@ -626,6 +627,11 @@ const TableView = class
         dom.body.appendChild(table);
         this.style.updatePosition(table);
     }
+    config(settings){
+        this.style.settings = settings;
+        console.log('MISHII',settings)
+    }
+    
 }
 
 module.exports = TableView;
@@ -653,40 +659,36 @@ const Style = class
 
         const rect = textInputBox.getBoundingClientRect();
         const caret = getCaretCoordinates(textInputBox, textInputBox.selectionStart);
-        console.log(rect.top, rect.right, rect.bottom, rect.left);
-        console.log('Caret is:', caret);
         element.style.top = (rect.top + caret.top).toString()+'px';
         element.style.left = (rect.left + caret.left).toString() + 'px';
-        // TODO: handle edge cases
-        const w = window.innerWidth;
-        const h = window.innerHeight;
-
-        console.log(element, element.innerWidth)
-        // console.log('MISHII', elRect.right, w)
-        if (elRect.right > w){
-            const offset_x = w - elRect.right;
-            element.style.left = (rect.left + caret.left - offset_x).toString() + 'px'
-        }
-
     }
+
     updatePosition(element){
         const w = window.innerWidth;
         const h = window.innerHeight;
 
         const elRect = element.getBoundingClientRect();
-        var left = element.style.left;
-        left = parseInt(left.slice(0, left.length-2))
+        const left = this.pxToInt(element.style.left);
 
         if (elRect.right > w) {
             const offset_x = elRect.right - w;
             element.style.left = (left - offset_x).toString() + 'px'
         }
 
-        console.log("HAHA", elRect, left)
+    }
+    pxToInt(px){
+        return parseInt(px.slice(0, px.length - 2))
     }
     row(element, offset=6)
     {
         element.style.marginRight = offset.toString() + 'px';
+        console.log('Mishii', this.settings)
+        if (this.settings){
+            element.style.fontFamily = this.settings.font;
+            element.style.fontSize = this.settings.fontsize+"px";
+            element.style.color = this.settings.fontcolor;
+            element.style.fontWeight = this.settings.fontstyle.toLowerCase();
+        }
     }
     calcSize(text, options = {}) {
 

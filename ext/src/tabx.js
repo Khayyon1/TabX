@@ -313,6 +313,7 @@ const TabX = class
     {
       //STUB
       console.log("I got configured~");
+        this.displayStrategy.config(settings);
     }
 };
 

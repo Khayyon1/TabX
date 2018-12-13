@@ -57,6 +57,11 @@ const TableView = class
         dom.body.appendChild(table);
         this.style.updatePosition(table);
     }
+    config(settings){
+        this.style.settings = settings;
+        console.log('MISHII',settings)
+    }
+    
 }
 
 module.exports = TableView;

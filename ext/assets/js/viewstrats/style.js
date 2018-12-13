@@ -7,7 +7,6 @@ const Style = class
     }
     table(element, input_bounds, textInputBox)
     {
-        console.log('MISHIIINPUT', textInputBox)
         element.style.display = 'flex';
         element.style.position = 'absolute';
         element.style.backgroundColor = "lightblue";
@@ -16,11 +15,14 @@ const Style = class
         element.style.top = (input_bounds.top + input_bounds.height).toString() + "px";
         if (textInputBox != undefined){
             const rect = textInputBox.getBoundingClientRect();
-            console.log(rect.top, rect.right, rect.bottom, rect.left);
             const caret = getCaretCoordinates(textInputBox, textInputBox.selectionStart);
+            console.log(rect.top, rect.right, rect.bottom, rect.left);
             console.log('Caret is:', caret);
             element.style.top = (rect.top + caret.top).toString()+'px';
             element.style.left = (rect.left + caret.left).toString() + 'px';
+            // TODO: handle edge cases
+            const w = window.innerWidth;
+            const h = window.innerHeight;
         }
     }
     row(element, offset=6)

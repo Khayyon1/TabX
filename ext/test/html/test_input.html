@@ -18,38 +18,55 @@
    <script>
       function info(event)
       {
-         document.getElementById("inner-text").innerHTML = "PARENT DIV: " + event.target.innerText;
+         document.getElementById("inner-text").innerHTML = "PARENT DIV: " +
+            event.target.innerText;
          console.log(window.getSelection());
-         document.getElementById("active-tag").innerHTML = "ACTIVE DIV: " + window.getSelection().baseNode.parentElement.innerHTML
-         console.log(caret(event.target, window.getSelection().baseNode.parentElement));
+         document.getElementById("active-tag").innerHTML = "ACTIVE DIV: " +
+            window.getSelection().baseNode.textContent
+         console.log(caret(event.target, window.getSelection().baseNode));
       }
 
       function caret(parentEditableDiv, targetDiv)
       {
-         if(parentEditableDiv.children.length == 0)
+         if(parentEditableDiv == targetDiv)
          {
             return window.getSelection().anchorOffset;
          }
 
-         let children = parentEditableDiv.children
-         let text = parentEditableDiv.childNodes[0].nodeValue;
-         let i = 0;
-         console.log(children);
+         let text = getText(parentEditableDiv, targetDiv);
+         let caret = (text.length + window.getSelection().anchorOffset)
+         
+         return caret;
+      }
 
-         for(; i < children.length; i++)
+      function getText(root, target)
+      {
+         let cur = target;
+         let text = "";
+         while(cur != root)
          {
-            let child = children[i];
-            if(child == targetDiv)
+            while(cur.previousSibling != null)
             {
-               break;
+               cur = cur.previousSibling;
+               text = cur.textContent + text;
+               if(["P", "DIV"].includes(cur.tagName))
+               {
+                  text = " " + text;
+               }
             }
 
-            text += child.innerText;
+            //Edge case if the parent node is a div or p tag
+            //since the text associated with the parent is its child,
+            //which cannot be detected with the above check in the while
+            //loop
+            cur = cur.parentNode;
+            if(["P", "DIV"].includes(cur.tagName))
+            {
+               text = " " + text;
+            }
          }
 
-         let caret = (text.length + window.getSelection().anchorOffset)
-         console.log(text + "(" + text.length + ")");
-         console.log("Caret: " + caret);
+         return text;
       }
 
    </script>

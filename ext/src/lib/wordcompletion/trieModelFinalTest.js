@@ -62,7 +62,10 @@ for(let i = 0; i < buffer.length-1; i++){
 
     if(intersect_arrays(sugg, tempArray).length > 0){
         score++;
-        console.log(sugg, tempArray);
+
+    }
+    else{
+        console.log(match[1] ,sugg, tempArray);
     }
 }
 

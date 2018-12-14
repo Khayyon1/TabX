@@ -1,5 +1,5 @@
 //var expect = require('expect')
-const wordLocation = "sampleText/1-1000.txt";
+const wordLocation = "sampleText/1-1000Bonus.txt";
 
 function simpleReadFileSync(filePath){
 

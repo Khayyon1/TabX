@@ -1,4 +1,4 @@
-const WordCompleteModel = require("./lib/wordcompletion/wordCompletionModel");
+const WordCompleteModel = require("../src/lib/wordcompletion/triecomplete/trieModelFinal.js");
 const WordPredictModel = require("./lib/wordprediction/markov/word-prediction");
 
 
@@ -37,7 +37,7 @@ chrome.runtime.onMessage.addListener(
 
             return;
          }
-         
+
          catch(err)
          {
             console.log("ERROR: " + err)

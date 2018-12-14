@@ -20,12 +20,15 @@ function Trie() {
   			key : ''
   		, children: {}
         , length:  0
+        ,value : ''
+        ,valid : false
+        ,closest: []
     };
 
 }
 
 Trie.prototype.import = function(wordLocation){
-    wordList = simpleReadFileSync(wordLocation)
+    let wordList = simpleReadFileSync(wordLocation);
     for(var i = 0; i < wordList.length; i++){
         this.add(wordList[i], true)
     }
@@ -33,7 +36,7 @@ Trie.prototype.import = function(wordLocation){
 
 // Prototype adds a characteristic to the Trie, in this case it adds a function
 Trie.prototype.add = function(key, validWord) {
-    key = key.toLowerCase();
+    // key = key.toLowerCase();
     var firstNode = false;
     // Make a copy of key
     keyHold = JSON.parse(JSON.stringify(key));
@@ -42,9 +45,7 @@ Trie.prototype.add = function(key, validWord) {
     	, curChar = key.slice(0,1)
         , parNode = this.head;
     key = key.slice(1);
-	while(typeof curNode.children[curChar] !== "undefined"
-		&& curChar.length > 0){
-
+	while(curNode.children[curChar] !== undefined && curChar.length > 0){
 		curNode = curNode.children[curChar];
 		curChar = key.slice(0,1);
 		key = key.slice(1);
@@ -52,38 +53,32 @@ Trie.prototype.add = function(key, validWord) {
 
 	}
     if(curChar.length === 0){
-        curNode.value = keyHold;
+        valid = true
     }
+
     //If the first letter is already used
     if (firstNode){
         parNode = curNode;
     }
-
 	while(curChar.length > 0) {
 		newNode = {
 			key : curChar
             //places value of String if true, places undefined if not end of word
-			, value : key.length === 0 && validWord ? keyHold : undefined
-			, children : {}
+            , valid : (keyHold === (parNode.value + curChar)) && validWord
+			, value : parNode.value + curChar
+			, children: {}
             , length: parNode.length + 1
+            , closest: []
 		};
         parNode.children[curChar] = newNode;
 		parNode = Object.assign({}, newNode);
 
         curChar = key.slice(0,1);
 		key = key.slice(1);
-
 	}
-    if (parNode.value != undefined && parNode.value != null){
-        if (parNode.value.length != parNode.length ){
-                er =  new Error('length is wrong ' + parNode.value + " " + parNode.length );
-                throw er
-        }
-    }
-
 };
 Trie.search = function(key) {
-    key = key.toLowerCase();
+    //key = key.toLowerCase();
     keyHold = JSON.parse(JSON.stringify(key));
 	var curNode = this.head
 		, curChar = key.slice(0,1)
@@ -101,22 +96,59 @@ Trie.search = function(key) {
 	if (curNode.value !== undefined && key.length === 0) {
 		return curNode;
 	} else {
-        er =  new Error('word "' +keyHold +'" does not exist'  );
+        er =  new Error('word "' + keyHold +'" does not exist'  );
         throw er
 	}
 };
 
 
-Trie.prototype.save = function(){
+Trie.prototype.save = function(importTrie){
     var util = require("util");
-    console.log(util.inspect(testTrie, {showHidden: false, depth: null}));
-    console.log('module.exports = Trie')
+    console.log(util.inspect(importTrie, {showHidden: false, depth: null}));
 }
 
-var testTrie = new Trie()
-module.exports = testTrie
-// testTrie.import(wordLocation)
+Trie.prototype.addClosest = function(){
+    var SpellChecker = require('symspell');
+    var corrector = new SpellChecker(3);
 
+    let wordList = simpleReadFileSync(wordLocation);
+    for(let i = 0; i < wordList.length -1; i++){
+        corrector.addWords(wordList[i]);
+    }
+
+    var queue = [];
+    queue.push(this.head);
+    while(queue.length > 0){
+         let tempNode = queue.shift();
+         for (var key in tempNode.children){
+             queue.push(tempNode.children[key]);
+         }
+         //console.log(tempNode.value)
+         let arrayWords = corrector.lookup(tempNode.value);
+         if(arrayWords.length > 0){
+             for(var i = 0; i < arrayWords.length; i++){
+                 tempNode.closest.push(arrayWords[i].term);
+                 if (i > 5){
+                     i = arrayWords.length
+                 }
+             }
+
+         }
+    }
+    //create queue
+    //add head to queue
+    //while queue is not empty
+    //add children of currNode to queue
+    //find closest words to current
+}
+
+var testTrie = new Trie();
+module.exports = testTrie;
+
+var realTrie = new Trie();
+
+realTrie.import(wordLocation)
+realTrie.addClosest()
 //Coment this out to stop automatic.
 //Use console command save > trieModel.js
-// testTrie.save();
+realTrie.save(realTrie);

@@ -19,10 +19,13 @@ wordList = simpleReadFileSync(wordLocation);
 for(var i = 0; i < wordList.length; i++){
     var curNode = train.head;
     train.add(wordList[i], true);
+    let prevValue = ""
     for(var j in wordList[i]){
-        curNode = curNode.children[wordList[i][j].toLowerCase()];
-        expect(curNode.key.toLowerCase()).to.be(wordList[i][j].toLowerCase());
-
+        let curKey = wordList[i][j];
+        curNode = curNode.children[wordList[i][j]];
+        expect(curNode.key).to.be(wordList[i][j]);
+        expect(curNode.value).to.be(prevValue + curKey);
+        prevValue += curKey
     }
-    expect(wordList[i].toLowerCase()).to.be(curNode.value)
+    expect(wordList[i]).to.be(curNode.value)
 }

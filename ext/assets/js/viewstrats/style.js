@@ -4,6 +4,7 @@ const Style = class
 {
     constructor(){
         this.cache = {};
+        this.offset_y = 0;
     }
     table(element, textInputBox)
     {
@@ -14,9 +15,9 @@ const Style = class
 
         const rect = textInputBox.getBoundingClientRect();
         const caret = getCaretCoordinates(textInputBox, textInputBox.selectionStart);
-        var offset_y = window.getComputedStyle(textInputBox, "").fontSize;
-        offset_y = this.pxToInt(offset_y);
-        element.style.top = (rect.top + caret.top + offset_y).toString() + 'px';
+        this.offset_y = window.getComputedStyle(textInputBox, "").fontSize;
+        this.offset_y = this.pxToInt(this.offset_y) - textInputBox.scrollTop;
+        element.style.top = (rect.top + caret.top + this.offset_y).toString() + 'px';
         element.style.left = (rect.left + caret.left).toString() + 'px';
     }
 
@@ -26,10 +27,19 @@ const Style = class
 
         const elRect = element.getBoundingClientRect();
         const left = this.pxToInt(element.style.left);
+        const top = this.pxToInt(element.style.top);
+
+        console.log('Mishiii', w, elRect.right)
+        console.log(elRect)
 
         if (elRect.right > w) {
             const offset_x = elRect.right - w;
             element.style.left = (left - offset_x).toString() + 'px'
+        }
+
+        if (elRect.bottom > h){
+            const offset_y = 2*this.offset_y + parseInt(this.settings.fontsize);
+            element.style.top = (top - offset_y).toString() + 'px'
         }
 
     }

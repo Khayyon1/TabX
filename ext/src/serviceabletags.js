@@ -1,45 +1,67 @@
 var selector = 'input[type=text], textarea, [contenteditable=true], [contenteditable]';
 
 var serviceableTags = [
-    "input[type=text]",
-    'textarea',
-    "[contenteditable=true]",
-    "[contenteditable]"
+   "input[type=text]",
+   'textarea',
+   "[contenteditable=true]",
+   "[contenteditable]"
+]
+
+var contenteditable = [
+   "[contenteditable=true]",
+   "[contenteditable]"
 ]
 
 function getServicableElements()
 {
-    return document.querySelectorAll(selector);
+   return document.querySelectorAll(selector);
 }
 
 function activeElementIsServiceable()
 {
-    let activeElement = document.activeElement;
-    for(let i = 0; i < serviceableTags.length; i++)
-    {
-        if(activeElement.matches(serviceableTags[i]))
-        {
-            return true;
-        }
-    }
+   let activeElement = document.activeElement;
+   for(let i = 0; i < serviceableTags.length; i++)
+   {
+      if(activeElement.matches(serviceableTags[i]))
+      {
+         return true;
+      }
+   }
 
-    return false;
+   return false;
 }
 
-function caretAndText(parentEditableDiv, targetDiv)
+function isContentEditableDiv(tag)
+{
+   if(tag.tagName == "DIV")
+   {
+      for(let matcher of contenteditable)
+      {
+         if(tag.matches(matcher))
+         {
+            return true;
+         }
+      }
+   }
+
+   return false;
+}
+
+
+function caretAndTextOfEditableDiv(parentEditableDiv, targetDiv)
 {
    if(parentEditableDiv == targetDiv)
    {
       return window.getSelection().anchorOffset;
    }
 
-   let text = getText(parentEditableDiv, targetDiv);
+   let text = getTextUpToChildInEditableDiv(parentEditableDiv, targetDiv);
    let caret = (text.length + window.getSelection().anchorOffset)
 
-   return {text: test, caret: caret};
+   return {"text": text, "caret": caret } ;
 }
 
-function getTextInEditableDiv(root, target)
+function getTextUpToChildInEditableDiv(root, target)
 {
    let cur = target;
    let text = "";
@@ -69,8 +91,10 @@ function getTextInEditableDiv(root, target)
    return text;
 }
 
-
 module.exports = {
-    getServicableElements: getServicableElements,
-    activeElementIsServiceable: activeElementIsServiceable
+   isContentEditableDiv: isContentEditableDiv,
+   getServicableElements: getServicableElements,
+   activeElementIsServiceable: activeElementIsServiceable,
+   caretAndTextOfEditableDiv: caretAndTextOfEditableDiv,
+   getTextUpToChildInEditableDiv: getTextUpToChildInEditableDiv
 }

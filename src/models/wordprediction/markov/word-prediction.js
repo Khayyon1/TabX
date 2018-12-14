@@ -49,12 +49,11 @@ class WordPrediction {
                     else {
                         var max = values[0];
                     }
-    
                     var originalPrediction = keys[values.indexOf(max)];
                     if (originalPrediction.length > 0) {
                         var predictionSplit = originalPrediction.split(/[^a-z ' ’ a-zA-Z.\-_]/i);
                         var prediction;
-                        if (predictionSplit[0].match(/[a-z]/i)) {
+                        if (/[a-z]/i.test(predictionSplit[0])) {
                             prediction = predictionSplit[0];
                         }
                         else {

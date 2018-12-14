@@ -14,6 +14,8 @@ class WordPrediction {
     predictNextWord(input) {
         //can input string have punctuation? deal with punctuation - commas, periods, etc. 
         //do we even want to remove something like commas, since they affect word prediction?
+        //leave punctuation in the middle of a sentence IN the training model, but remove end of sentence words from word bank. also when getting suggestions from wordbank, 
+        //remve all punctuation
 
         //lowercase uppercase thing - search both
         //when parsing and making initial markov chain, if lowercase of a word already exists and you get an uppercase,
@@ -23,6 +25,10 @@ class WordPrediction {
         // *figure out the undefined thing for new model
 
         //cite text data sets used
+
+        //punctuation and commas in trained model/input??
+
+        //train models on bigger text corpus
 
         var suggestions = this.model.start(input).end(1).process(this.predictTopThree);
         return suggestions;
@@ -34,7 +40,7 @@ class WordPrediction {
             if (wordBanks[i][strings[i]] != null) {
                 var keys = Object.keys(wordBanks[i][strings[i]]);
                 var values = Object.values(wordBanks[i][strings[i]]);
-                while (suggestions.length < 3 && keys.length > 0) {
+                while (suggestions.length < 10 && keys.length > 0) {
                     if (values.length > 1) {
                         var max = values.reduce(function(a, b) {
                         return Math.max(a, b);
@@ -46,7 +52,7 @@ class WordPrediction {
     
                     var originalPrediction = keys[values.indexOf(max)];
                     if (originalPrediction.length > 0) {
-                        var predictionSplit = originalPrediction.split(/[^a-z ' ’]/i);
+                        var predictionSplit = originalPrediction.split(/[^a-z ' ’ a-zA-Z.\-_]/i);
                         var prediction;
                         if (predictionSplit[0].match(/[a-z]/i)) {
                             prediction = predictionSplit[0];
@@ -54,9 +60,9 @@ class WordPrediction {
                         else {
                             prediction = predictionSplit[1];
                         }
-                        if (prediction.match(/[a-z]/i)) {
-                            prediction = prediction[0] + prediction.slice(1).toLowerCase();
-                        }
+                        // if (prediction.match(/[a-z]/i)) {   ---include this in og training
+                        //     prediction = prediction[0] + prediction.slice(1).toLowerCase();
+                        // }
                     }
                     if (!(suggestions.includes(prediction)) && prediction.length > 0) {
                         suggestions.push(prediction);

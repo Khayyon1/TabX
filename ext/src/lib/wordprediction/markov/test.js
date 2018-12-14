@@ -1,4 +1,4 @@
 var test = require('./word-prediction');
 
-console.log(test.libraryModelLarge.predictNextWord("it's so good that it "));
+console.log(test.blogsModelLarge.predictNextWord("hi you to think "));
 

@@ -32,5 +32,5 @@ var WordPredictModelMSGER = {
 
 module.exports = {
    WordCompleteModel: WordCompleteModelMSGER,
-   WordPredictModel: WordCompleteModelMSGER
+   WordPredictModel: WordPredictModelMSGER
 }

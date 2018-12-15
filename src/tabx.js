@@ -40,17 +40,7 @@ const TabX = class
         var charAtCaret;
         var text;
 
-        if(serviceabletags.isContentEditableDiv(elem))
-        {
-           let info = serviceabletags.caretAndTextOfEditableDiv(elem, window.getSelection().baseNode);
-           caret = info[caret];
-           text = info["text"];
-           console.log("TEXT: " + text);
-           previous = info["text"].charAt(caret - 1);
-           charAtCaret = info["text"].charAt(caret);
-        }
-
-        else
+        if(serviceabletags.isInput(elem))
         {
            caret = elem.selectionStart;
            text = elem.value;
@@ -58,16 +48,34 @@ const TabX = class
            charAtCaret = text.charAt(caret);
         }
 
+        else if(serviceabletags.isContentEditable(elem))
+        {
+           let info = serviceabletags.caretAndTextOfEditableDiv(elem, window.getSelection().baseNode);
+           caret = info["caret"];
+           text = info["text"];
+           console.log("TEXT : " + text);
+           console.log("CARET: " + caret);
+           previous = info["text"].charAt(caret - 1);
+           charAtCaret = info["text"].charAt(caret);
+        }
+
+        else
+        {
+           throw new Error("Active element not serviceable");
+        }
+
+
         let currentWord = this.getCurrentWord(text, caret);
-        if(previous != " " && this.wordCompleteEnabled)
+        console.log("currentWord: " + currentWord);
+
+        //Check for whether we can do word prediction
+        var space_precedes_caret = (previous == " ");
+        if(!space_precedes_caret && this.wordCompleteEnabled)
         {
             return await this.getSuggestions(currentWord);
         }
 
-        //Check for whether we can do word prediction
-        var space_precedes_caret = (previous == " ");
         var isCharAtCaret = (charAtCaret != " " && charAtCaret != "");
-
         if(!this.inputIsNotValid(currentWord)
             ||
             space_precedes_caret
@@ -76,7 +84,7 @@ const TabX = class
             ||
             this.wordPredictEnabled)
         {
-            return await this.getNextWordSuggestion(text.trim());
+            return await this.getNextWordSuggestion(text.trim().substring(0, caret));
         }
     }
 
@@ -155,11 +163,16 @@ const TabX = class
         //If it is not, push previous back one to allow the current
         //word be the word that comes before a whitespace
         //Ex. "hello |" -> "hello"
-        var prev = text.charAt(caret - 1);
-        if(prev === " "){
-            prev = text.charAt(caret - 2);
-            caret -= 1;
+        let offset = 1;
+        var prev = text.charAt(caret - offset);
+        while(prev.match(/\s/))
+        {
+            offset += 1;
+            prev = text.charAt(caret - offset);
         }
+
+        //off by one due to while loop
+        caret -= (offset - 1);
 
         //Make sure caret is at the end of a developing word
         if(prev.match(/\w/))

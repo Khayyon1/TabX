@@ -7,6 +7,11 @@ var serviceableTags = [
    "[contenteditable]"
 ]
 
+var input = [
+   "input[type=text]",
+   'textarea'
+]
+
 var contenteditable = [
    "[contenteditable=true]",
    "[contenteditable]"
@@ -31,10 +36,21 @@ function activeElementIsServiceable()
    return false;
 }
 
-function isContentEditableDiv(tag)
+function isInput(tag)
 {
-   if(tag.tagName == "DIV")
+   for(let matcher of input)
    {
+      if(tag.matches(matcher))
+      {
+         return true;
+      }
+   }
+
+   return false;
+}
+
+function isContentEditable(tag)
+{
       for(let matcher of contenteditable)
       {
          if(tag.matches(matcher))
@@ -42,7 +58,6 @@ function isContentEditableDiv(tag)
             return true;
          }
       }
-   }
 
    return false;
 }
@@ -55,16 +70,20 @@ function caretAndTextOfEditableDiv(parentEditableDiv, targetDiv)
       return window.getSelection().anchorOffset;
    }
 
-   let text = getTextUpToChildInEditableDiv(parentEditableDiv, targetDiv);
-   let caret = (text.length + window.getSelection().anchorOffset)
-
-   return {"text": text, "caret": caret } ;
+   let texts = getTextUpToChildInEditableDiv(parentEditableDiv, targetDiv)
+   let base = texts[0];
+   let activeElementText = texts[1];
+   let offset = window.getSelection().anchorOffset;
+   let caret = (base.length + offset)
+   let stringUpToCaret = activeElementText.substring(0, offset)
+   return {"text": base + stringUpToCaret, "caret": caret } ;
 }
 
 function getTextUpToChildInEditableDiv(root, target)
 {
    let cur = target;
-   let text = "";
+   let activeNodeText = target.textContent;
+   let text = ""
    while(cur != root)
    {
       while(cur.previousSibling != null)
@@ -79,7 +98,7 @@ function getTextUpToChildInEditableDiv(root, target)
 
       //Edge case if the parent node is a div or p tag.
       //since the text associated with the parent is one
-      //of its child nodes
+      //of its child nodes.
       cur = cur.parentNode;
       if(["P", "DIV"].includes(cur.tagName))
       {
@@ -87,14 +106,14 @@ function getTextUpToChildInEditableDiv(root, target)
       }
    }
 
-   return text;
+   return [text, activeNodeText];
 }
 
 module.exports =
 {
-   isContentEditableDiv: isContentEditableDiv,
+   isInput: isInput,
+   isContentEditable: isContentEditable,
    getServicableElements: getServicableElements,
    activeElementIsServiceable: activeElementIsServiceable,
    caretAndTextOfEditableDiv: caretAndTextOfEditableDiv,
-   getTextUpToChildInEditableDiv: getTextUpToChildInEditableDiv
 }

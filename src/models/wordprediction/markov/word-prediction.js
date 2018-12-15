@@ -26,6 +26,10 @@ class WordPrediction {
 
 
     predictNextWord(input) {
+        //parse punctuation and standarize capitalize for input strings
+        //if suggestion contains a comma or punctuation, remove it
+        //remove commas from suggestions (predictnextthree function)
+        
         //can input string have punctuation? deal with punctuation - commas, periods, etc. 
         //do we even want to remove something like commas, since they affect word prediction?
         //leave punctuation in the middle of a sentence IN the training model, but remove end of sentence words from word bank. also when getting suggestions from wordbank, 

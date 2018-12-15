@@ -76,9 +76,12 @@ const TabX = class
             return await this.getSuggestions(currentWord);
         }
 
+        charAtCaret = /\S/.test(charAtCaret);
+        
         console.log("INPUT VALID          : " + !this.inputIsNotValid(currentWord));
         console.log("NO CHAR BEFORE CARET : " + !charBeforeCaret);
         console.log("NO CHAR AT CARET     : " + !charAtCaret);
+
 
         if(!this.inputIsNotValid(currentWord)
             && !charBeforeCaret

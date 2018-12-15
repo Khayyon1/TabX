@@ -53,8 +53,6 @@ const TabX = class
            let info = serviceabletags.caretAndTextOfEditableDiv(elem, window.getSelection().baseNode);
            caret = info["caret"];
            text = info["text"];
-           console.log("TEXT : " + text);
-           console.log("CARET: " + caret);
            previous = info["text"].charAt(caret - 1);
            charAtCaret = info["text"].charAt(caret);
         }
@@ -66,8 +64,6 @@ const TabX = class
 
 
         let currentWord = this.getCurrentWord(text, caret);
-        console.log("currentWord: " + currentWord);
-
         //Check for whether we can do word prediction
 
         var charBeforeCaret = /\S/.test(previous);
@@ -77,11 +73,6 @@ const TabX = class
         }
 
         charAtCaret = /\S/.test(charAtCaret);
-        
-        console.log("INPUT VALID          : " + !this.inputIsNotValid(currentWord));
-        console.log("NO CHAR BEFORE CARET : " + !charBeforeCaret);
-        console.log("NO CHAR AT CARET     : " + !charAtCaret);
-
 
         if(!this.inputIsNotValid(currentWord)
             && !charBeforeCaret
@@ -148,16 +139,18 @@ const TabX = class
             target)["caret"];
 
          console.log("WORD COMPLETION FOR DIV");
-         console.log("NODE VALUE: " + target.nodeValue + "(" + caret + ")");
-
-         let offset = this.getCurrentWord(target.nodeValue,
-            selection.anchorOffset).length;
+         console.log("-----------------------");
+         console.log("NODE VALUE: " + JSON.stringify(target.nodeValue) + " (" + caret + ")");
 
          let start = selection.anchorOffset;
+         let offset = this.getCurrentWord(target.nodeValue, start).length;
+
+         console.log("CHAR AT START:   " + JSON.stringify(target.nodeValue.charAt(start)));
+         console.log("-----------------------");
 
          target.nodeValue = this.replaceWordAt(
-             target.nodeValue,
-             caret,
+             target.nodeValue.replace(/\u00a0/g, " "),
+             start,
              userChoice);
 
          //Set the caret back to expected position
@@ -173,20 +166,38 @@ const TabX = class
 
     replaceWordAt(str, i, word, delimiter=' ')
     {
-        var startOfWord = str.lastIndexOf(delimiter, i - 1);
-        var before = str.substring(0, startOfWord);
+        console.log(arguments);
 
+        console.log("before")
+        console.log(JSON.stringify(str))
+        console.log(JSON.stringify(delimiter))
+        console.log(JSON.stringify(i))
+
+        let startOfWord = str.lastIndexOf(delimiter, i);
+        console.log("IS U DELMITER???: " + JSON.stringify(str.charAt(i - 1)) === " ")
+
+        console.log("after")
+        console.log(JSON.stringify(str))
+        console.log(JSON.stringify(delimiter))
+        console.log(JSON.stringify(i))
+
+        let before = str.substring(0, startOfWord);
         if (before != "" && before != null)
         {
             before += " "
         }
 
-        var after  = str.substring(i);
+        let after  = str.substring(i);
 
         if(after.charAt(0) != "" && after.charAt(0) != " ")
         {
             after = " " + after;
         }
+
+        console.log("BEGN  : " + startOfWord);
+        console.log("BEFORE: " + before);
+        console.log("WORD  : " + word);
+        console.log("AFTER : " + after);
 
         return before + word + after;
     }
@@ -330,7 +341,6 @@ const TabX = class
             elem.addEventListener('blur', function()
             {
                this.displayStrategy.tearDown();
-               console.log(this.displayStrategy);
             }.bind(this));
         };
     }

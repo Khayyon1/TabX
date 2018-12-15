@@ -9,9 +9,8 @@ async function messageBackgroundPage(request, input)
       });
    });
 
-   console.log("before results");
    let results = await response;
-   console.log("after results: " + results);
+   console.log("RESULTS: " + results);
 
    return results;
 }

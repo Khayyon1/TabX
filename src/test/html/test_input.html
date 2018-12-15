@@ -4,8 +4,8 @@
 </head>
 <body>
 <form>
-    Type here <input type="text"><br><br>
-    Type here as well <input type="text">
+    Type here <input type="text" size="50"><br><br>
+    Type here as well <input type="text" size="50">
 </form>
 <textarea>Hi There</textarea>
 
@@ -14,31 +14,34 @@
 <div id="info">
    <div id=inner-text></div>
    <div id=active-tag></div>
+   <div id=window-selection></div>
+   <div id=char-at></div>
 </div>
    <script>
+      document.body.addEventListener("keyup", function(e)
+      {
+         info(e);
+      });
+
+      function insert(id, prefix, text)
+      {
+         document.getElementById(id).innerHTML = prefix + ": " + JSON.stringify(text);
+      }
+
+      function parens(str)
+      {
+         return "(" + str + ")";
+      }
       function info(event)
       {
-         document.getElementById("inner-text").innerHTML = "PARENT DIV: " +
-            event.target.innerText;
-         console.log(window.getSelection());
-         document.getElementById("active-tag").innerHTML = "ACTIVE DIV: " +
-            window.getSelection().baseNode.textContent
-         console.log(caret(event.target, window.getSelection().baseNode));
+         let text = window.getSelection().anchorNode.textContent;
+         let caret = window.getSelection().anchorOffset;
+         insert("inner-text", "PARENT DIV",
+            event.target.innerText + parens(event.target.innerText.length));
+         insert("active-tag", "ACTIVE DIV", text + parens(text.length));
+         insert("window-selection", "SELECTION", caret);
+         insert("char-at", "CHAR AT", text.charAt(caret));
       }
-
-      function caret(parentEditableDiv, targetDiv)
-      {
-         if(parentEditableDiv == targetDiv)
-         {
-            return window.getSelection().anchorOffset;
-         }
-
-         let text = getText(parentEditableDiv, targetDiv);
-         let caret = (text.length + window.getSelection().anchorOffset)
-
-         return caret;
-      }
-
 
    </script>
 </body>

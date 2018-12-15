@@ -76,7 +76,8 @@ function caretAndTextOfEditableDiv(parentEditableDiv, targetDiv)
    let offset = window.getSelection().anchorOffset;
    let caret = (base.length + offset)
    let stringUpToCaret = activeElementText.substr(0, offset)
-   return {"text": base + stringUpToCaret, "caret": caret } ;
+
+   return { "text": base + stringUpToCaret, "caret": caret };
 }
 
 function getTextUpToChildInEditableDiv(root, target)

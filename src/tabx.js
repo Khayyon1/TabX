@@ -124,12 +124,47 @@ const TabX = class
 
 
 
-    wordCompletion(activeElement, userChoice)
+    wordCompletion(userChoice)
     {
+      let activeElement = document.activeElement;
+
+      if("value" in activeElement)
+      {
         activeElement.value = this.replaceWordAt(
             activeElement.value,
             activeElement.selectionStart,
             userChoice);
+      }
+
+      else if("nodeValue" in activeElement)
+      {
+         let selection = window.getSelection();
+         let target = selection.anchorNode;
+         let caret = serviceabletags.caretAndTextOfEditableDiv(activeElement,
+            target)["caret"];
+
+         console.log("WORD COMPLETION FOR DIV");
+         console.log("NODE VALUE: " + target.nodeValue + "(" + caret + ")");
+
+         let offset = this.getCurrentWord(target.nodeValue,
+            selection.anchorOffset).length;
+
+         let start = selection.anchorOffset;
+
+         target.nodeValue = this.replaceWordAt(
+             target.nodeValue,
+             caret,
+             userChoice);
+
+         //Set the caret back to expected position
+         selection.collapse(target, start + (userChoice.length - offset));
+      }
+
+      else
+      {
+         throw new Error("Attempted to mutate element" +
+         "that does not handle text")
+      }
     }
 
     replaceWordAt(str, i, word, delimiter=' ')
@@ -268,13 +303,13 @@ const TabX = class
     {
         if(!this.enable){return;}
         var keyname = event.key;
-        if(serviceabletags.activeElementIsServiceable() &&
-            this.shortcuts.includes(keyname) &&
-            this.displayStrategy.isActive())
-        {
+        if(serviceabletags.activeElementIsServiceable()
+            && this.shortcuts.includes(keyname)
+            && this.mappings[keyname] != undefined)
+         {
             event.preventDefault();
             var userChoice = this.mappings[keyname];
-            this.wordCompletion(this.document.activeElement, userChoice);
+            this.wordCompletion(userChoice);
         };
     }
 

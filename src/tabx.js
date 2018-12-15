@@ -69,20 +69,21 @@ const TabX = class
         console.log("currentWord: " + currentWord);
 
         //Check for whether we can do word prediction
-        var space_precedes_caret = (previous == " ");
-        if(!space_precedes_caret && this.wordCompleteEnabled)
+
+        var charBeforeCaret = /\S/.test(previous);
+        if(charBeforeCaret && this.wordCompleteEnabled)
         {
             return await this.getSuggestions(currentWord);
         }
 
-        var isCharAtCaret = (charAtCaret != " " && charAtCaret != "");
+        console.log("INPUT VALID          : " + !this.inputIsNotValid(currentWord));
+        console.log("NO CHAR BEFORE CARET : " + !charBeforeCaret);
+        console.log("NO CHAR AT CARET     : " + !charAtCaret);
+
         if(!this.inputIsNotValid(currentWord)
-            ||
-            space_precedes_caret
-            ||
-            !char_at_caret
-            ||
-            this.wordPredictEnabled)
+            && !charBeforeCaret
+            && !charAtCaret
+            && this.wordPredictEnabled)
         {
             return await this.getNextWordSuggestion(text.trim().substring(0, caret));
         }
@@ -249,14 +250,9 @@ const TabX = class
         return (/[^a-zA-Z\s]/).test(string)
     }
 
-    inputIsEmpty(string)
-    {
-        return string === "";
-    }
-
     inputIsNotValid(str)
     {
-        return this.inputHasCharactersOtherThanLetters(str) || this.inputIsEmpty(str);
+        return this.inputHasCharactersOtherThanLetters(str) || str.length == 0;
     }
 
     async getSuggestions(incomplete_string)
@@ -302,7 +298,9 @@ const TabX = class
     handleWordComplete(event)
     {
         if(!this.enable){return;}
+
         var keyname = event.key;
+
         if(serviceabletags.activeElementIsServiceable()
             && this.shortcuts.includes(keyname)
             && this.mappings[keyname] != undefined)

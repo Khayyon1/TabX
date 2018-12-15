@@ -75,7 +75,7 @@ function caretAndTextOfEditableDiv(parentEditableDiv, targetDiv)
    let activeElementText = texts[1];
    let offset = window.getSelection().anchorOffset;
    let caret = (base.length + offset)
-   let stringUpToCaret = activeElementText.substring(0, offset)
+   let stringUpToCaret = activeElementText.substr(0, offset)
    return {"text": base + stringUpToCaret, "caret": caret } ;
 }
 

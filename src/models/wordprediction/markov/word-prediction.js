@@ -11,6 +11,20 @@ class WordPrediction {
         this.model = model;
     }
 
+    //cases:
+    //1. start of sentence: Vanilla is my favorite
+    //some random title: Vanilla Ice
+    //lowercase: I love vanilla -> always make input lowercase & always return lowercase output
+
+    //New .... York
+    //1. ????
+    
+    //I, I'll, I'm, etc: always uppercase
+    //if it's any word in theword list, capitalize it and add it to the dict
+    //if in beginning of sentence, make it lowercase unless it's one of the words below
+    //if it's a capitalized word in the middle of a sentence, don't even add it to the wordbank unless it's I, I'll, I'm , I'd, etc. holidays, months, days
+
+
     predictNextWord(input) {
         //can input string have punctuation? deal with punctuation - commas, periods, etc. 
         //do we even want to remove something like commas, since they affect word prediction?
@@ -29,6 +43,9 @@ class WordPrediction {
         //punctuation and commas in trained model/input??
 
         //train models on bigger text corpus
+        
+        //somehow make it recognize certain proper nouns as a single word? (like state names)
+        //there isn't really a good way to deal with proper nouns/capital and beginning of sentence - what to prioritize?
 
         var suggestions = this.model.start(input).end(1).process(this.predictTopThree);
         return suggestions;

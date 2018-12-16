@@ -2,73 +2,112 @@
 
 'use strict';
 
+const addBegW = 0.6;
+const addEndW = 0.2;
+const addMidW = 0.3;
+const subGenW = 1.3;
+const swapGenW = 1;
+//export addW, addEndW, addMidW, subW, swapW};
+
 // Initialize the Matrix of Values
 //Fill matrix with outside edge of values
-function initMatrix(s1, s2) {
-    if (undefined == s1 || undefined == s2) {
+function initMatrix(write, guess) {
+    if (undefined == write || undefined == guess) {
         return null;
     }
 
     let d = [];
-    for (let i = 0; i <= s1.length; i++) {
+    for (let i = 0; i <= write.length; i++) {
         d[i] = [];
         d[i][0] = i;
     }
-    for (let j = 0; j <= s2.length; j++) {
+    for (let j = 0; j <= guess.length; j++) {
         d[0][j] = j;
     }
-    console.log(d)
     return d;
 }
 
-
-function damerau(i, j, s1, s2, d, cost) {
-    if (i > 1 && j > 1 && s1[i - 1] === s2[j - 2] && s1[i - 2] === s2[j - 1]) {
-        d[i][j] = Math.min.apply(null, [
-            d[i][j],
-            d[i - 2][j - 2] + cost
-        ]);
-    }
-}
-
 //Get Distance between to strings
-function distance(s1, s2) {
-    //if either distance is undefined. then
-    if (undefined == s1 || undefined == s2 || 'string' !== typeof s1
-            || 'string' !== typeof s2) {
+function distance(write, guess) {
+
+
+    //if either value is not a string return undefined
+    if (undefined == write || undefined == guess || 'string' !== typeof write
+            || 'string' !== typeof guess) {
         return -1;
     }
 
-    let d = initMatrix(s1, s2);
+    //create Matrix
+    let d = initMatrix(write, guess);
+
+    //if both string length 0, return -1
     if (null === d) {
         return -1;
     }
-    for (var i = 1; i <= s1.length; i++) {
+
+    //Total Sum:
+    let weightedValue = 0;
+
+    //for the each combination of words in value
+    let totalEqual = 0;
+    for (var guessIdx = 1; guessIdx <= guess.length; guessIdx++) {
         let cost;
-        for (let j = 1; j <= s2.length; j++) {
-            if (s1.charAt(i - 1) === s2.charAt(j - 1)) {
-                cost = 0;
-            } else {
-                cost = 1;
+        let addTo;
+        //let addToWrite;
+        for (let writeIdx = 1; writeIdx <= write.length; writeIdx++) {
+            if (totalEqual >= write.length){
+                addTo = addEndW;
+            }
+            else if(totalEqual > 0 && totalEqual < write.length){
+                addTo = addMidW;
+            }
+            else if(totalEqual === 0){
+                addTo =  addBegW
+            }
+            else{
+                throw "Something is wrong is total Equal"
             }
 
-            d[i][j] = Math.min.apply(null, [
-                d[i - 1][j] + 1,
-                d[i][j - 1] + 1,
-                d[i - 1][j - 1] + cost
+            //Do we Need to Do a substitution
+            if (guess.charAt(guessIdx - 1) === write.charAt(writeIdx - 1)) {
+                cost = 0;
+                totalEqual += 1;
+            }
+
+            else {
+                cost = subGenW;
+            }
+
+            //Min of one more  +1 on either
+            //min of One fewer + both.
+            d[writeIdx][guessIdx] = Math.min.apply(null, [
+                //Addition
+                d[writeIdx - 1][guessIdx] + addTo,
+                d[writeIdx][guessIdx - 1] + addTo,
+                //Substitution
+                d[writeIdx - 1][guessIdx - 1] + cost
             ]);
 
-            damerau(i, j, s1, s2, d, cost);
+            //Damerau Check
+            if (writeIdx > 1 && guessIdx > 1 && write[writeIdx - 1] === guess[guessIdx - 2]
+                 && write[writeIdx - 2] === guess[guessIdx - 1]) {
+                //set the location on the matrix to the minimum of it's current value
+                //and two prior + cost
+                d[writeIdx][guessIdx] = Math.min.apply(null, [
+                    d[writeIdx][guessIdx],
+                    d[writeIdx - 2][guessIdx - 2] + swapGenW
+                ]);
+                totalEqual += 2;
+            }
         }
     }
-
-    return d[s1.length][s2.length];
+    return d[write.length][guess.length];
 }
 
 
-function distanceProm(s1, s2) {
+function distanceProm(write, guess) {
     return new Promise((resolve, reject) => {
-        let result = distance(s1, s2);
+        let result = distance(write, guess);
         if (0 <= result) {
             resolve(result);
         } else {
@@ -77,18 +116,18 @@ function distanceProm(s1, s2) {
     });
 }
 
-function minDistanceProm(s1, list) {
+function minDistanceProm(write, list) {
     return new Promise((resolve, reject) => {
         if (undefined == list || !Array.isArray(list)) {
             reject(-1);
         } else if (0 === list.length) {
-            resolve(distance(s1, ''));
+            resolve(distance(write, ''));
         }
 
         let min = -2;
 
-        list.forEach((s2) => {
-            let d = distance(s1, s2);
+        list.forEach((guess) => {
+            let d = distance(write, guess);
             if (-2 === min || d < min) {
                 min = d;
             }
@@ -101,8 +140,15 @@ function minDistanceProm(s1, list) {
         }
     });
 }
+module.exports = {
+    addBegW: addBegW,
+    addEndW: addEndW,
+    addMidW: addMidW,
+    subGenW: subGenW,
+    swapGenW: swapGenW,
 
-console.log(distance('cat', 'act' ))
+    distance: distance
+}
 exports.distanceProm = distanceProm;
 exports.distance = distance;
 exports.minDistanceProm = minDistanceProm;

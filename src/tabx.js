@@ -24,6 +24,7 @@ const TabX = class
         this.wordPredictEnabled = wordPredictEnabled;
         this.wordCompleteEnabled = wordCompleteEnabled;
         this.enabled = true;
+        this.suggestionsDisplayCount = 3;
         this.registerListeners();
     }
 
@@ -94,6 +95,7 @@ const TabX = class
         }
 
         let suggestions = await this.getAppropriateSuggestions();
+        suggestions = suggestions.slice(0, this.suggestionsDisplayCount);
 
         if(suggestions == undefined || suggestions.length == 0)
         {
@@ -367,6 +369,11 @@ const TabX = class
     configureDisplay(settings)
     {
       this.displayStrategy.config(settings);
+    }
+
+    setSuggestionsDisplayCount(count)
+    {
+      this.suggestionsDisplayCount = count;
     }
 };
 

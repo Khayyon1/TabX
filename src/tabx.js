@@ -151,10 +151,9 @@ const TabX = class
          console.log("-----------------------");
 
          target.nodeValue = this.replaceWordAt(
-             target.nodeValue.replace(/\u00a0/g, " "),
+             target.nodeValue.replace(/\u00a0/g, " "), //Replace hard spaces
              start,
              userChoice);
-
 
          //Set the caret back to expected position
          if(isPredictingNextWord)
@@ -174,7 +173,7 @@ const TabX = class
 
     replaceWordAt(str, i, word, delimiter=' ')
     {
-        let startOfWord = str.lastIndexOf(delimiter, i);
+        let startOfWord = str.lastIndexOf(delimiter, i - 1);
 
         let before = str.substring(0, startOfWord);
         if (before != "" && before != null)

@@ -2,7 +2,7 @@ async function messageBackgroundPage(request, input)
 {
    let response = new Promise(function(resolve, reject)
    {
-      console.log("MSG: " + request + "(" + input + ")" + typeof(input));
+      console.log("MSG: " + request + "(" + JSON.stringify(input) + ")" + typeof(input));
       chrome.runtime.sendMessage({"TabxOp": request, "TabxInput": input},
       function (response) {
          resolve(response.TabxResults);

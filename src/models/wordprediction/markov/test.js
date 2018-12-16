@@ -1,3 +1,3 @@
-var test = require('./word-prediction-small');
+var test = require('./word-prediction-blogsL');
 
-console.log(test.libraryModelSmall.predictNextWord("I have a"));
+console.log(test.blogsModelLarge.predictNextWord("I have a"));

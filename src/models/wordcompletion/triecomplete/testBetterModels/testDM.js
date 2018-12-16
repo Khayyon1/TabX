@@ -17,7 +17,11 @@ expect(train.distance("abc", "abc")).to.be(0);
 expect(train.distance(" ", " ")).to.be(0);
 expect(train.distance("a", "ab")).to.be(ae);
 
+
 expect(train.distance("a", "ba")).to.be(ab);
+
+
+
 
 expect(train.distance("ac", "abc")).to.be(am);
 expect(train.distance("a", "abc")).to.be(ae*2);

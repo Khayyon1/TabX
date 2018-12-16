@@ -1,5 +1,5 @@
 const TabX = require('./tabx');
-const TableView = require("./assets/js/viewstrats/tablestrat-ui");
+const TableView = require("./assets/js/viewstrats/fixedstrat");
 const applySettings = require("./browserspec/settings");
 const bgmodels = require("./models/messenger-models");
 

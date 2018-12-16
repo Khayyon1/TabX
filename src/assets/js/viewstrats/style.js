@@ -21,7 +21,8 @@ const Style = class
         element.style.left = (rect.left + caret.left).toString() + 'px';
     }
 
-    updatePosition(element){
+    updatePosition(element)
+    {
         const w = window.innerWidth;
         const h = window.innerHeight;
 
@@ -85,9 +86,12 @@ const Style = class
 
         return size
     }
-    destroyElement(element) {
+    
+    destroyElement(element)
+    {
         element.parentNode.removeChild(element)
     }
+
     createDummyElement(text, options) {
         const element = document.createElement('div')
         const textNode = document.createTextNode(text)

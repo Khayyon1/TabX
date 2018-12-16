@@ -13,7 +13,9 @@ function removeDuplicates(arr)
          return true;
       }
 
-      return false;});
+      return false;
+
+   });
 }
 
 function validate(str, threshold)
@@ -49,6 +51,6 @@ function validateNextWord(str)
 
 }
 
-let teststr = "The UHLCS, maintained by the University of Helsinki, was founded in late 1980. At present, the UHLCS contains computer corpora of more than 50 languages, including samples of minority languages and extensive corpora representing different text types. In 2000, the corpora of the Uralic, Turkic, Tungusic, Mongolic, Chukotko-Kamchatkan, Iranian and North-East Caucasian languages were edited for public use with the financial support of the Max Planck Institute for Evolutionary Anthropology, Leipzig. In summer 2003, metadata descriptions for the corpora were prepared with the financial support of the ECHO project (European Cultural Inheritance Online). There are also tools at the UHLCS which can be used in analyzing the corpora. The use of most of the corpora is restricted for research and teaching."
+let teststr =
 
 validate(teststr, 3);

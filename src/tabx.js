@@ -143,6 +143,8 @@ const TabX = class
          console.log("NODE VALUE: " + JSON.stringify(target.nodeValue) + " (" + caret + ")");
 
          let start = selection.anchorOffset;
+         let isPredictingNextWord = /\s/.test(target.nodeValue.charAt(start - 1));
+
          let offset = this.getCurrentWord(target.nodeValue, start).length;
 
          console.log("CHAR AT START:   " + JSON.stringify(target.nodeValue.charAt(start)));
@@ -153,7 +155,13 @@ const TabX = class
              start,
              userChoice);
 
+
          //Set the caret back to expected position
+         if(isPredictingNextWord)
+         {
+            offset = 0;
+         }
+
          selection.collapse(target, start + (userChoice.length - offset));
       }
 
@@ -166,20 +174,7 @@ const TabX = class
 
     replaceWordAt(str, i, word, delimiter=' ')
     {
-        console.log(arguments);
-
-        console.log("before")
-        console.log(JSON.stringify(str))
-        console.log(JSON.stringify(delimiter))
-        console.log(JSON.stringify(i))
-
         let startOfWord = str.lastIndexOf(delimiter, i);
-        console.log("IS U DELMITER???: " + JSON.stringify(str.charAt(i - 1)) === " ")
-
-        console.log("after")
-        console.log(JSON.stringify(str))
-        console.log(JSON.stringify(delimiter))
-        console.log(JSON.stringify(i))
 
         let before = str.substring(0, startOfWord);
         if (before != "" && before != null)
@@ -193,11 +188,6 @@ const TabX = class
         {
             after = " " + after;
         }
-
-        console.log("BEGN  : " + startOfWord);
-        console.log("BEFORE: " + before);
-        console.log("WORD  : " + word);
-        console.log("AFTER : " + after);
 
         return before + word + after;
     }

@@ -187,6 +187,7 @@ async function messageBackgroundPage(request, input)
 {
     let response = new Promise(function(resolve, reject)
     {
+      console.log("MSG: " + request + "(" + input + ")" + typeof(input));
         chrome.runtime.sendMessage({"TabxOp": request, "TabxInput": input},
          function (response) {
             resolve(response.TabxResults);
@@ -241,17 +242,48 @@ const TabX = class
     async getAppropriateSuggestions()
     {
         var elem = this.document.activeElement
-        var previous = elem.value.charAt(elem.selectionStart - 1);
-        var charAtCaret = elem.value.charAt(elem.selectionStart)
+        var caret;
+        var previous;
+        var charAtCaret;
+        var text;
 
-        if(previous != " " && this.wordCompleteEnabled)
+        if(serviceabletags.isContentEditableDiv(elem))
         {
-            return await this.getSuggestions(this.getCurrentWord(elem))
+           let info = serviceabletags.caretAndTextOfEditableDiv(elem, window.getSelection().baseNode);
+           caret = info[caret];
+           text = info["text"];
+           console.log("TEXT: " + text);
+           previous = info["text"].charAt(caret - 1);
+           charAtCaret = info["text"].charAt(caret);
         }
 
-        else if(this.wordPredictEnabled)
+        else
         {
-            return await this.getNextWordSuggestion(elem.innerText)
+           caret = elem.selectionStart;
+           text = elem.value;
+           previous = text.charAt(caret - 1);
+           charAtCaret = text.charAt(caret);
+        }
+
+        let currentWord = this.getCurrentWord(text, caret);
+        if(previous != " " && this.wordCompleteEnabled)
+        {
+            return await this.getSuggestions(currentWord);
+        }
+
+        //Check for whether we can do word prediction
+        var space_precedes_caret = (previous == " ");
+        var isCharAtCaret = (charAtCaret != " " && charAtCaret != "");
+
+        if(!this.inputIsNotValid(currentWord)
+            ||
+            space_precedes_caret
+            ||
+            !char_at_caret
+            ||
+            this.wordPredictEnabled)
+        {
+            return await this.getNextWordSuggestion(text.trim());
         }
     }
 
@@ -259,9 +291,7 @@ const TabX = class
     {
         if(!serviceabletags.activeElementIsServiceable()
             ||
-            this.document.activeElement.value == ""
-            ||
-            this.getCurrentWord(this.document.activeElement) == "")
+            this.document.activeElement.value == "")
         {
             this.displayStrategy.tearDown();
             return;
@@ -321,12 +351,8 @@ const TabX = class
         return before + word + after;
     }
 
-    //Assumes that the caret is at the end of a word in a text field
-    getCurrentWord(inputField)
+    getCurrentWord(text, caret)
     {
-        var text = inputField.value;
-        var caret = inputField.selectionStart;
-
         if(caret == 0)
         {
             return "";
@@ -409,29 +435,9 @@ const TabX = class
         return results;
     }
 
-
     async getNextWordSuggestion(str)
     {
-        var caret_position = this.document.activeElement.selectionStart;
-        var left_of_caret = caret_position - 1;
-        var space_precedes_caret = str.charAt(left_of_caret) == " ";
-        var char_at_caret = (str.charAt(caret_position) != " " && str.charAt(caret_position) != "");
-
-        var currentWord = this.getCurrentWord(this.document.activeElement);
-
-        console.log("input        : " + str + "(" + caret_position + ")");
-        console.log("before caret : " + str.charAt(left_of_caret));
-        console.log("at caret     : " + str.charAt(caret_position));
-        console.log("space before caret: " + space_precedes_caret);
-        console.log("char at caret: " + char_at_caret);
-
-        if(this.inputIsNotValid(currentWord) || !space_precedes_caret || char_at_caret)
-        {
-            return [];
-        }
-
-        let results = this.wordPredictModel.predictNextWord(this.getCurrentWord(this.document.activeElement));
-
+        let results = this.wordPredictModel.predictNextWord(str);
         if(typeof(results) == Promise)
         {
             return await results;
@@ -452,12 +458,13 @@ const TabX = class
         }
     }
 
-
     handleWordComplete(event)
     {
         if(!this.enable){return;}
         var keyname = event.key;
-        if(serviceabletags.activeElementIsServiceable() && this.shortcuts.includes(keyname) && this.displayStrategy.isActive())
+        if(serviceabletags.activeElementIsServiceable() &&
+            this.shortcuts.includes(keyname) &&
+            this.displayStrategy.isActive())
         {
             event.preventDefault();
             var userChoice = this.mappings[keyname];
@@ -520,7 +527,7 @@ const TabX = class
     {
       //STUB
       console.log("I got configured~");
-        this.displayStrategy.config(settings);
+      this.displayStrategy.config(settings);
     }
 };
 
@@ -534,35 +541,104 @@ module.exports = TabX;
 var selector = 'input[type=text], textarea, [contenteditable=true], [contenteditable]';
 
 var serviceableTags = [
-    "input[type=text]",
-    'textarea',
-    "[contenteditable=true]",
-    "[contenteditable]"
+   "input[type=text]",
+   'textarea',
+   "[contenteditable=true]",
+   "[contenteditable]"
+]
+
+var contenteditable = [
+   "[contenteditable=true]",
+   "[contenteditable]"
 ]
 
 function getServicableElements()
 {
-    return document.querySelectorAll(selector);
+   return document.querySelectorAll(selector);
 }
 
 function activeElementIsServiceable()
 {
-    let activeElement = document.activeElement;
-    for(let i = 0; i < serviceableTags.length; i++)
-    {
-        if(activeElement.matches(serviceableTags[i]))
-        {
-            return true;
-        }
-    }
+   let activeElement = document.activeElement;
+   for(let i = 0; i < serviceableTags.length; i++)
+   {
+      if(activeElement.matches(serviceableTags[i]))
+      {
+         return true;
+      }
+   }
 
-    return false;
+   return false;
+}
+
+function isContentEditableDiv(tag)
+{
+   if(tag.tagName == "DIV")
+   {
+      for(let matcher of contenteditable)
+      {
+         if(tag.matches(matcher))
+         {
+            return true;
+         }
+      }
+   }
+
+   return false;
+}
+
+
+function caretAndTextOfEditableDiv(parentEditableDiv, targetDiv)
+{
+   if(parentEditableDiv == targetDiv)
+   {
+      return window.getSelection().anchorOffset;
+   }
+
+   let text = getTextUpToChildInEditableDiv(parentEditableDiv, targetDiv);
+   let caret = (text.length + window.getSelection().anchorOffset)
+
+   return {"text": text, "caret": caret } ;
+}
+
+function getTextUpToChildInEditableDiv(root, target)
+{
+   let cur = target;
+   let text = "";
+   while(cur != root)
+   {
+      while(cur.previousSibling != null)
+      {
+         cur = cur.previousSibling;
+         text = cur.textContent + text;
+         if(["P", "DIV"].includes(cur.tagName))
+         {
+            text = " " + text;
+         }
+      }
+
+      //Edge case if the parent node is a div or p tag
+      //since the text associated with the parent is its child,
+      //which cannot be detected with the above check in the while
+      //loop
+      cur = cur.parentNode;
+      if(["P", "DIV"].includes(cur.tagName))
+      {
+         text = " " + text;
+      }
+   }
+
+   return text;
 }
 
 module.exports = {
-    getServicableElements: getServicableElements,
-    activeElementIsServiceable: activeElementIsServiceable
+   isContentEditableDiv: isContentEditableDiv,
+   getServicableElements: getServicableElements,
+   activeElementIsServiceable: activeElementIsServiceable,
+   caretAndTextOfEditableDiv: caretAndTextOfEditableDiv,
+   getTextUpToChildInEditableDiv: getTextUpToChildInEditableDiv
 }
+
 
 /***/ }),
 /* 7 */

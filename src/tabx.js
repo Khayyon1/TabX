@@ -12,6 +12,7 @@ const TabX = class
       wordPredictModel,
       displayStrategy,
       document=document,
+      filter={"filter": (str) => str},
       wordCompleteEnabled=true,
       wordPredictEnabled=true)
 
@@ -25,6 +26,7 @@ const TabX = class
          this.wordCompleteEnabled = wordCompleteEnabled;
          this.enabled = true;
          this.suggestionsDisplayCount = 3;
+         this.filter = filter;
          this.registerListeners();
          this.tabCount = -1;
       }
@@ -64,6 +66,7 @@ const TabX = class
             throw new Error("Active element not serviceable");
          }
 
+         text = this.filter.filter(text);
 
          let currentWord = this.getCurrentWord(text, caret);
          //Check for whether we can do word prediction
@@ -87,6 +90,11 @@ const TabX = class
 
       async displaySuggestions()
       {
+          if(this.tabCount !== -1)
+          {
+              return;
+          }
+
          if(!serviceabletags.activeElementIsServiceable()
          ||
          this.document.activeElement.value == "")
@@ -96,7 +104,6 @@ const TabX = class
          }
 
          let suggestions = await this.getAppropriateSuggestions();
-         suggestions = suggestions.slice(0, this.suggestionsDisplayCount);
 
          if(suggestions == undefined || suggestions.length == 0)
          {
@@ -107,6 +114,7 @@ const TabX = class
          //Don't get new suggestions if the user used tab-select
          if(this.tabCount === -1)
          {
+             suggestions = suggestions.slice(0, this.suggestionsDisplayCount);
              this.mappings = {};
              for(let i = 0; i < suggestions.length; i++)
              {
@@ -120,7 +128,6 @@ const TabX = class
          }
 
          console.log("TAB COUNT: " + this.tabCount)
-         this.displayStrategy.tearDown();
          this.displayStrategy.display(this.mappings);
       }
 
@@ -299,7 +306,7 @@ const TabX = class
                   let results = this.wordCompleteModel.predictCurrentWord(
                      incomplete_string);
 
-                  if(typeof(results) == Promise)
+                  if(typeof(results) === Promise)
                   {
                      return await results;
                   }
@@ -310,7 +317,7 @@ const TabX = class
                async getNextWordSuggestion(str)
                {
                   let results = this.wordPredictModel.predictNextWord(str);
-                  if(typeof(results) == Promise)
+                  if(typeof(results) === Promise)
                   {
                      return await results;
                   }
@@ -343,7 +350,7 @@ const TabX = class
                      if (keyname == 'Tab')
                      {
                         event.preventDefault();
-                        this.tabCount = (this.tabCount + 1) % this.suggestionsDisplayCount;
+                        this.tabCount = (this.tabCount + 1) % Object.keys(this.mappings).length;
                         userChoice = this.mappings[this.shortcuts[this.tabCount]];
                      }
 

@@ -1,6 +1,4 @@
-
-
-class ProfanityFilter {
+module.exports = class {
     constructor() {
         const swears = ["fuck", "shit", "arse", "bitch", "bastard", "crap", "cunt", "damn", "prick", "shag", "wank", "nut", "piss", "twat", "jack", 
                 "dumbass", "asshole", "badass", "halfass", "hardass", "smartass", "balls", "cum", "dammit", "jizz", "testicles", "cunnilingus", 
@@ -31,4 +29,4 @@ class ProfanityFilter {
             return inputStr;
         }
     }
-}
+};

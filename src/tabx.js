@@ -104,23 +104,25 @@ const TabX = class
             return;
          }
 
-         this.mappings = {};
-
-         for(let i = 0; i < suggestions.length; i++)
+         //Don't get new suggestions if the user used tab-select
+         if(this.tabCount === -1)
          {
-            let shortcut = this.shortcuts[i];
-            let suggestion = suggestions[i];
+             this.mappings = {};
+             for(let i = 0; i < suggestions.length; i++)
+             {
+                let shortcut = this.shortcuts[i];
+                let suggestion = suggestions[i];
 
-            //Every shortcut is mapped to a suggestion that TabX can reference
-            //later
-            this.mappings[shortcut] = suggestion;
+                //Every shortcut is mapped to a suggestion that TabX can reference
+                //later
+                this.mappings[shortcut] = suggestion;
+             }
          }
 
+         console.log("TAB COUNT: " + this.tabCount)
          this.displayStrategy.tearDown();
          this.displayStrategy.display(this.mappings);
       }
-
-
 
       wordCompletion(userChoice)
       {
@@ -202,14 +204,14 @@ const TabX = class
                   let startOfWord = str.lastIndexOf(delimiter, i - 1);
 
                   let before = str.substring(0, startOfWord);
-                  if (before != "" && before != null)
+                  if (before !== "" && before != null)
                   {
                      before += " "
                   }
 
                   let after  = str.substring(i);
 
-                  if(after.charAt(0) != "" && after.charAt(0) != " ")
+                  if(after.charAt(0) !== "" && after.charAt(0) !== " ")
                   {
                      after = " " + after;
                   }
@@ -219,7 +221,7 @@ const TabX = class
 
                getCurrentWord(text, caret)
                {
-                  if(caret == 0)
+                  if(caret === 0)
                   {
                      return "";
                   }
@@ -247,7 +249,7 @@ const TabX = class
                      var startOfWord = this.indexOfStartOfCurrentWord(text,
                         caret);
 
-                     if(startOfWord == 0)
+                     if(startOfWord === 0)
                      {
                         return text.substring(0, caret);
                      }
@@ -335,26 +337,35 @@ const TabX = class
 
                   var keyname = event.key;
 
-                  if(serviceabletags.activeElementIsServiceable()){
+                  if(serviceabletags.activeElementIsServiceable())
+                  {
                      let userChoice;
-
                      if (keyname == 'Tab')
                      {
                         event.preventDefault();
                         this.tabCount = (this.tabCount + 1) % this.suggestionsDisplayCount;
                         userChoice = this.mappings[this.shortcuts[this.tabCount]];
                      }
-                     else if (this.shortcuts.includes(keyname))
+
+                     else if(this.shortcuts.includes(keyname))
                      {
                         this.tabCount = -1;
                         event.preventDefault();
                         userChoice = this.mappings[keyname];
                      }
+                     else
+                         {
+                             this.tabCount = -1;
+                         }
                      if (userChoice)
                      {
                         this.wordCompletion(userChoice);
                      }
                   }
+                  else
+                      {
+                          this.tabCount = -1;
+                      }
                }
 
                registerListeners()
@@ -423,6 +434,13 @@ const TabX = class
                setSuggestionsDisplayCount(count)
                {
                   this.suggestionsDisplayCount = count;
+                  let newShortcuts = [];
+                   for(let i = 1; i <= count; i++)
+                   {
+                       newShortcuts.push(i.toString());
+                   }
+                   this.shortcuts = newShortcuts;
+
                   this.displayStrategy.setSuggestionsDisplayCount(count);
                }
             };

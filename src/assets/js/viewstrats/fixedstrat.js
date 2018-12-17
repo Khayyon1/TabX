@@ -5,7 +5,7 @@ const FixedView = class
 	constructor(dom)
 	{
 		this.dom = dom;
-		this.ID = "suggestions";
+		this.ID = "tabx-fixedstrat-suggestionstable";
 		this.displayCount = 3;
 		dom.addEventListener("keyup", this.listenForInput.bind(this));
 		this.createSuggestionsTable();
@@ -58,7 +58,7 @@ const FixedView = class
 		sentenceRow.appendChild(sentenceValue);
 
 		let table = document.createElement("table");
-		table.id = "suggestion-table";
+		table.id = this.ID
 		this.styleTable(table);
 
 		let header = document.createElement("tr");
@@ -97,11 +97,12 @@ const FixedView = class
 
 	isActive()
 	{
-		return this.dom.getElementById(this.ID) != null;
+		return this.dom.getElementById(this.ID) !== null;
 	}
 
 	tearDown()
 	{
+		console.log("ACTIVE: " + this.isActive());
 		if (this.isActive())
 		{
 			this.current_table.parentNode.removeChild(this.current_table);
@@ -147,15 +148,15 @@ const FixedView = class
 	}
 	display(mappings)
 	{
-		var dom = this.dom;
+		const dom = this.dom;
 
 		if(this.current_table == null)
 		{
 			this.createSuggestionsTable();
 		}
 
-		var suggestions = Object.values(mappings);
-		var shortcuts = Object.keys(mappings);
+		let suggestions = Object.values(mappings);
+		let shortcuts = Object.keys(mappings);
 
 		//Populate headers
 		for(let i = 0; i < this.header.children.length; i++)

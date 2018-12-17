@@ -50,7 +50,7 @@ expect(dmod.distance("ab", "ac")).to.be(sbg);
 expect(dmod.distance("abc", "zyx")).to.be(sbg*3);
 expect(dmod.distance("ab", "ba")).to.be(swg);
 
-
+// Tests for edit weight  add b m e
 expect(dmod.distance("a", "az")).to.be(ae);
 dmod.changeValue("addEnd", 0.1 ,"z");
 expect(dmod.distance("a", "az")).to.be(0.1);
@@ -62,5 +62,18 @@ expect(dmod.distance("ac", "abc")).to.be(0.2);
 expect(dmod.distance("bc", "ybc")).to.be(ab);
 dmod.changeValue("addBeg", 0.8 ,"y");
 expect(dmod.distance("bc", "ybc")).to.be(0.8);
+
+//test for edit weight del b m e
+expect(dmod.distance("az", "a")).to.be(de);
+dmod.changeValue("delEnd", 1 ,"z");
+expect(dmod.distance("az", "a")).to.be(1);
+
+expect(dmod.distance("abc", "ac")).to.be(dm);
+dmod.changeValue("delMid", 0.3 ,"b");
+expect(dmod.distance("abc", "ac")).to.be(0.3);
+
+expect(dmod.distance("ybc", "bc")).to.be(db);
+dmod.changeValue("delBeg", 1.1 ,"y");
+expect(dmod.distance("ybc", "bc")).to.be(1.1);
 
 //expect(dmod.distance("abc", "ybc")).to.be(ab);

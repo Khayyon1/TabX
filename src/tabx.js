@@ -26,6 +26,7 @@ const TabX = class
          this.enabled = true;
          this.suggestionsDisplayCount = 3;
          this.registerListeners();
+         this.tabCount = -1;
       }
 
       setDocument(document)
@@ -334,14 +335,26 @@ const TabX = class
 
                   var keyname = event.key;
 
-                  if(serviceabletags.activeElementIsServiceable()
-                  && this.shortcuts.includes(keyname)
-                  && this.mappings[keyname] != undefined)
-                  {
-                     event.preventDefault();
-                     var userChoice = this.mappings[keyname];
-                     this.wordCompletion(userChoice);
-                  };
+                  if(serviceabletags.activeElementIsServiceable()){
+                     let userChoice;
+
+                     if (keyname == 'Tab')
+                     {
+                        event.preventDefault();
+                        this.tabCount = (this.tabCount + 1) % this.suggestionsDisplayCount;
+                        userChoice = this.mappings[this.shortcuts[this.tabCount]];
+                     }
+                     else if (this.shortcuts.includes(keyname))
+                     {
+                        this.tabCount = -1;
+                        event.preventDefault();
+                        userChoice = this.mappings[keyname];
+                     }
+                     if (userChoice)
+                     {
+                        this.wordCompletion(userChoice);
+                     }
+                  }
                }
 
                registerListeners()
@@ -365,6 +378,7 @@ const TabX = class
                         this.displayStrategy.tearDown();
                      }.bind(this));
                   };
+
                }
 
                enable()

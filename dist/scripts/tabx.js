@@ -81,19 +81,145 @@
 /******/
 /******/
 /******/ 	// Load entry module and return exports
-/******/ 	return __webpack_require__(__webpack_require__.s = 0);
+/******/ 	return __webpack_require__(__webpack_require__.s = 1);
 /******/ })
 /************************************************************************/
 /******/ ([
 /* 0 */
+/***/ (function(module, exports) {
+
+var selector = 'input[type=text], textarea, [contenteditable=true], [contenteditable]';
+
+var serviceableTags = [
+   "input[type=text]",
+   'textarea',
+   "[contenteditable=true]",
+   "[contenteditable]"
+]
+
+var input = [
+   "input[type=text]",
+   'textarea'
+]
+
+var contenteditable = [
+   "[contenteditable=true]",
+   "[contenteditable]"
+]
+
+function getServicableElements()
+{
+   return document.querySelectorAll(selector);
+}
+
+function activeElementIsServiceable()
+{
+   let activeElement = document.activeElement;
+   for(let i = 0; i < serviceableTags.length; i++)
+   {
+      if(activeElement.matches(serviceableTags[i]))
+      {
+         return true;
+      }
+   }
+
+   return false;
+}
+
+function isInput(tag)
+{
+   for(let matcher of input)
+   {
+      if(tag.matches(matcher))
+      {
+         return true;
+      }
+   }
+
+   return false;
+}
+
+function isContentEditable(tag)
+{
+      for(let matcher of contenteditable)
+      {
+         if(tag.matches(matcher))
+         {
+            return true;
+         }
+      }
+
+   return false;
+}
+
+
+function caretAndTextOfEditableDiv(parentEditableDiv, targetDiv)
+{
+   if(parentEditableDiv == targetDiv)
+   {
+      return window.getSelection().anchorOffset;
+   }
+
+   let texts = getTextUpToChildInEditableDiv(parentEditableDiv, targetDiv)
+   let base = texts[0];
+   let activeElementText = texts[1];
+   let offset = window.getSelection().anchorOffset;
+   let caret = (base.length + offset)
+   let stringUpToCaret = activeElementText.substr(0, offset)
+
+   return { "text": base + stringUpToCaret, "caret": caret };
+}
+
+function getTextUpToChildInEditableDiv(root, target)
+{
+   let cur = target;
+   let activeNodeText = target.textContent;
+   let text = ""
+   while(cur != root)
+   {
+      while(cur.previousSibling != null)
+      {
+         cur = cur.previousSibling;
+         text = cur.textContent + text;
+         if(["P", "DIV"].includes(cur.tagName))
+         {
+            text = " " + text;
+         }
+      }
+
+      //Edge case if the parent node is a div or p tag.
+      //since the text associated with the parent is one
+      //of its child nodes.
+      cur = cur.parentNode;
+      if(["P", "DIV"].includes(cur.tagName))
+      {
+         text = " " + text;
+      }
+   }
+
+   return [text, activeNodeText];
+}
+
+module.exports =
+{
+   isInput: isInput,
+   isContentEditable: isContentEditable,
+   getServicableElements: getServicableElements,
+   activeElementIsServiceable: activeElementIsServiceable,
+   caretAndTextOfEditableDiv: caretAndTextOfEditableDiv,
+}
+
+
+/***/ }),
+/* 1 */
 /***/ (function(module, exports, __webpack_require__) {
 
-const TabX = __webpack_require__(1);
+const TabX = __webpack_require__(2);
 const TableView = __webpack_require__(3);
 const applySettings = __webpack_require__(4);
 //const bgmodels = require("./models/messenger-models");
-const mocknext = __webpack_require__(6)
-const mockcomp = __webpack_require__(7)
+const mocknext = __webpack_require__(5)
+const mockcomp = __webpack_require__(6)
 
 let display = new TableView(document);
 let tabx = new TabX(mockcomp,
@@ -105,12 +231,12 @@ applySettings(tabx);
 
 
 /***/ }),
-/* 1 */
+/* 2 */
 /***/ (function(module, exports, __webpack_require__) {
 
 // TabX Shortcuts
 
-var serviceabletags = __webpack_require__(2);
+var serviceabletags = __webpack_require__(0);
 var _current_word = "";
 
 //import {wordCompleteModel} from './models/wordcomplete.js';
@@ -136,6 +262,7 @@ const TabX = class
          this.enabled = true;
          this.suggestionsDisplayCount = 3;
          this.registerListeners();
+         this.tabCount = -1;
       }
 
       setDocument(document)
@@ -444,14 +571,26 @@ const TabX = class
 
                   var keyname = event.key;
 
-                  if(serviceabletags.activeElementIsServiceable()
-                  && this.shortcuts.includes(keyname)
-                  && this.mappings[keyname] != undefined)
-                  {
-                     event.preventDefault();
-                     var userChoice = this.mappings[keyname];
-                     this.wordCompletion(userChoice);
-                  };
+                  if(serviceabletags.activeElementIsServiceable()){
+                     let userChoice;
+
+                     if (keyname == 'Tab')
+                     {
+                        event.preventDefault();
+                        this.tabCount = (this.tabCount + 1) % this.suggestionsDisplayCount;
+                        userChoice = this.mappings[this.shortcuts[this.tabCount]];
+                     }
+                     else if (this.shortcuts.includes(keyname))
+                     {
+                        this.tabCount = -1;
+                        event.preventDefault();
+                        userChoice = this.mappings[keyname];
+                     }
+                     if (userChoice)
+                     {
+                        this.wordCompletion(userChoice);
+                     }
+                  }
                }
 
                registerListeners()
@@ -475,6 +614,7 @@ const TabX = class
                         this.displayStrategy.tearDown();
                      }.bind(this));
                   };
+
                }
 
                enable()
@@ -522,136 +662,10 @@ const TabX = class
 
 
 /***/ }),
-/* 2 */
-/***/ (function(module, exports) {
-
-var selector = 'input[type=text], textarea, [contenteditable=true], [contenteditable]';
-
-var serviceableTags = [
-   "input[type=text]",
-   'textarea',
-   "[contenteditable=true]",
-   "[contenteditable]"
-]
-
-var input = [
-   "input[type=text]",
-   'textarea'
-]
-
-var contenteditable = [
-   "[contenteditable=true]",
-   "[contenteditable]"
-]
-
-function getServicableElements()
-{
-   return document.querySelectorAll(selector);
-}
-
-function activeElementIsServiceable()
-{
-   let activeElement = document.activeElement;
-   for(let i = 0; i < serviceableTags.length; i++)
-   {
-      if(activeElement.matches(serviceableTags[i]))
-      {
-         return true;
-      }
-   }
-
-   return false;
-}
-
-function isInput(tag)
-{
-   for(let matcher of input)
-   {
-      if(tag.matches(matcher))
-      {
-         return true;
-      }
-   }
-
-   return false;
-}
-
-function isContentEditable(tag)
-{
-      for(let matcher of contenteditable)
-      {
-         if(tag.matches(matcher))
-         {
-            return true;
-         }
-      }
-
-   return false;
-}
-
-
-function caretAndTextOfEditableDiv(parentEditableDiv, targetDiv)
-{
-   if(parentEditableDiv == targetDiv)
-   {
-      return window.getSelection().anchorOffset;
-   }
-
-   let texts = getTextUpToChildInEditableDiv(parentEditableDiv, targetDiv)
-   let base = texts[0];
-   let activeElementText = texts[1];
-   let offset = window.getSelection().anchorOffset;
-   let caret = (base.length + offset)
-   let stringUpToCaret = activeElementText.substr(0, offset)
-
-   return { "text": base + stringUpToCaret, "caret": caret };
-}
-
-function getTextUpToChildInEditableDiv(root, target)
-{
-   let cur = target;
-   let activeNodeText = target.textContent;
-   let text = ""
-   while(cur != root)
-   {
-      while(cur.previousSibling != null)
-      {
-         cur = cur.previousSibling;
-         text = cur.textContent + text;
-         if(["P", "DIV"].includes(cur.tagName))
-         {
-            text = " " + text;
-         }
-      }
-
-      //Edge case if the parent node is a div or p tag.
-      //since the text associated with the parent is one
-      //of its child nodes.
-      cur = cur.parentNode;
-      if(["P", "DIV"].includes(cur.tagName))
-      {
-         text = " " + text;
-      }
-   }
-
-   return [text, activeNodeText];
-}
-
-module.exports =
-{
-   isInput: isInput,
-   isContentEditable: isContentEditable,
-   getServicableElements: getServicableElements,
-   activeElementIsServiceable: activeElementIsServiceable,
-   caretAndTextOfEditableDiv: caretAndTextOfEditableDiv,
-}
-
-
-/***/ }),
 /* 3 */
 /***/ (function(module, exports, __webpack_require__) {
 
-const serviceabletags = __webpack_require__(2);
+const serviceabletags = __webpack_require__(0);
 
 const FixedView = class
 {
@@ -923,8 +937,7 @@ module.exports = applySettings
 
 
 /***/ }),
-/* 5 */,
-/* 6 */
+/* 5 */
 /***/ (function(module, exports) {
 
 module.exports = {
@@ -934,7 +947,7 @@ module.exports = {
 }
 
 /***/ }),
-/* 7 */
+/* 6 */
 /***/ (function(module, exports) {
 
 module.exports = {

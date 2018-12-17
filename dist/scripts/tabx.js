@@ -217,13 +217,13 @@ module.exports =
 const TabX = __webpack_require__(2);
 const TableView = __webpack_require__(3);
 const applySettings = __webpack_require__(4);
-//const bgmodels = require("./models/messenger-models");
-const mocknext = __webpack_require__(5)
-const mockcomp = __webpack_require__(6)
+const bgmodels = __webpack_require__(5);
+//const mocknext = require("./models/mock/nextword_mock")
+//const mockcomp = require("./models/mock/wordcomplete_mock")
 
 let display = new TableView(document);
-let tabx = new TabX(mockcomp,
-   mocknext,
+let tabx = new TabX(bgmodels.WordCompleteModel,
+   bgmodels.WordPredictModel,
    display,
    document);
 
@@ -886,7 +886,14 @@ function applySettings(tabx)
          };
 
          tabx.configureDisplay(config);
+
+         if(results["Suggestions Quantity"])
+         {
+            tabx.setSuggestionsDisplayCount(results["Suggestions Quantity"]);
+         }
+
          listenForSettingChanges(tabx);
+
       }
    })
 };
@@ -948,21 +955,42 @@ module.exports = applySettings
 /* 5 */
 /***/ (function(module, exports) {
 
-module.exports = {
-    predictNextWord: function(sentence){
-        return ["Hello", "World","Goodbye"];
-    }
+async function messageBackgroundPage(request, input)
+{
+   let response = new Promise(function(resolve, reject)
+   {
+      console.log("MSG: " + request + "(" + JSON.stringify(input) + ")" + typeof(input));
+      chrome.runtime.sendMessage({"TabxOp": request, "TabxInput": input},
+      function (response) {
+         resolve(response.TabxResults);
+      });
+   });
+
+   let results = await response;
+   console.log("RESULTS: " + results);
+
+   return results;
 }
 
-/***/ }),
-/* 6 */
-/***/ (function(module, exports) {
+var WordCompleteModelMSGER = {
+   predictCurrentWord: function(input)
+   {
+      return messageBackgroundPage("WORD_COMPLETE", input)
+   }
+}
+
+var WordPredictModelMSGER = {
+   predictNextWord: function(input)
+   {
+      return messageBackgroundPage("WORD_PREDICT", input)
+   }
+}
 
 module.exports = {
-    predictCurrentWord: function(word){
-        return ["Hello", "World","Goodbye"];
-    }
+   WordCompleteModel: WordCompleteModelMSGER,
+   WordPredictModel: WordPredictModelMSGER
 }
+
 
 /***/ })
 /******/ ]);

@@ -69,11 +69,52 @@ dmod.changeValue("delEnd", 1 ,"z");
 expect(dmod.distance("az", "a")).to.be(1);
 
 expect(dmod.distance("abc", "ac")).to.be(dm);
-dmod.changeValue("delMid", 0.3 ,"b");
-expect(dmod.distance("abc", "ac")).to.be(0.3);
+dmod.changeValue("delMid", 0.9 ,"b");
+expect(dmod.distance("abc", "ac")).to.be(0.9);
 
 expect(dmod.distance("ybc", "bc")).to.be(db);
 dmod.changeValue("delBeg", 1.1 ,"y");
 expect(dmod.distance("ybc", "bc")).to.be(1.1);
 
-//expect(dmod.distance("abc", "ybc")).to.be(ab);
+//
+// //Test Weighting Substitution
+// expect(dmod.distance("a", "b")).to.be(sbg);
+// dmod.changeValue("subGen", 0.75 ,"a", 'b');
+// expect(dmod.distance("a", "b")).to.be(0.75);
+//
+// expect(dmod.distance("aq", "az")).to.be(sbg);
+// dmod.changeValue("subGen", 0.85 ,"q", 'z');
+// expect(dmod.distance("aq", "az")).to.be(0.85);
+//
+// expect(dmod.distance("aaq", "abz")).to.be(0.75 + 0.85);
+//
+// //Test Weighted Swapping
+//
+// expect(dmod.distance("ab", "ba")).to.be(swg);
+// dmod.changeValue("swapGen", 0.76 ,"a", 'b');
+// expect(dmod.distance("ab", "ba")).to.be(0.76);
+// expect(dmod.distance("ba", "ab")).to.be(0.76);
+
+//Test closest words
+function simpleReadFileSync(filePath){
+
+    var fs = require('fs');
+    var options = {encoding:'utf-8', flag:'r'};
+    var buffer = fs.readFileSync(filePath, options);
+    return buffer.replace( /\n/g, " " ).split( " " );
+}
+
+var dmod2 = train.myTrain;
+
+dmod2.addDictionary(simpleReadFileSync('../sampleText/1-1000.txt'));
+
+// var temp = [1,2,3];
+// temp.splice(0,0, 0)
+// console.log(temp)
+
+console.log(dmod2.closestWords("the", 3));
+
+
+
+//TODO get exact values of Edge cases
+//expect(dmod.distance("h", "hehh")).to.be(ae*2);

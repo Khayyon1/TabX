@@ -10,6 +10,7 @@ Trie.add = function(key, validWord) {
     	, curChar = key.slice(0,1)
         , parNode = this.head;
     key = key.slice(1);
+    console.log(validWord);
 	while(curNode.children[curChar] !== undefined && curChar.length > 0){
 		curNode = curNode.children[curChar];
 		curChar = key.slice(0,1);

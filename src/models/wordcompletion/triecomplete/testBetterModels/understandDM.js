@@ -6,14 +6,14 @@
 ///Sub Should Never Be more than delete + Add
 const addBegW = 0.9;
 const addMidW = 0.7;
-const addEndW = 0.5;
+const addEndW = -0.1;
 
 const delBegW = 0.8;
 const delMidW = 0.6;
 const delEndW = 0.4;
 
 const subGenW = 1.1;
-const swapGenW = 0.7;
+const swapGenW = 0.2;
 const typeArray = ["addBeg", "addMid", "addEnd",
         "delBeg", "delMid", "delEnd",
         "subGen", "swapGen"]
@@ -84,6 +84,8 @@ modelTrain.prototype.changeValue = function(type = 'swapGen', newValue, value1, 
         if(type === 'swapGen' || type === 'subGen'){
             if(this.model[type][value1][value2] !== undefined){
                 this.model[type][value1][value2] = newValue;
+                this.model[type][value2][value1] = newValue;
+
             }
             else{
                 throw value1 + " or " + value2 + "Are not valid characters";
@@ -105,8 +107,6 @@ modelTrain.prototype.changeValue = function(type = 'swapGen', newValue, value1, 
     else{
         throw "please insert all values";
     }
-
-
 
     //this.model[type][]
 }
@@ -144,6 +144,8 @@ modelTrain.prototype.initMatrix = function(write, guess) {
 
 //Get Distance between to strings
 modelTrain.prototype.distance = function(write, guess) {
+    write = write.toLowerCase();
+    guess = guess.toLowerCase();
     //if either value is not a string return undefined
     if (undefined == write || undefined == guess || 'string' !== typeof write
             || 'string' !== typeof guess) {
@@ -177,26 +179,25 @@ modelTrain.prototype.distance = function(write, guess) {
             //if few similarities occur between write and guess
             else if(totalEqual > 0 && totalEqual < write.length){
                 currAdd = 'addMid';
-                currDel = 'delMid';
             }
             //if write is entirely contained within guess
-            else if (totalEqual == write.length){
+            else if (totalEqual >= write.length){
                 currAdd = 'addEnd';
-                currDel = 'delEnd';
             }
-            else{
-                throw "Something is wrong is total Equal" + totalEqual
-            }
+
+            // else{
+            //     throw "1 Something is wrong is total Equal" + totalEqual
+            // }
             if(totalEqual > 0 && totalEqual < guess.length){
                 currDel = 'delMid';
             }
             //if write is entirely contained within guess
-            else if (totalEqual === guess.length){
+            else if (totalEqual >= guess.length){
                 currDel = 'delEnd';
             }
-            else if (totalEqual > guess.length){
-                throw "Something is wrong is total Equal" + totalEqual
-            }
+            // else if (totalEqual > guess.length){
+            //     throw "2 Something is wrong is total Equal" + totalEqual
+            // }
 
             //Do we Need to Do a substitution
             if (guess.charAt(guessIdx - 1) === write.charAt(writeIdx - 1)) {
@@ -208,6 +209,7 @@ modelTrain.prototype.distance = function(write, guess) {
                 // console.log(write.charAt(writeIdx - 1));
                 // console.log(guess.charAt(guessIdx - 1));
                 // console.log(this.model['subGen'][write.charAt(writeIdx - 1)])
+                //console.log(write);
                 cost = this.model['subGen'][write.charAt(writeIdx - 1)][guess.charAt(guessIdx - 1)];
                 // console.log(cost);
             }
@@ -221,6 +223,7 @@ modelTrain.prototype.distance = function(write, guess) {
             }
             if (typeof this.model[currAdd][guess[guessIdx -1]] !== 'number'){
                 // console.log(this.model[currAdd][write[guessIdx -1]]);
+                console.log(write, guess)
                 throw "error"
             }
 
@@ -250,6 +253,44 @@ modelTrain.prototype.distance = function(write, guess) {
     }
     //console.log(d)
     return d[write.length][guess.length];
+}
+modelTrain.prototype.addDictionary = function(dictionary){
+    this.dictionary = dictionary;
+}
+modelTrain.prototype.closestWords = function(word,number, weighted){
+    var closest = new Array(number);
+    for(let i =0; i < number; i++){
+        closest[i] = ['BLANK', Number.MAX_SAFE_INTEGER];
+    }
+
+    for(let i = 0; i < this.dictionary.length; i++){
+        let dist = this.distance(word ,this.dictionary[i].toLowerCase());
+        if (dist < closest[number-1][1]){
+            for (var j = number-2; j >= 0; j--){
+                if (dist > closest[j][1]){
+                    closest.splice(j+1, 0, [this.dictionary[i], dist]);
+                    j = -2;
+                }
+            }
+            if(j === -1){
+
+                closest.splice(0, 0, [this.dictionary[i], dist])
+            }
+            closest.pop();
+        }
+    }
+
+    if (weighted === true){
+        return(closest);
+    }
+    else{
+        let tempClosest = [];
+        for(let i = 0; i < number; i ++){
+            tempClosest.push(closest[i][0]);
+        }
+        return tempClosest
+    }
+
 }
 
 
@@ -298,7 +339,8 @@ module.exports = {
     delBegW : delBegW,
     delMidW : delMidW,
     delEndW : delEndW,
-    myTrain: myTrain
+    myTrain: myTrain,
+    modelTrain: modelTrain
 }
 
 

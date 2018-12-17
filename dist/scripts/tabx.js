@@ -1,1 +1,947 @@
-!function(t){var e={};function o(n){if(e[n])return e[n].exports;var i=e[n]={i:n,l:!1,exports:{}};return t[n].call(i.exports,i,i.exports,o),i.l=!0,i.exports}o.m=t,o.c=e,o.d=function(t,e,n){o.o(t,e)||Object.defineProperty(t,e,{enumerable:!0,get:n})},o.r=function(t){"undefined"!=typeof Symbol&&Symbol.toStringTag&&Object.defineProperty(t,Symbol.toStringTag,{value:"Module"}),Object.defineProperty(t,"__esModule",{value:!0})},o.t=function(t,e){if(1&e&&(t=o(t)),8&e)return t;if(4&e&&"object"==typeof t&&t&&t.__esModule)return t;var n=Object.create(null);if(o.r(n),Object.defineProperty(n,"default",{enumerable:!0,value:t}),2&e&&"string"!=typeof t)for(var i in t)o.d(n,i,function(e){return t[e]}.bind(null,i));return n},o.n=function(t){var e=t&&t.__esModule?function(){return t.default}:function(){return t};return o.d(e,"a",e),e},o.o=function(t,e){return Object.prototype.hasOwnProperty.call(t,e)},o.p="",o(o.s=0)}([function(t,e,o){const n=o(1),i=o(3),r=o(6),s=o(7);let l=new i(document);r(new n(s.WordCompleteModel,s.WordPredictModel,l,document))},function(t,e,o){var n=o(2);t.exports=class{constructor(t,e,o,n=n,i=!0,r=!0){this.wordCompleteModel=t,this.wordPredictModel=e,this.displayStrategy=o,this.shortcuts=["1","2","3"],this.document=n,this.wordPredictEnabled=r,this.wordCompleteEnabled=i,this.enabled=!0,this.registerListeners()}setDocument(t){this.document=t}async getAppropriateSuggestions(){var t,e,o,i=this.document.activeElement;if(n.isContentEditableDiv(i)){let r=n.caretAndTextOfEditableDiv(i,window.getSelection().baseNode);t=r[t],o=r.text,console.log("TEXT: "+o),e=r.text.charAt(t-1),r.text.charAt(t)}else t=i.selectionStart,e=(o=i.value).charAt(t-1),o.charAt(t);let r=this.getCurrentWord(o,t);if(" "!=e&&this.wordCompleteEnabled)return await this.getSuggestions(r);var s=" "==e;return!this.inputIsNotValid(r)||s||!char_at_caret||this.wordPredictEnabled?await this.getNextWordSuggestion(o.trim()):void 0}async displaySuggestions(){if(!n.activeElementIsServiceable()||""==this.document.activeElement.value)return void this.displayStrategy.tearDown();let t=await this.getAppropriateSuggestions();if(null!=t&&0!=t.length){this.mappings={};for(let e=0;e<t.length;e++){let o=this.shortcuts[e],n=t[e];this.mappings[o]=n}this.displayStrategy.tearDown(),this.displayStrategy.display(this.mappings)}else this.displayStrategy.tearDown()}wordCompletion(t,e){t.value=this.replaceWordAt(t.value,t.selectionStart,e)}replaceWordAt(t,e,o,n=" "){var i=t.lastIndexOf(n,e-1),r=t.substring(0,i);""!=r&&null!=r&&(r+=" ");var s=t.substring(e);return""!=s.charAt(0)&&" "!=s.charAt(0)&&(s=" "+s),r+o+s}getCurrentWord(t,e){if(0==e)return"";var o=t.charAt(e-1);if(" "===o&&(o=t.charAt(e-2),e-=1),o.match(/\w/)){var n=this.indexOfStartOfCurrentWord(t,e);return 0==n?t.substring(0,e):t.substring(n,e)}return""}indexOfStartOfCurrentWord(t,e){for(var o=e;o>0&&t.charAt(o-1).match(/\w/);)o--;return o}inputHasCharactersOtherThanLetters(t){return/[^a-zA-Z\s]/.test(t)}inputIsEmpty(t){return""===t}inputIsNotValid(t){return this.inputHasCharactersOtherThanLetters(t)||this.inputIsEmpty(t)}async getSuggestions(t){if(this.inputIsNotValid(t))return[];let e=this.wordCompleteModel.predictCurrentWord(t);return typeof e==Promise?await e:e}async getNextWordSuggestion(t){let e=this.wordPredictModel.predictNextWord(t);return typeof e==Promise?await e:e}handleUserInput(t){n.activeElementIsServiceable()&&this.enabled&&this.displaySuggestions()}handleWordComplete(t){if(this.enable){var e=t.key;if(n.activeElementIsServiceable()&&this.shortcuts.includes(e)&&this.displayStrategy.isActive()){t.preventDefault();var o=this.mappings[e];this.wordCompletion(this.document.activeElement,o)}}}registerListeners(){this.document.addEventListener("keydown",this.handleWordComplete.bind(this)),this.document.addEventListener("keyup",this.handleUserInput.bind(this));for(var t=n.getServicableElements(),e=0;e<t.length;e++)t[e].addEventListener("blur",function(){this.displayStrategy.tearDown(),console.log(this.displayStrategy)}.bind(this))}enable(){this.enabled=!0}disable(){this.enabled=!1}disableWordPrediction(){this.wordPredictEnabled=!1}disableWordCompletion(){this.wordCompleteEnabled=!1}enableWordPrediction(){this.wordPredictEnabled=!0}enableWordCompletion(){this.wordCompleteEnabled=!0}configureDisplay(t){this.displayStrategy.config(t)}}},function(t,e){var o="input[type=text], textarea, [contenteditable=true], [contenteditable]",n=["input[type=text]","textarea","[contenteditable=true]","[contenteditable]"],i=["[contenteditable=true]","[contenteditable]"];function r(t,e){let o=e,n="";for(;o!=t;){for(;null!=o.previousSibling;)n=(o=o.previousSibling).textContent+n,["P","DIV"].includes(o.tagName)&&(n=" "+n);o=o.parentNode,["P","DIV"].includes(o.tagName)&&(n=" "+n)}return n}t.exports={isContentEditableDiv:function(t){if("DIV"==t.tagName)for(let e of i)if(t.matches(e))return!0;return!1},getServicableElements:function(){return document.querySelectorAll(o)},activeElementIsServiceable:function(){let t=document.activeElement;for(let e=0;e<n.length;e++)if(t.matches(n[e]))return!0;return!1},caretAndTextOfEditableDiv:function(t,e){if(t==e)return window.getSelection().anchorOffset;let o=r(t,e);return{text:o,caret:o.length+window.getSelection().anchorOffset}},getTextUpToChildInEditableDiv:r}},function(t,e,o){const n=o(4);t.exports=class{constructor(t){this.dom=t,this.ID="suggestions",this.current_table=null,this.style=new n}createSuggestionsTable(){let t=this.dom,e=t.createElement("table");return e.id=this.ID,e.className="suggestions",this.style.table(e,t.activeElement),this.current_table=e,e}isActive(){return null!=this.dom.getElementById(this.ID)}tearDown(){this.isActive()&&this.current_table.parentNode.removeChild(this.current_table)}display(t){for(var e=this.dom,o=this.createSuggestionsTable(),n=Object.values(t),i=Object.keys(t),r=0;r<n.length;r++){var s=e.createElement("tr");this.style.row(s);var l=e.createElement("td"),a=e.createElement("td");l.appendChild(e.createTextNode(i[r].toString())),a.appendChild(e.createTextNode(n[r])),s.append(l),s.append(a),o.appendChild(s)}e.body.appendChild(o),this.style.updatePosition(o)}config(t){this.style.settings=t}}},function(t,e,o){const n=o(5);t.exports=class{constructor(){this.cache={},this.offset_y=0}table(t,e){t.style.display="flex",t.style.position="absolute",t.style.backgroundColor="lightblue",t.style.zIndex=999;const o=e.getBoundingClientRect(),i=n(e,e.selectionStart);this.offset_y=window.getComputedStyle(e,"").fontSize,this.offset_y=this.pxToInt(this.offset_y)-e.scrollTop,t.style.top=(o.top+i.top+this.offset_y).toString()+"px",t.style.left=(o.left+i.left).toString()+"px"}updatePosition(t){const e=window.innerWidth,o=window.innerHeight,n=t.getBoundingClientRect(),i=this.pxToInt(t.style.left),r=this.pxToInt(t.style.top);if(console.log("Mishiii",e,n.right),console.log(n),n.right>e){const o=n.right-e;t.style.left=(i-o).toString()+"px"}if(n.bottom>o){const e=2*this.offset_y+parseInt(this.settings.fontsize);t.style.top=(r-e).toString()+"px"}}pxToInt(t){return parseInt(t.slice(0,t.length-2))}row(t,e=6){t.style.marginRight=e.toString()+"px",this.settings&&(t.style.fontFamily=this.settings.font,t.style.fontSize=this.settings.fontsize+"px",t.style.color=this.settings.fontcolor,t.style.fontWeight=this.settings.fontstyle.toLowerCase())}calcSize(t,e={}){const o=JSON.stringify({text:t,options:e});if(this.cache[o])return this.cache[o];e.font=e.font||"Times",e.fontSize=e.fontSize||"16px",e.fontWeight=e.fontWeight||"normal",e.lineHeight=e.lineHeight||"normal",e.width=e.width||"auto",e.wordBreak=e.wordBreak||"normal";const n=this.createDummyElement(t,e),i={width:n.offsetWidth,height:n.offsetHeight};return this.destroyElement(n),this.cache[o]=i,i}destroyElement(t){t.parentNode.removeChild(t)}createDummyElement(t,e){const o=document.createElement("div"),n=document.createTextNode(t);return o.appendChild(n),o.style.fontFamily=e.font,o.style.fontSize=e.fontSize,o.style.fontWeight=e.fontWeight,o.style.lineHeight=e.lineHeight,o.style.position="absolute",o.style.visibility="hidden",o.style.left="-999px",o.style.top="-999px",o.style.width=e.width,o.style.height="auto",o.style.wordBreak=e.wordBreak,document.body.appendChild(o),o}}},function(t,e,o){!function(){var e=["direction","boxSizing","width","height","overflowX","overflowY","borderTopWidth","borderRightWidth","borderBottomWidth","borderLeftWidth","borderStyle","paddingTop","paddingRight","paddingBottom","paddingLeft","fontStyle","fontVariant","fontWeight","fontStretch","fontSize","fontSizeAdjust","lineHeight","fontFamily","textAlign","textTransform","textIndent","textDecoration","letterSpacing","wordSpacing","tabSize","MozTabSize"],o="undefined"!=typeof window,n=o&&null!=window.mozInnerScreenX;function i(t,i,r){if(!o)throw new Error("textarea-caret-position#getCaretCoordinates should only be called in a browser");var s=r&&r.debug||!1;if(s){var l=document.querySelector("#input-textarea-caret-position-mirror-div");l&&l.parentNode.removeChild(l)}var a=document.createElement("div");a.id="input-textarea-caret-position-mirror-div",document.body.appendChild(a);var d=a.style,c=window.getComputedStyle?window.getComputedStyle(t):t.currentStyle,u="INPUT"===t.nodeName;d.whiteSpace="pre-wrap",u||(d.wordWrap="break-word"),d.position="absolute",s||(d.visibility="hidden"),e.forEach(function(t){u&&"lineHeight"===t?d.lineHeight=c.height:d[t]=c[t]}),n?t.scrollHeight>parseInt(c.height)&&(d.overflowY="scroll"):d.overflow="hidden",a.textContent=t.value.substring(0,i),u&&(a.textContent=a.textContent.replace(/\s/g," "));var h=document.createElement("span");h.textContent=t.value.substring(i)||".",a.appendChild(h);var p={top:h.offsetTop+parseInt(c.borderTopWidth),left:h.offsetLeft+parseInt(c.borderLeftWidth),height:parseInt(c.lineHeight)};return s?h.style.backgroundColor="#aaa":document.body.removeChild(a),p}void 0!==t.exports?t.exports=i:o&&(window.getCaretCoordinates=i)}()},function(t,e){t.exports={applySettings:function(t){chrome.storage.local.get(function(e){if(null!=e){console.log("Current word enabled: "+e["Current Word"]),console.log("Next word enables: "+e["Next Word"]),e.activated||(console.log("Disabled upon init"),t.disable()),e["Current Word"]||t.disableWordCompletion(),e["Next Word"]||t.disableWordPrediction();let o={font:e.Font,fontsize:e["Font Size"],fontstyle:e["Font Style"],fontcolor:e["Font Color"]};t.configureDisplay(o),function(t){chrome.runtime.onMessage.addListener(function(e,o,n){console.log("received message: "+e),"enableTabX"==e?(t.enable(),console.log("I was enabled")):"disableTabX"==e?(t.disable(),console.log("I was disabled")):"enableWordPrediction"==e?(console.log("enabled Word Prediction"),t.enableWordPrediction()):"enableWordCompletion"==e?(console.log("enabled Word Completion"),t.enableWordCompletion()):"disableWordPrediction"==e?(console.log("disabled Word Prediction"),t.disableWordPrediction()):"disableWordCompletion"==e?(console.log("disabled Word Completion"),t.disableWordCompletion()):"updateDisplay"==e&&chrome.storage.local.get(function(e){let o={font:e.Font,fontsize:e["Font Size"],fontstyle:e["Font Style"],fontcolor:e["Font Color"]};t.configureDisplay(o)})})}(t)}})}}},function(t,e){async function o(t,e){let o=new Promise(function(o,n){console.log("MSG: "+t+"("+e+")"+typeof e),chrome.runtime.sendMessage({TabxOp:t,TabxInput:e},function(t){o(t.TabxResults)})});console.log("before results");let n=await o;return console.log("after results: "+n),n}var n={predictCurrentWord:function(t){return o("WORD_COMPLETE",t)}},i={predictNextWord:function(t){return o("WORD_PREDICT",t)}};t.exports={WordCompleteModel:n,WordPredictModel:i}}]);
+/******/ (function(modules) { // webpackBootstrap
+/******/ 	// The module cache
+/******/ 	var installedModules = {};
+/******/
+/******/ 	// The require function
+/******/ 	function __webpack_require__(moduleId) {
+/******/
+/******/ 		// Check if module is in cache
+/******/ 		if(installedModules[moduleId]) {
+/******/ 			return installedModules[moduleId].exports;
+/******/ 		}
+/******/ 		// Create a new module (and put it into the cache)
+/******/ 		var module = installedModules[moduleId] = {
+/******/ 			i: moduleId,
+/******/ 			l: false,
+/******/ 			exports: {}
+/******/ 		};
+/******/
+/******/ 		// Execute the module function
+/******/ 		modules[moduleId].call(module.exports, module, module.exports, __webpack_require__);
+/******/
+/******/ 		// Flag the module as loaded
+/******/ 		module.l = true;
+/******/
+/******/ 		// Return the exports of the module
+/******/ 		return module.exports;
+/******/ 	}
+/******/
+/******/
+/******/ 	// expose the modules object (__webpack_modules__)
+/******/ 	__webpack_require__.m = modules;
+/******/
+/******/ 	// expose the module cache
+/******/ 	__webpack_require__.c = installedModules;
+/******/
+/******/ 	// define getter function for harmony exports
+/******/ 	__webpack_require__.d = function(exports, name, getter) {
+/******/ 		if(!__webpack_require__.o(exports, name)) {
+/******/ 			Object.defineProperty(exports, name, { enumerable: true, get: getter });
+/******/ 		}
+/******/ 	};
+/******/
+/******/ 	// define __esModule on exports
+/******/ 	__webpack_require__.r = function(exports) {
+/******/ 		if(typeof Symbol !== 'undefined' && Symbol.toStringTag) {
+/******/ 			Object.defineProperty(exports, Symbol.toStringTag, { value: 'Module' });
+/******/ 		}
+/******/ 		Object.defineProperty(exports, '__esModule', { value: true });
+/******/ 	};
+/******/
+/******/ 	// create a fake namespace object
+/******/ 	// mode & 1: value is a module id, require it
+/******/ 	// mode & 2: merge all properties of value into the ns
+/******/ 	// mode & 4: return value when already ns object
+/******/ 	// mode & 8|1: behave like require
+/******/ 	__webpack_require__.t = function(value, mode) {
+/******/ 		if(mode & 1) value = __webpack_require__(value);
+/******/ 		if(mode & 8) return value;
+/******/ 		if((mode & 4) && typeof value === 'object' && value && value.__esModule) return value;
+/******/ 		var ns = Object.create(null);
+/******/ 		__webpack_require__.r(ns);
+/******/ 		Object.defineProperty(ns, 'default', { enumerable: true, value: value });
+/******/ 		if(mode & 2 && typeof value != 'string') for(var key in value) __webpack_require__.d(ns, key, function(key) { return value[key]; }.bind(null, key));
+/******/ 		return ns;
+/******/ 	};
+/******/
+/******/ 	// getDefaultExport function for compatibility with non-harmony modules
+/******/ 	__webpack_require__.n = function(module) {
+/******/ 		var getter = module && module.__esModule ?
+/******/ 			function getDefault() { return module['default']; } :
+/******/ 			function getModuleExports() { return module; };
+/******/ 		__webpack_require__.d(getter, 'a', getter);
+/******/ 		return getter;
+/******/ 	};
+/******/
+/******/ 	// Object.prototype.hasOwnProperty.call
+/******/ 	__webpack_require__.o = function(object, property) { return Object.prototype.hasOwnProperty.call(object, property); };
+/******/
+/******/ 	// __webpack_public_path__
+/******/ 	__webpack_require__.p = "";
+/******/
+/******/
+/******/ 	// Load entry module and return exports
+/******/ 	return __webpack_require__(__webpack_require__.s = 0);
+/******/ })
+/************************************************************************/
+/******/ ([
+/* 0 */
+/***/ (function(module, exports, __webpack_require__) {
+
+const TabX = __webpack_require__(1);
+const TableView = __webpack_require__(3);
+const applySettings = __webpack_require__(4);
+//const bgmodels = require("./models/messenger-models");
+const mocknext = __webpack_require__(6)
+const mockcomp = __webpack_require__(7)
+
+let display = new TableView(document);
+let tabx = new TabX(mockcomp,
+   mocknext,
+   display,
+   document);
+
+applySettings(tabx);
+
+
+/***/ }),
+/* 1 */
+/***/ (function(module, exports, __webpack_require__) {
+
+// TabX Shortcuts
+
+var serviceabletags = __webpack_require__(2);
+var _current_word = "";
+
+//import {wordCompleteModel} from './models/wordcomplete.js';
+var _debug = false;
+
+const TabX = class
+{
+   constructor(wordCompleteModel,
+      wordPredictModel,
+      displayStrategy,
+      document=document,
+      wordCompleteEnabled=true,
+      wordPredictEnabled=true)
+
+      {
+         this.wordCompleteModel = wordCompleteModel;
+         this.wordPredictModel = wordPredictModel;
+         this.displayStrategy = displayStrategy;
+         this.shortcuts = ["1", "2", "3"];
+         this.document = document;
+         this.wordPredictEnabled = wordPredictEnabled;
+         this.wordCompleteEnabled = wordCompleteEnabled;
+         this.enabled = true;
+         this.suggestionsDisplayCount = 3;
+         this.registerListeners();
+      }
+
+      setDocument(document)
+      {
+         this.document = document;
+      }
+
+      async getAppropriateSuggestions()
+      {
+         var elem = this.document.activeElement
+         var caret;
+         var previous;
+         var charAtCaret;
+         var text;
+
+         if(serviceabletags.isInput(elem))
+         {
+            caret = elem.selectionStart;
+            text = elem.value;
+            previous = text.charAt(caret - 1);
+            charAtCaret = text.charAt(caret);
+         }
+
+         else if(serviceabletags.isContentEditable(elem))
+         {
+            let info = serviceabletags.caretAndTextOfEditableDiv(elem, window.getSelection().baseNode);
+            caret = info["caret"];
+            text = info["text"];
+            previous = info["text"].charAt(caret - 1);
+            charAtCaret = info["text"].charAt(caret);
+         }
+
+         else
+         {
+            throw new Error("Active element not serviceable");
+         }
+
+
+         let currentWord = this.getCurrentWord(text, caret);
+         //Check for whether we can do word prediction
+
+         var charBeforeCaret = /\S/.test(previous);
+         if(charBeforeCaret && this.wordCompleteEnabled)
+         {
+            return await this.getSuggestions(currentWord);
+         }
+
+         charAtCaret = /\S/.test(charAtCaret);
+
+         if(!this.inputIsNotValid(currentWord)
+         && !charBeforeCaret
+         && !charAtCaret
+         && this.wordPredictEnabled)
+         {
+            return await this.getNextWordSuggestion(text.trim().substring(0, caret));
+         }
+      }
+
+      async displaySuggestions()
+      {
+         if(!serviceabletags.activeElementIsServiceable()
+         ||
+         this.document.activeElement.value == "")
+         {
+            this.displayStrategy.tearDown();
+            return;
+         }
+
+         let suggestions = await this.getAppropriateSuggestions();
+         suggestions = suggestions.slice(0, this.suggestionsDisplayCount);
+
+         if(suggestions == undefined || suggestions.length == 0)
+         {
+            this.displayStrategy.tearDown();
+            return;
+         }
+
+         this.mappings = {};
+
+         for(let i = 0; i < suggestions.length; i++)
+         {
+            let shortcut = this.shortcuts[i];
+            let suggestion = suggestions[i];
+
+            //Every shortcut is mapped to a suggestion that TabX can reference
+            //later
+            this.mappings[shortcut] = suggestion;
+         }
+
+         this.displayStrategy.tearDown();
+         this.displayStrategy.display(this.mappings);
+      }
+
+
+
+      wordCompletion(userChoice)
+      {
+         let activeElement = document.activeElement;
+
+         if("value" in activeElement)
+         {
+            let prevStart = activeElement.selectionStart;
+            let offset;
+
+            //if predicting next word
+            if(/\s/.test(activeElement.value.charAt(prevStart - 1)))
+            {
+               offset = 0;
+            }
+            else
+            {
+               offset = this.getCurrentWord(activeElement.value, prevStart).length;
+            }
+
+            activeElement.value = this.replaceWordAt(
+               activeElement.value,
+               activeElement.selectionStart,
+               userChoice);
+
+               let caret = prevStart + (userChoice.length - offset);
+
+               activeElement.setSelectionRange(caret, caret);
+
+            }
+
+            else if("nodeValue" in activeElement)
+            {
+               let selection = window.getSelection();
+               let target = selection.anchorNode;
+               let caret = serviceabletags.caretAndTextOfEditableDiv(
+                  activeElement, target)["caret"];
+
+                  console.log("WORD COMPLETION FOR DIV");
+                  console.log("-----------------------");
+                  console.log("NODE VALUE: " + JSON.stringify(target.nodeValue)
+                     + " (" + caret + ")");
+
+                  let start = selection.anchorOffset;
+                  let isPredictingNextWord = /\s/.test(target.
+                     nodeValue.charAt(start - 1));
+
+                  let offset = this.getCurrentWord(target.
+                     nodeValue, start).length;
+
+                  console.log("CHAR AT START:   " + JSON.stringify(target.
+                     nodeValue.charAt(start)));
+                  console.log("-----------------------");
+
+                  target.nodeValue = this.replaceWordAt(
+                     target.nodeValue.replace(/\u00a0/g, " "), //Replace hard spaces
+                     start,
+                     userChoice);
+
+                     //Set the caret back to expected position
+                     if(isPredictingNextWord)
+                     {
+                        offset = 0;
+                     }
+
+                     selection.collapse(target, start + (userChoice.length -
+                        offset));
+                  }
+
+                  else
+                  {
+                     throw new Error("Attempted to mutate element" +
+                     "that does not handle text")
+                  }
+               }
+
+               replaceWordAt(str, i, word, delimiter=' ')
+               {
+                  let startOfWord = str.lastIndexOf(delimiter, i - 1);
+
+                  let before = str.substring(0, startOfWord);
+                  if (before != "" && before != null)
+                  {
+                     before += " "
+                  }
+
+                  let after  = str.substring(i);
+
+                  if(after.charAt(0) != "" && after.charAt(0) != " ")
+                  {
+                     after = " " + after;
+                  }
+
+                  return before + word + after;
+               }
+
+               getCurrentWord(text, caret)
+               {
+                  if(caret == 0)
+                  {
+                     return "";
+                  }
+
+                  //Check to see if the previoius character is a whitespace
+                  //If it is not, push previous back one to allow the current
+                  //word be the word that comes before a whitespace
+                  //Ex. "hello |" -> "hello"
+                  let offset = 1;
+                  var prev = text.charAt(caret - offset);
+                  while(prev.match(/\s/))
+                  {
+                     offset += 1;
+                     prev = text.charAt(caret - offset);
+                  }
+
+                  //off by one due to while loop
+                  caret -= (offset - 1);
+
+                  //Make sure caret is at the end of a developing word
+                  if(prev.match(/\w/))
+                  {
+                     //Iterate backwards to find the first instance of a white space
+                     // 0 to caret
+                     var startOfWord = this.indexOfStartOfCurrentWord(text,
+                        caret);
+
+                     if(startOfWord == 0)
+                     {
+                        return text.substring(0, caret);
+                     }
+                     else
+                     {
+                        return text.substring(startOfWord, caret);
+                     }
+                  }
+
+                  else
+                  {
+                     return "";
+                  }
+               }
+
+               indexOfStartOfCurrentWord(text, caret)
+               {
+                  //Iterate backwards to find the first instance of a white space
+                  var i = caret;
+                  while(i > 0 && text.charAt(i - 1).match(/\w/))
+                  {
+                     i--;
+                  }
+
+                  return i;
+               }
+
+               inputHasCharactersOtherThanLetters(string)
+               {
+                  return (/[^a-zA-Z\s]/).test(string)
+               }
+
+               inputIsNotValid(str)
+               {
+                  return this.inputHasCharactersOtherThanLetters(str)
+                  ||
+                  str.length == 0;
+               }
+
+               async getSuggestions(incomplete_string)
+               {
+                  if(this.inputIsNotValid(incomplete_string))
+                  {
+                     return [];
+                  }
+
+                  let results = this.wordCompleteModel.predictCurrentWord(
+                     incomplete_string);
+
+                  if(typeof(results) == Promise)
+                  {
+                     return await results;
+                  }
+
+                  return results;
+               }
+
+               async getNextWordSuggestion(str)
+               {
+                  let results = this.wordPredictModel.predictNextWord(str);
+                  if(typeof(results) == Promise)
+                  {
+                     return await results;
+                  }
+
+                  else
+                  {
+                     return results;
+                  }
+               }
+
+               handleUserInput(event)
+               {
+
+                  if (serviceabletags.activeElementIsServiceable()
+                     && this.enabled)
+                  {
+                     this.displaySuggestions();
+                  }
+               }
+
+               handleWordComplete(event)
+               {
+                  if(!this.enable){return;}
+
+                  var keyname = event.key;
+
+                  if(serviceabletags.activeElementIsServiceable()
+                  && this.shortcuts.includes(keyname)
+                  && this.mappings[keyname] != undefined)
+                  {
+                     event.preventDefault();
+                     var userChoice = this.mappings[keyname];
+                     this.wordCompletion(userChoice);
+                  };
+               }
+
+               registerListeners()
+               {
+                  //Provide suggestions based on developing word
+                  this.document.addEventListener('keydown',
+                     this.handleWordComplete.bind(this));
+
+                  //Shows suggestions
+                  this.document.addEventListener('keyup',
+                     this.handleUserInput.bind(this));
+                  var serviceableElements = serviceabletags.
+                     getServicableElements();
+
+                  //Listens for when active elements lose focus
+                  for(var i = 0; i < serviceableElements.length; i++)
+                  {
+                     var elem = serviceableElements[i];
+                     elem.addEventListener('blur', function()
+                     {
+                        this.displayStrategy.tearDown();
+                     }.bind(this));
+                  };
+               }
+
+               enable()
+               {
+                  this.enabled = true;
+               }
+
+               disable()
+               {
+                  this.enabled = false
+               }
+
+               disableWordPrediction()
+               {
+                  this.wordPredictEnabled = false;
+               }
+
+               disableWordCompletion()
+               {
+                  this.wordCompleteEnabled = false;
+               }
+
+               enableWordPrediction()
+               {
+                  this.wordPredictEnabled = true;
+               }
+
+               enableWordCompletion()
+               {
+                  this.wordCompleteEnabled = true;
+               }
+
+               configureDisplay(settings)
+               {
+                  this.displayStrategy.config(settings);
+               }
+
+               setSuggestionsDisplayCount(count)
+               {
+                  this.suggestionsDisplayCount = count;
+               }
+            };
+
+            module.exports = TabX;
+
+
+/***/ }),
+/* 2 */
+/***/ (function(module, exports) {
+
+var selector = 'input[type=text], textarea, [contenteditable=true], [contenteditable]';
+
+var serviceableTags = [
+   "input[type=text]",
+   'textarea',
+   "[contenteditable=true]",
+   "[contenteditable]"
+]
+
+var input = [
+   "input[type=text]",
+   'textarea'
+]
+
+var contenteditable = [
+   "[contenteditable=true]",
+   "[contenteditable]"
+]
+
+function getServicableElements()
+{
+   return document.querySelectorAll(selector);
+}
+
+function activeElementIsServiceable()
+{
+   let activeElement = document.activeElement;
+   for(let i = 0; i < serviceableTags.length; i++)
+   {
+      if(activeElement.matches(serviceableTags[i]))
+      {
+         return true;
+      }
+   }
+
+   return false;
+}
+
+function isInput(tag)
+{
+   for(let matcher of input)
+   {
+      if(tag.matches(matcher))
+      {
+         return true;
+      }
+   }
+
+   return false;
+}
+
+function isContentEditable(tag)
+{
+      for(let matcher of contenteditable)
+      {
+         if(tag.matches(matcher))
+         {
+            return true;
+         }
+      }
+
+   return false;
+}
+
+
+function caretAndTextOfEditableDiv(parentEditableDiv, targetDiv)
+{
+   if(parentEditableDiv == targetDiv)
+   {
+      return window.getSelection().anchorOffset;
+   }
+
+   let texts = getTextUpToChildInEditableDiv(parentEditableDiv, targetDiv)
+   let base = texts[0];
+   let activeElementText = texts[1];
+   let offset = window.getSelection().anchorOffset;
+   let caret = (base.length + offset)
+   let stringUpToCaret = activeElementText.substr(0, offset)
+
+   return { "text": base + stringUpToCaret, "caret": caret };
+}
+
+function getTextUpToChildInEditableDiv(root, target)
+{
+   let cur = target;
+   let activeNodeText = target.textContent;
+   let text = ""
+   while(cur != root)
+   {
+      while(cur.previousSibling != null)
+      {
+         cur = cur.previousSibling;
+         text = cur.textContent + text;
+         if(["P", "DIV"].includes(cur.tagName))
+         {
+            text = " " + text;
+         }
+      }
+
+      //Edge case if the parent node is a div or p tag.
+      //since the text associated with the parent is one
+      //of its child nodes.
+      cur = cur.parentNode;
+      if(["P", "DIV"].includes(cur.tagName))
+      {
+         text = " " + text;
+      }
+   }
+
+   return [text, activeNodeText];
+}
+
+module.exports =
+{
+   isInput: isInput,
+   isContentEditable: isContentEditable,
+   getServicableElements: getServicableElements,
+   activeElementIsServiceable: activeElementIsServiceable,
+   caretAndTextOfEditableDiv: caretAndTextOfEditableDiv,
+}
+
+
+/***/ }),
+/* 3 */
+/***/ (function(module, exports, __webpack_require__) {
+
+const serviceabletags = __webpack_require__(2);
+
+const FixedView = class
+{
+	constructor(dom)
+	{
+		this.dom = dom;
+		this.ID = "suggestions";
+		this.current_table = null;
+		this.displayCount = 3;
+		dom.addEventListener("keyup", this.listenForInput.bind(this));
+	}
+
+	styleTable(table)
+	{
+		let style = table.style;
+
+		style.fontFamily = "arial, san-serif";
+		style.borderCollapse = "collapse";
+		style.width = "100%";
+		style.position = "fixed";
+		style.bottom = 0;
+		style.textAlign = "center";
+		style.zIndex = 1000;
+		style.tableLayout = "fixed";
+		style.backgroundColor = "#696969";
+
+	}
+
+	styleTableEntry(row)
+	{
+		let attrs =
+		{
+			"border": "1px solid #darkgrey",
+			"textAlign": "center",
+			"padding": "8px",
+			"backgroundColor": "lightgrey",
+			"height": "100"
+		}
+
+		for(let attr in attrs)
+		{
+			row.style[attr] = attrs[attr];
+		}
+	}
+
+	createSuggestionsTable()
+	{
+
+		let sentenceRow = document.createElement("tr");
+		sentenceRow.id = "sentence-display";
+		let sentenceValue = document.createElement("td");
+		sentenceValue.colSpan = this.displayCount;
+		sentenceValue.style.textAlign = "center";
+		sentenceRow.appendChild(sentenceValue);
+
+		let table = document.createElement("table");
+		table.id = "suggestion-table";
+		this.styleTable(table);
+
+		let header = document.createElement("tr");
+		header.id = "suggestion-Header";
+		this.styleTableEntry(header);
+
+		let values = document.createElement("tr");
+		values.id = "suggestion-values"
+		this.styleTableEntry(values);
+
+		table.appendChild(sentenceRow)
+		table.appendChild(header);
+		table.appendChild(values);
+
+		//Pre-populate with null values
+		for(let i = 0; i < this.displayCount; i++)
+		{
+			let entry = this.dom.createElement("td");
+			this.styleTableEntry(entry);
+
+			header.appendChild(entry);
+
+			entry = this.dom.createElement("td");
+			this.styleTableEntry(entry);
+			values.appendChild(entry);
+		}
+
+		this.sentence = sentenceValue;
+		this.current_table = table;
+		this.header = header;
+		this.values = values;
+
+		return table
+	}
+
+	isActive()
+	{
+		return this.dom.getElementById(this.ID) != null;
+	}
+
+	tearDown()
+	{
+		if (this.isActive())
+		{
+			this.current_table.parentNode.removeChild(this.current_table);
+		}
+	}
+
+	config(options){}
+
+	listenForInput(event)
+	{
+		//Grab current sentence
+		if(serviceabletags.isInput(this.dom.activeElement))
+		{
+			this.sentence.innerText = this.dom.activeElement.value;
+		}
+
+		else if(serviceabletags.isContentEditable(this.dom.activeElement))
+		{
+			this.sentence.innerText = window.getSelection().anchorNode.nodeValue;
+		}
+	}
+
+	display(mappings)
+	{
+		var dom = this.dom;
+
+		if(this.current_table == null)
+		{
+			this.createSuggestionsTable();
+		}
+
+		var suggestions = Object.values(mappings);
+		var shortcuts = Object.keys(mappings);
+
+		//Populate headers
+		for(let i = 0; i < this.header.children.length; i++)
+		{
+			let child = this.header.children[i];
+			if(i < shortcuts.length)
+			{
+				child.innerText = shortcuts[i];
+			}
+
+			else
+			{
+				child.innerText = "";
+			}
+		}
+
+		//Populate values
+		for(let i = 0; i < this.values.children.length; i++)
+		{
+			let child = this.values.children[i];
+			if(i < suggestions.length)
+			{
+				child.innerText = suggestions[i];
+			}
+
+			else
+			{
+				child.innerText = "";
+			}
+		}
+
+		//Append the display if its not there
+		if(!this.isActive())
+		{
+			dom.body.appendChild(this.current_table);
+		}
+	}
+}
+
+module.exports = FixedView;
+
+
+/***/ }),
+/* 4 */
+/***/ (function(module, exports) {
+
+function applySettings(tabx)
+{
+   chrome.storage.local.get(function (results)
+   {
+      if (results != null)
+      {
+         console.log("Current word enabled: " + results["Current Word"]);
+         console.log("Next word enables: " + results["Next Word"]);
+
+         if (!results['activated'])
+         {
+            console.log("Disabled upon init");
+            tabx.disable();
+         }
+
+         if(!results["Current Word"])
+         {
+            tabx.disableWordCompletion();
+         }
+
+         if(!results["Next Word"])
+         {
+            tabx.disableWordPrediction();
+         }
+
+         let config =
+         {
+            font: results["Font"],
+            fontsize: results["Font Size"],
+            fontstyle: results["Font Style"],
+            fontcolor: results["Font Color"]
+         };
+
+         tabx.configureDisplay(config);
+         listenForSettingChanges(tabx);
+      }
+   })
+};
+
+var actions =
+{
+   "enableTabX": (tabx) => { tabx.enable() },
+   "disableTabX": (tabx) => { tabx.disable() },
+   "enableWordCompletion": (tabx) => { tabx.enableWordCompletion() },
+   "enableWordPrediction": (tabx) => { tabx.enableWordPrediction() },
+   "disableWordCompletion": (tabx) => { tabx.disableWordCompletion() },
+   "disableWordPrediction": (tabx) => { tabx.disableWordPrediction() },
+   "updateDisplay": (tabx) =>
+   {
+      chrome.storage.local.get(function(results)
+      {
+         let config =
+         {
+            font: results["Font"],
+            fontsize: results["Font Size"],
+            fontstyle: results["Font Style"],
+            fontcolor: results["Font Color"]
+         };
+
+         tabx.configureDisplay(config);
+      });
+   },
+
+   "suggestionsQuantityChange": (tabx) =>
+   {
+      chrome.storage.local.get(function(results)
+      {
+         let quantity = results["Suggestions Quantity"];
+         if(quantity == null || quantity == undefined || quantity == 0)
+         {
+            quantity = 3;
+         }
+
+         tabx.setSuggestionsDisplayCount(quantity);
+
+      });
+   }
+}
+
+function listenForSettingChanges(tabx)
+{
+   chrome.runtime.onMessage.addListener(function(message, sender, sendResponse)
+   {
+      console.log("received message: " + message);
+      let action = actions[message];
+      action(tabx);
+   });
+}
+
+module.exports = applySettings
+
+
+/***/ }),
+/* 5 */,
+/* 6 */
+/***/ (function(module, exports) {
+
+module.exports = {
+    predictNextWord: function(sentence){
+        return ["Hello", "World","Goodbye"];
+    }
+}
+
+/***/ }),
+/* 7 */
+/***/ (function(module, exports) {
+
+module.exports = {
+    predictCurrentWord: function(word){
+        return ["Hello", "World","Goodbye"];
+    }
+}
+
+/***/ })
+/******/ ]);

@@ -20,7 +20,7 @@
          <script src="servicesettings.js"></script>
       </div>
 
-      <link rel="stylesheet" type="text/css" href="fontsettings.css">
+      <link rel="stylesheet" type="text/css" href="displaysettings.css">
       <div id="font-settings">
          <h2> Display Settings </h2>
          <div class="row" style="background-color:lightgrey">
@@ -69,10 +69,20 @@
                   </label>
                </div>
 
-               <script src="fontsettings.js"></script>
-               
-         </div>
+               <div id="suggestions-quantity-container" class="column">
+                  <label>Number of Suggestions
+                     <input readonly id="suggestions-quantity-input" class="suggestions-quantity">
+                     <select id="suggestions-quantity-select" class="suggestions-quantity" size=4 style="background-color:#ccc">
+                       <option value="2">2</option>
+                       <option value="3">3</option>
+                       <option value="4">4</option>
+                       <option value="5">5</option>
+                     </select>
+                  </label>
+               </div>
 
+               <script src="displaysettings.js"></script>
+         </div>
       </div>
 
 </div>

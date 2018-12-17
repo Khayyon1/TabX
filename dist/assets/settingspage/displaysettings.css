@@ -31,13 +31,14 @@ label
    padding-left: 20px;
 }
 
-#font-select-container, #font-size-container, #font-style-container, #font-color-container
+#font-select-container, #font-size-container, #font-style-container,
+#font-color-container, #suggestions-quantity-container
 {
    display: inline-block;
    width: 150px;
 }
 
-.font, .font-style, .font-size
+.font, .font-style, .font-size, .suggestions-quantity
 {
    width: 100%;
 }

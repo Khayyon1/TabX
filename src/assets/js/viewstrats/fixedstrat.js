@@ -23,15 +23,18 @@ const FixedView = class
 		style.textAlign = "center";
 		style.zIndex = 1000;
 		style.tableLayout = "fixed";
+		style.backgroundColor = "#696969";
+
 	}
 
 	styleTableEntry(row)
 	{
 		let attrs =
 		{
-			"border": "1px solid #dddddd",
+			"border": "1px solid #darkgrey",
 			"textAlign": "center",
 			"padding": "8px",
+			"backgroundColor": "lightgrey",
 			"height": "100"
 		}
 

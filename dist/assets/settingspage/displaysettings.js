@@ -18,6 +18,12 @@ function inFontColor()
    return document.getElementById("font-color-input")
 }
 
+
+function inSuggestionsQuantity()
+{
+   return document.getElementById("suggestions-quantity-select")
+}
+
 function reflectValue(id, val)
 {
    document.getElementById(id).value = val;
@@ -55,10 +61,19 @@ function saveFontColor()
    sendMessageToAllTabs("updateDisplay");
 }
 
+function saveSuggestionsQuantity()
+{
+   let val = inSuggestionsQuantity().value;
+   chrome.storage.local.set({"Suggestions Quantity": val});
+   reflectValue("suggestions-quantity-input", val)
+   sendMessageToAllTabs("suggestionsQuantityChange");
+}
+
 inFont().addEventListener('change', saveFont);
 inFontSize().addEventListener('change', saveFontSize);
 inFontStyle().addEventListener('change', saveFontStyle);
 inFontColor().addEventListener('change', saveFontColor);
+inSuggestionsQuantity().addEventListener('change', saveSuggestionsQuantity);
 
 //Load the settings
 chrome.storage.local.get(function(results)
@@ -67,4 +82,5 @@ chrome.storage.local.get(function(results)
    reflectValue("font-color-input", results["Font Color"])
    reflectValue("font-size-input", results["Font Size"])
    reflectValue("font-style-input", results["Font Style"])
+   reflectValue("suggestions-quantity-input", results["Suggestions Quantity"])
 });

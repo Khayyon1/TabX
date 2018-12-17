@@ -1,5 +1,5 @@
 //var expect = require('expect')
-const wordLocation = "sampleText/1-1000Bonus.txt";
+const wordLocation = "sampleText/1-1000.txt";
 
 function simpleReadFileSync(filePath){
 
@@ -108,13 +108,12 @@ Trie.prototype.save = function(importTrie){
 }
 
 Trie.prototype.addClosest = function(){
-    var SpellChecker = require('symspell');
-    var corrector = new SpellChecker(3);
+    var wordDistance = require('./testBetterModels/understandDM.js');
+    var model = wordDistance.myTrain;
+    newList = wordDistance.modelTrain(style = 'default');
 
     let wordList = simpleReadFileSync(wordLocation);
-    for(let i = 0; i < wordList.length -1; i++){
-        corrector.addWords(wordList[i]);
-    }
+    model.addDictionary(wordList);
 
     var queue = [];
     queue.push(this.head);
@@ -124,16 +123,17 @@ Trie.prototype.addClosest = function(){
              queue.push(tempNode.children[key]);
          }
          //console.log(tempNode.value)
-         let arrayWords = corrector.lookup(tempNode.value);
-         if(arrayWords.length > 0){
-             for(var i = 0; i < arrayWords.length; i++){
-                 tempNode.closest.push(arrayWords[i].term);
-                 if (i > 5){
-                     i = arrayWords.length
-                 }
-             }
+         tempNode.closest = model.closestWords(tempNode.value,10)
 
-         }
+         // if(arrayWords.length > 0){
+         //     for(var i = 0; i < arrayWords.length; i++){
+         //         tempNode.closest.push(arrayWords[i].term);
+         //         if (i > 5){
+         //             i = arrayWords.length
+         //         }
+         //     }
+         //
+         // }
     }
     //create queue
     //add head to queue

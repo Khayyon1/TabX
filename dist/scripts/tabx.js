@@ -602,8 +602,11 @@ const TabX = class
                   //Shows suggestions
                   this.document.addEventListener('keyup',
                      this.handleUserInput.bind(this));
+
                   var serviceableElements = serviceabletags.
                      getServicableElements();
+
+                  console.log(serviceableElements);
 
                   //Listens for when active elements lose focus
                   for(var i = 0; i < serviceableElements.length; i++)
@@ -612,6 +615,7 @@ const TabX = class
                      elem.addEventListener('blur', function()
                      {
                         this.displayStrategy.tearDown();
+                        console.log("teardown");
                      }.bind(this));
                   };
 
@@ -674,9 +678,9 @@ const FixedView = class
 	{
 		this.dom = dom;
 		this.ID = "suggestions";
-		this.current_table = null;
 		this.displayCount = 3;
 		dom.addEventListener("keyup", this.listenForInput.bind(this));
+		this.createSuggestionsTable();
 	}
 
 	styleTable(table)
@@ -688,22 +692,24 @@ const FixedView = class
 		style.width = "100%";
 		style.position = "fixed";
 		style.bottom = 0;
+		style.left = 0;
 		style.textAlign = "center";
 		style.zIndex = 1000;
 		style.tableLayout = "fixed";
-		style.backgroundColor = "#696969";
+		style.backgroundColor = "#898989";
 
 	}
 
 	styleTableEntry(row)
 	{
+		//Attributes
 		let attrs =
 		{
-			"border": "1px solid #darkgrey",
+			"border": "2px solid #dddddd",
 			"textAlign": "center",
-			"padding": "8px",
-			"backgroundColor": "lightgrey",
-			"height": "100"
+			"padding": "4px",
+			"backgroundColor": "#cccccc",
+			"height": "100",
 		}
 
 		for(let attr in attrs)
@@ -720,6 +726,7 @@ const FixedView = class
 		let sentenceValue = document.createElement("td");
 		sentenceValue.colSpan = this.displayCount;
 		sentenceValue.style.textAlign = "center";
+		sentenceValue.style.color = "white"
 		sentenceRow.appendChild(sentenceValue);
 
 		let table = document.createElement("table");
@@ -773,19 +780,35 @@ const FixedView = class
 		}
 	}
 
-	config(options){}
+	config(options)
+	{
+		for(let elem of [this.header, this.values])
+		{
+			elem.style.color       = options["fontcolor"];
+			elem.style.fontSize    = options["fontsize"] + "px";
+			elem.style.fontFamily  = options["font"];
+			elem.style.fontStyle   = options["fontstyle"];
+		}
+
+	}
 
 	listenForInput(event)
 	{
 		//Grab current sentence
 		if(serviceabletags.isInput(this.dom.activeElement))
 		{
-			this.sentence.innerText = this.dom.activeElement.value;
+			let text = this.dom.activeElement.value;
+			let start = this.dom.activeElement.selectionStart;
+			text = text.slice(0, start) + "|" + text.slice(start);
+			this.sentence.innerText = text;
 		}
 
 		else if(serviceabletags.isContentEditable(this.dom.activeElement))
 		{
-			this.sentence.innerText = window.getSelection().anchorNode.nodeValue;
+			let selection = window.getSelection();
+			let text = selection.anchorNode.nodeValue;
+			text = text.slice(0, selection.anchorOffset) + "|" + text.slice(selection.anchorOffset);
+			this.sentence.innerText = text;
 		}
 	}
 	setSuggestionsDisplayCount(count)

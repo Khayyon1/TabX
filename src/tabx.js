@@ -366,8 +366,11 @@ const TabX = class
                   //Shows suggestions
                   this.document.addEventListener('keyup',
                      this.handleUserInput.bind(this));
+
                   var serviceableElements = serviceabletags.
                      getServicableElements();
+
+                  console.log(serviceableElements);
 
                   //Listens for when active elements lose focus
                   for(var i = 0; i < serviceableElements.length; i++)
@@ -376,6 +379,7 @@ const TabX = class
                      elem.addEventListener('blur', function()
                      {
                         this.displayStrategy.tearDown();
+                        console.log("teardown");
                      }.bind(this));
                   };
 

@@ -1,4 +1,4 @@
-const getCaretCoordinates = require('textarea-caret');
+const getCaretCoordinates = require('./textareacaret');
 
 const Style = class
 {
@@ -14,7 +14,7 @@ const Style = class
         element.style.zIndex = 999;
 
         const rect = textInputBox.getBoundingClientRect();
-        const caret = getCaretCoordinates(textInputBox, textInputBox.selectionStart);
+        const caret = getCaretCoordinates(textInputBox, textInputBox.selectionStart, {debug:true});
         this.offset_y = window.getComputedStyle(textInputBox, "").fontSize;
         this.offset_y = this.pxToInt(this.offset_y) - textInputBox.scrollTop;
         element.style.top = (rect.top + caret.top + this.offset_y).toString() + 'px';
@@ -30,8 +30,8 @@ const Style = class
         const left = this.pxToInt(element.style.left);
         const top = this.pxToInt(element.style.top);
 
-        console.log('Mishiii', w, elRect.right)
-        console.log(elRect)
+        // console.log('Mishiii', w, elRect.right)
+        // console.log(elRect)
 
         if (elRect.right > w) {
             const offset_x = elRect.right - w;

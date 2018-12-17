@@ -90,10 +90,10 @@
 
 const TabX = __webpack_require__(1);
 const TableView = __webpack_require__(3);
-const applySettings = __webpack_require__(4);
+const applySettings = __webpack_require__(6);
 //const bgmodels = require("./models/messenger-models");
-const mocknext = __webpack_require__(6)
-const mockcomp = __webpack_require__(7)
+const mocknext = __webpack_require__(7)
+const mockcomp = __webpack_require__(8)
 
 let display = new TableView(document);
 let tabx = new TabX(mockcomp,
@@ -651,183 +651,344 @@ module.exports =
 /* 3 */
 /***/ (function(module, exports, __webpack_require__) {
 
-const serviceabletags = __webpack_require__(2);
+const Style = __webpack_require__(4);
 
-const FixedView = class
+const TableView = class
 {
-	constructor(dom)
-	{
-		this.dom = dom;
-		this.ID = "suggestions";
-		this.current_table = null;
-		this.displayCount = 3;
-		dom.addEventListener("keyup", this.listenForInput.bind(this));
-	}
+    constructor(dom)
+    {
+        this.dom = dom;
+        this.ID = "suggestions";
+        this.current_table = null;
+        this.style = new Style();
+    }
 
-	styleTable(table)
-	{
-		let style = table.style;
+    createSuggestionsTable()
+    {
+        let dom = this.dom;
+        let table = dom.createElement("table");
+        table.id = this.ID;
+        table.className = "suggestions";
+        this.style.table(table, dom.activeElement);
+        this.current_table = table;
+        return table
+    }
 
-		style.fontFamily = "arial, san-serif";
-		style.borderCollapse = "collapse";
-		style.width = "100%";
-		style.position = "fixed";
-		style.bottom = 0;
-		style.textAlign = "center";
-		style.zIndex = 1000;
-		style.tableLayout = "fixed";
-		style.backgroundColor = "#696969";
+    isActive()
+    {
+        return this.dom.getElementById(this.ID) != null;
+    }
 
-	}
+    tearDown()
+    {
+        if (this.isActive())
+        {
+            this.current_table.parentNode.removeChild(this.current_table);
+        }
+    }
 
-	styleTableEntry(row)
-	{
-		let attrs =
-		{
-			"border": "1px solid #darkgrey",
-			"textAlign": "center",
-			"padding": "8px",
-			"backgroundColor": "lightgrey",
-			"height": "100"
-		}
+    display(mappings)
+    {
+        var dom = this.dom;
+        var table = this.createSuggestionsTable();
 
-		for(let attr in attrs)
-		{
-			row.style[attr] = attrs[attr];
-		}
-	}
+        var suggestions = Object.values(mappings);
+        var shortcuts = Object.keys(mappings);
 
-	createSuggestionsTable()
-	{
+        for (var i = 0; i < suggestions.length; i++) {
+            var row = dom.createElement("tr");
+            this.style.row(row);
+            var shortcutColumn = dom.createElement("td");
+            var suggestionsColumn = dom.createElement("td");
+            shortcutColumn.appendChild(dom.createTextNode((shortcuts[i].toString())));
+            suggestionsColumn.appendChild(dom.createTextNode(suggestions[i]));
+            row.append(shortcutColumn);
+            row.append(suggestionsColumn);
+            table.appendChild(row);
+        }
 
-		let sentenceRow = document.createElement("tr");
-		sentenceRow.id = "sentence-display";
-		let sentenceValue = document.createElement("td");
-		sentenceValue.colSpan = this.displayCount;
-		sentenceValue.style.textAlign = "center";
-		sentenceRow.appendChild(sentenceValue);
-
-		let table = document.createElement("table");
-		table.id = "suggestion-table";
-		this.styleTable(table);
-
-		let header = document.createElement("tr");
-		header.id = "suggestion-Header";
-		this.styleTableEntry(header);
-
-		let values = document.createElement("tr");
-		values.id = "suggestion-values"
-		this.styleTableEntry(values);
-
-		table.appendChild(sentenceRow)
-		table.appendChild(header);
-		table.appendChild(values);
-
-		//Pre-populate with null values
-		for(let i = 0; i < this.displayCount; i++)
-		{
-			let entry = this.dom.createElement("td");
-			this.styleTableEntry(entry);
-
-			header.appendChild(entry);
-
-			entry = this.dom.createElement("td");
-			this.styleTableEntry(entry);
-			values.appendChild(entry);
-		}
-
-		this.sentence = sentenceValue;
-		this.current_table = table;
-		this.header = header;
-		this.values = values;
-
-		return table
-	}
-
-	isActive()
-	{
-		return this.dom.getElementById(this.ID) != null;
-	}
-
-	tearDown()
-	{
-		if (this.isActive())
-		{
-			this.current_table.parentNode.removeChild(this.current_table);
-		}
-	}
-
-	config(options){}
-
-	listenForInput(event)
-	{
-		//Grab current sentence
-		if(serviceabletags.isInput(this.dom.activeElement))
-		{
-			this.sentence.innerText = this.dom.activeElement.value;
-		}
-
-		else if(serviceabletags.isContentEditable(this.dom.activeElement))
-		{
-			this.sentence.innerText = window.getSelection().anchorNode.nodeValue;
-		}
-	}
-
-	display(mappings)
-	{
-		var dom = this.dom;
-
-		if(this.current_table == null)
-		{
-			this.createSuggestionsTable();
-		}
-
-		var suggestions = Object.values(mappings);
-		var shortcuts = Object.keys(mappings);
-
-		//Populate headers
-		for(let i = 0; i < this.header.children.length; i++)
-		{
-			let child = this.header.children[i];
-			if(i < shortcuts.length)
-			{
-				child.innerText = shortcuts[i];
-			}
-
-			else
-			{
-				child.innerText = "";
-			}
-		}
-
-		//Populate values
-		for(let i = 0; i < this.values.children.length; i++)
-		{
-			let child = this.values.children[i];
-			if(i < suggestions.length)
-			{
-				child.innerText = suggestions[i];
-			}
-
-			else
-			{
-				child.innerText = "";
-			}
-		}
-
-		//Append the display if its not there
-		if(!this.isActive())
-		{
-			dom.body.appendChild(this.current_table);
-		}
-	}
+        dom.body.appendChild(table);
+        this.style.updatePosition(table);
+    }
+    config(settings){
+        this.style.settings = settings;
+    }
+    
 }
 
-module.exports = FixedView;
+module.exports = TableView;
 
 
 /***/ }),
 /* 4 */
+/***/ (function(module, exports, __webpack_require__) {
+
+const getCaretCoordinates = __webpack_require__(5);
+
+const Style = class
+{
+    constructor(){
+        this.cache = {};
+        this.offset_y = 0;
+    }
+    table(element, textInputBox)
+    {
+        element.style.display = 'flex';
+        element.style.position = 'absolute';
+        element.style.backgroundColor = "lightblue";
+        element.style.zIndex = 999;
+
+        const rect = textInputBox.getBoundingClientRect();
+        const caret = getCaretCoordinates(textInputBox, textInputBox.selectionStart, {debug:true});
+        this.offset_y = window.getComputedStyle(textInputBox, "").fontSize;
+        this.offset_y = this.pxToInt(this.offset_y) - textInputBox.scrollTop;
+        element.style.top = (rect.top + caret.top + this.offset_y).toString() + 'px';
+        element.style.left = (rect.left + caret.left).toString() + 'px';
+    }
+
+    updatePosition(element)
+    {
+        const w = window.innerWidth;
+        const h = window.innerHeight;
+
+        const elRect = element.getBoundingClientRect();
+        const left = this.pxToInt(element.style.left);
+        const top = this.pxToInt(element.style.top);
+
+        // console.log('Mishiii', w, elRect.right)
+        // console.log(elRect)
+
+        if (elRect.right > w) {
+            const offset_x = elRect.right - w;
+            element.style.left = (left - offset_x).toString() + 'px'
+        }
+
+        if (elRect.bottom > h){
+            const offset_y = 2*this.offset_y + parseInt(this.settings.fontsize);
+            element.style.top = (top - offset_y).toString() + 'px'
+        }
+
+    }
+    pxToInt(px){
+        return parseInt(px.slice(0, px.length - 2))
+    }
+    row(element, offset=6)
+    {
+        element.style.marginRight = offset.toString() + 'px';
+        if (this.settings){
+            element.style.fontFamily = this.settings.font;
+            element.style.fontSize = this.settings.fontsize+"px";
+            element.style.color = this.settings.fontcolor;
+            element.style.fontWeight = this.settings.fontstyle.toLowerCase();
+        }
+    }
+    calcSize(text, options = {}) {
+
+        const cacheKey = JSON.stringify({ text: text, options: options })
+
+        if (this.cache[cacheKey]) {
+            return this.cache[cacheKey]
+        }
+
+        // prepare options
+        options.font = options.font || 'Times'
+        options.fontSize = options.fontSize || '16px'
+        options.fontWeight = options.fontWeight || 'normal'
+        options.lineHeight = options.lineHeight || 'normal'
+        options.width = options.width || 'auto'
+        options.wordBreak = options.wordBreak || 'normal'
+
+        const element = this.createDummyElement(text, options)
+
+        const size = {
+            width: element.offsetWidth,
+            height: element.offsetHeight,
+        }
+
+        this.destroyElement(element)
+
+        this.cache[cacheKey] = size
+
+        return size
+    }
+    
+    destroyElement(element)
+    {
+        element.parentNode.removeChild(element)
+    }
+
+    createDummyElement(text, options) {
+        const element = document.createElement('div')
+        const textNode = document.createTextNode(text)
+
+        element.appendChild(textNode)
+
+        element.style.fontFamily = options.font
+        element.style.fontSize = options.fontSize
+        element.style.fontWeight = options.fontWeight
+        element.style.lineHeight = options.lineHeight
+        element.style.position = 'absolute'
+        element.style.visibility = 'hidden'
+        element.style.left = '-999px'
+        element.style.top = '-999px'
+        element.style.width = options.width
+        element.style.height = 'auto'
+        element.style.wordBreak = options.wordBreak
+
+        document.body.appendChild(element)
+
+        return element
+    }
+}
+
+module.exports = Style;
+
+
+/***/ }),
+/* 5 */
+/***/ (function(module, exports) {
+
+/* jshint browser: true */
+
+(function () {
+
+// We'll copy the properties below into the mirror div.
+// Note that some browsers, such as Firefox, do not concatenate properties
+// into their shorthand (e.g. padding-top, padding-bottom etc. -> padding),
+// so we have to list every single property explicitly.
+var properties = [
+  'direction',  // RTL support
+  'boxSizing',
+  'width',  // on Chrome and IE, exclude the scrollbar, so the mirror div wraps exactly as the textarea does
+  'height',
+  'overflowX',
+  'overflowY',  // copy the scrollbar for IE
+
+  'borderTopWidth',
+  'borderRightWidth',
+  'borderBottomWidth',
+  'borderLeftWidth',
+  'borderStyle',
+
+  'paddingTop',
+  'paddingRight',
+  'paddingBottom',
+  'paddingLeft',
+
+  // https://developer.mozilla.org/en-US/docs/Web/CSS/font
+  'fontStyle',
+  'fontVariant',
+  'fontWeight',
+  'fontStretch',
+  'fontSize',
+  'fontSizeAdjust',
+  'lineHeight',
+  'fontFamily',
+
+  'textAlign',
+  'textTransform',
+  'textIndent',
+  'textDecoration',  // might not make a difference, but better be safe
+
+  'letterSpacing',
+  'wordSpacing',
+
+  'tabSize',
+  'MozTabSize'
+
+];
+
+var isBrowser = (typeof window !== 'undefined');
+
+function getCaretCoordinates(element, position, options) {
+  var notDiv = element.tagName != 'DIV';
+
+  var debug = options && options.debug || false;
+  if (debug) {
+    var el = document.querySelector('#input-textarea-caret-position-mirror-div');
+    if (el) el.parentNode.removeChild(el);
+  }
+
+  // The mirror div will replicate the textarea's style
+  var div = document.createElement('div');
+  div.id = 'input-textarea-caret-position-mirror-div';
+  document.body.appendChild(div);
+
+  var style = div.style;
+  var computed = window.getComputedStyle ? window.getComputedStyle(element) : element.currentStyle;  // currentStyle for IE < 9
+  var isInput = element.nodeName === 'INPUT';
+
+  // Default textarea styles
+  style.whiteSpace = 'pre-wrap';
+  if (!isInput)
+    style.wordWrap = 'break-word';  // only for textarea-s
+
+  // Position off-screen
+  style.position = 'absolute';  // required to return coordinates properly
+  if (!debug)
+    style.visibility = 'hidden';  // not 'display: none' because we want rendering
+
+  // Transfer the element's properties to the div
+  properties.forEach(function (prop) {
+    if (isInput && prop === 'lineHeight') {
+      // Special case for <input>s because text is rendered centered and line height may be != height
+      style.lineHeight = computed.height;
+    } else {
+      style[prop] = computed[prop];
+    }
+  });
+
+  style.overflow = 'hidden';  // for Chrome to not render a scrollbar; IE keeps overflowY = 'scroll'
+
+  if (notDiv){
+    div.textContent = element.value.substring(0, position);
+  }else{
+    let text = window.getSelection().anchorNode.textContent;
+    let caret = window.getSelection().anchorOffset;
+    div.textContent = text.substring(0, caret);
+  }
+  // The second special handling for input type="text" vs textarea:
+  // spaces need to be replaced with non-breaking spaces - http://stackoverflow.com/a/13402035/1269037
+  if (isInput)
+    div.textContent = div.textContent.replace(/\s/g, '\u00a0');
+
+  var span = document.createElement('span');
+  // Wrapping must be replicated *exactly*, including when a long word gets
+  // onto the next line, with whitespace at the end of the line before (#7).
+  // The  *only* reliable way to do that is to copy the *entire* rest of the
+  // textarea's content into the <span> created at the caret position.
+  // For inputs, just '.' would be enough, but no need to bother.
+  if(notDiv){
+    span.textContent = element.value.substring(position) || '.';  // || because a completely empty faux span doesn't render at all
+  }else{
+    let text = window.getSelection().anchorNode.textContent;
+    let caret = window.getSelection().anchorOffset;
+    span.textContent = text.substring(caret) || '.';
+  }
+  div.appendChild(span);
+
+  var coordinates = {
+    top: span.offsetTop + parseInt(computed['borderTopWidth']),
+    left: span.offsetLeft + parseInt(computed['borderLeftWidth']),
+    height: parseInt(computed['lineHeight'])
+  };
+
+  if (debug) {
+    span.style.backgroundColor = '#aaa';
+  } else {
+    document.body.removeChild(div);
+  }
+
+  return coordinates;
+}
+
+module.exports = getCaretCoordinates;
+
+}());
+
+
+/***/ }),
+/* 6 */
 /***/ (function(module, exports) {
 
 function applySettings(tabx)
@@ -923,8 +1084,7 @@ module.exports = applySettings
 
 
 /***/ }),
-/* 5 */,
-/* 6 */
+/* 7 */
 /***/ (function(module, exports) {
 
 module.exports = {
@@ -934,7 +1094,7 @@ module.exports = {
 }
 
 /***/ }),
-/* 7 */
+/* 8 */
 /***/ (function(module, exports) {
 
 module.exports = {

@@ -3,6 +3,8 @@
   <component name="ChangeListManager">
     <list default="true" id="a5db9ae7-462d-40f8-8114-644af4d7f34c" name="Default Changelist" comment="">
       <change beforePath="$PROJECT_DIR$/dist/scripts/tabx.js" beforeDir="false" afterPath="$PROJECT_DIR$/dist/scripts/tabx.js" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/assets/js/viewstrats/fixedstrat.js" beforeDir="false" afterPath="$PROJECT_DIR$/src/assets/js/viewstrats/fixedstrat.js" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/browserspec/settings.js" beforeDir="false" afterPath="$PROJECT_DIR$/src/browserspec/settings.js" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/tabx.js" beforeDir="false" afterPath="$PROJECT_DIR$/src/tabx.js" afterDir="false" />
     </list>
     <option name="EXCLUDED_CONVERTED_TO_IGNORED" value="true" />
@@ -22,34 +24,34 @@
       <usages-collector id="statistics.file.extensions.open">
         <counts>
           <entry key="html" value="1" />
-          <entry key="js" value="1" />
+          <entry key="js" value="5" />
         </counts>
       </usages-collector>
       <usages-collector id="statistics.file.types.open">
         <counts>
           <entry key="HTML" value="1" />
-          <entry key="JavaScript" value="1" />
+          <entry key="JavaScript" value="5" />
         </counts>
       </usages-collector>
       <usages-collector id="statistics.file.extensions.edit">
         <counts>
-          <entry key="js" value="565" />
+          <entry key="js" value="711" />
         </counts>
       </usages-collector>
       <usages-collector id="statistics.file.types.edit">
         <counts>
-          <entry key="JavaScript" value="565" />
+          <entry key="JavaScript" value="711" />
         </counts>
       </usages-collector>
     </session>
   </component>
   <component name="FileEditorManager">
     <leaf>
-      <file pinned="false" current-in-tab="true">
+      <file pinned="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/src/tabx.js">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="526">
-              <caret line="355" column="22" lean-forward="true" selection-start-line="355" selection-start-column="22" selection-end-line="355" selection-end-column="22" />
+            <state relative-caret-position="314">
+              <caret line="418" column="41" selection-start-line="418" selection-start-column="15" selection-end-line="418" selection-end-column="41" />
             </state>
           </provider>
         </entry>
@@ -63,7 +65,51 @@
           </provider>
         </entry>
       </file>
+      <file pinned="false" current-in-tab="false">
+        <entry file="file://$PROJECT_DIR$/src/main.js">
+          <provider selected="true" editor-type-id="text-editor">
+            <state relative-caret-position="119">
+              <caret line="7" column="26" selection-start-line="7" selection-start-column="26" selection-end-line="7" selection-end-column="26" />
+            </state>
+          </provider>
+        </entry>
+      </file>
+      <file pinned="false" current-in-tab="false">
+        <entry file="file://$PROJECT_DIR$/src/assets/js/viewstrats/fixedstrat.js">
+          <provider selected="true" editor-type-id="text-editor">
+            <state relative-caret-position="-1090">
+              <caret line="79" column="38" lean-forward="true" selection-start-line="79" selection-start-column="38" selection-end-line="79" selection-end-column="38" />
+            </state>
+          </provider>
+        </entry>
+      </file>
+      <file pinned="false" current-in-tab="true">
+        <entry file="file://$PROJECT_DIR$/src/browserspec/settings.js">
+          <provider selected="true" editor-type-id="text-editor">
+            <state relative-caret-position="499">
+              <caret line="47" column="1" lean-forward="true" selection-start-line="47" selection-start-column="1" selection-end-line="47" selection-end-column="1" />
+            </state>
+          </provider>
+        </entry>
+      </file>
+      <file pinned="false" current-in-tab="false">
+        <entry file="file://$PROJECT_DIR$/dist/assets/settingspage/displaysettings.js">
+          <provider selected="true" editor-type-id="text-editor">
+            <state relative-caret-position="118">
+              <caret line="66" column="50" selection-start-line="66" selection-start-column="30" selection-end-line="66" selection-end-column="50" />
+            </state>
+          </provider>
+        </entry>
+      </file>
     </leaf>
+  </component>
+  <component name="FindInProjectRecents">
+    <findStrings>
+      <find>suggestion</find>
+      <find>setSuggestionsDisplayCount</find>
+      <find>this</find>
+      <find>this.suggestionsDisplayCount</find>
+    </findStrings>
   </component>
   <component name="Git.Settings">
     <option name="RECENT_GIT_ROOT_PATH" value="$PROJECT_DIR$" />
@@ -72,6 +118,8 @@
     <option name="CHANGED_PATHS">
       <list>
         <option value="$PROJECT_DIR$/src/tabx.js" />
+        <option value="$PROJECT_DIR$/src/assets/js/viewstrats/fixedstrat.js" />
+        <option value="$PROJECT_DIR$/src/browserspec/settings.js" />
       </list>
     </option>
   </component>
@@ -494,7 +542,31 @@
             <path>
               <item name="TabX" type="b2602c69:ProjectViewProjectNode" />
               <item name="TabX" type="462c0819:PsiDirectoryNode" />
+              <item name="dist" type="462c0819:PsiDirectoryNode" />
+            </path>
+            <path>
+              <item name="TabX" type="b2602c69:ProjectViewProjectNode" />
+              <item name="TabX" type="462c0819:PsiDirectoryNode" />
+              <item name="dist" type="462c0819:PsiDirectoryNode" />
+              <item name="assets" type="462c0819:PsiDirectoryNode" />
+            </path>
+            <path>
+              <item name="TabX" type="b2602c69:ProjectViewProjectNode" />
+              <item name="TabX" type="462c0819:PsiDirectoryNode" />
+              <item name="dist" type="462c0819:PsiDirectoryNode" />
+              <item name="assets" type="462c0819:PsiDirectoryNode" />
+              <item name="settingspage" type="462c0819:PsiDirectoryNode" />
+            </path>
+            <path>
+              <item name="TabX" type="b2602c69:ProjectViewProjectNode" />
+              <item name="TabX" type="462c0819:PsiDirectoryNode" />
               <item name="src" type="462c0819:PsiDirectoryNode" />
+            </path>
+            <path>
+              <item name="TabX" type="b2602c69:ProjectViewProjectNode" />
+              <item name="TabX" type="462c0819:PsiDirectoryNode" />
+              <item name="src" type="462c0819:PsiDirectoryNode" />
+              <item name="browserspec" type="462c0819:PsiDirectoryNode" />
             </path>
             <path>
               <item name="TabX" type="b2602c69:ProjectViewProjectNode" />
@@ -581,13 +653,6 @@
     <option name="myLimit" value="2678400000" />
   </component>
   <component name="editorHistoryManager">
-    <entry file="file://$PROJECT_DIR$/src/main.js">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="136">
-          <caret line="8" column="23" lean-forward="true" selection-start-line="8" selection-start-column="23" selection-end-line="8" selection-end-column="23" />
-        </state>
-      </provider>
-    </entry>
     <entry file="file://$PROJECT_DIR$/src/test/html/test_input.html">
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="102">
@@ -595,10 +660,38 @@
         </state>
       </provider>
     </entry>
+    <entry file="file://$PROJECT_DIR$/src/main.js">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="119">
+          <caret line="7" column="26" selection-start-line="7" selection-start-column="26" selection-end-line="7" selection-end-column="26" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/src/assets/js/viewstrats/fixedstrat.js">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="-1090">
+          <caret line="79" column="38" lean-forward="true" selection-start-line="79" selection-start-column="38" selection-end-line="79" selection-end-column="38" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/dist/assets/settingspage/displaysettings.js">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="118">
+          <caret line="66" column="50" selection-start-line="66" selection-start-column="30" selection-end-line="66" selection-end-column="50" />
+        </state>
+      </provider>
+    </entry>
     <entry file="file://$PROJECT_DIR$/src/tabx.js">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="526">
-          <caret line="355" column="22" lean-forward="true" selection-start-line="355" selection-start-column="22" selection-end-line="355" selection-end-column="22" />
+        <state relative-caret-position="314">
+          <caret line="418" column="41" selection-start-line="418" selection-start-column="15" selection-end-line="418" selection-end-column="41" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/src/browserspec/settings.js">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="499">
+          <caret line="47" column="1" lean-forward="true" selection-start-line="47" selection-start-column="1" selection-end-line="47" selection-end-column="1" />
         </state>
       </provider>
     </entry>

@@ -655,6 +655,7 @@ const TabX = class
                setSuggestionsDisplayCount(count)
                {
                   this.suggestionsDisplayCount = count;
+                  this.displayStrategy.setSuggestionsDisplayCount(count);
                }
             };
 
@@ -738,6 +739,7 @@ const FixedView = class
 		table.appendChild(values);
 
 		//Pre-populate with null values
+		console.log("Display Count: "+ this.displayCount);
 		for(let i = 0; i < this.displayCount; i++)
 		{
 			let entry = this.dom.createElement("td");
@@ -786,7 +788,12 @@ const FixedView = class
 			this.sentence.innerText = window.getSelection().anchorNode.nodeValue;
 		}
 	}
-
+	setSuggestionsDisplayCount(count)
+	{
+		this.displayCount = count;
+		this.tearDown();
+		this.createSuggestionsTable();
+	}
 	display(mappings)
 	{
 		var dom = this.dom;
@@ -835,6 +842,7 @@ const FixedView = class
 			dom.body.appendChild(this.current_table);
 		}
 	}
+
 }
 
 module.exports = FixedView;

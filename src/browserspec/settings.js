@@ -32,7 +32,14 @@ function applySettings(tabx)
          };
 
          tabx.configureDisplay(config);
+
+         if(results["Suggestions Quantity"])
+         {
+            tabx.setSuggestionsDisplayCount(results["Suggestions Quantity"]);
+         }
+
          listenForSettingChanges(tabx);
+
       }
    })
 };

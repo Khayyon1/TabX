@@ -419,6 +419,7 @@ const TabX = class
                setSuggestionsDisplayCount(count)
                {
                   this.suggestionsDisplayCount = count;
+                  this.displayStrategy.setSuggestionsDisplayCount(count);
                }
             };
 

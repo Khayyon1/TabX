@@ -14,6 +14,7 @@ class WordPrediction {
         //remove cuss words/"porn" from wordbank
         //train models on bigger text corpus
         //update predictnextword for all 3 word predictions
+        
 
         var suggestions = this.model.start(input).end(1).process(this.predictTopThree);
         return suggestions;

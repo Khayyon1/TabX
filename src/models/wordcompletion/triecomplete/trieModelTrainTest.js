@@ -1,7 +1,7 @@
 // Import Test framework
 
 var expect = require('expect.js');
-const wordLocation = "sampleText/1-1000.txt";
+const wordLocation = "sampleText/1-5000.txt";
 
 const train = require("./trieModelTrain.js");
 expect(train).not.to.be(null);

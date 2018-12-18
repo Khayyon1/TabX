@@ -4,12 +4,8 @@ function applySettings(tabx)
    {
       if (results != null)
       {
-         console.log("Current word enabled: " + results["Current Word"]);
-         console.log("Next word enables: " + results["Next Word"]);
-
          if (!results['activated'])
          {
-            console.log("Disabled upon init");
             tabx.disable();
          }
 
@@ -73,7 +69,7 @@ var actions =
       chrome.storage.local.get(function(results)
       {
          let quantity = results["Suggestions Quantity"];
-         if(quantity == null || quantity == undefined || quantity == 0)
+         if(!quantity || quantity === 0)
          {
             quantity = 3;
          }

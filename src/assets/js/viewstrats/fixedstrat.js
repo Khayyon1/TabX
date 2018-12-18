@@ -74,7 +74,6 @@ const FixedView = class
 		table.appendChild(values);
 
 		//Pre-populate with null values
-		console.log("Display Count: "+ this.displayCount);
 		for(let i = 0; i < this.displayCount; i++)
 		{
 			let entry = this.dom.createElement("td");
@@ -102,7 +101,6 @@ const FixedView = class
 
 	tearDown()
 	{
-		console.log("ACTIVE: " + this.isActive());
 		if (this.isActive())
 		{
 			this.current_table.parentNode.removeChild(this.current_table);

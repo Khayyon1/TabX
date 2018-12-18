@@ -10,7 +10,6 @@ async function messageBackgroundPage(request, input)
    });
 
    let results = await response;
-   console.log("RESULTS: " + results);
 
    return results;
 }

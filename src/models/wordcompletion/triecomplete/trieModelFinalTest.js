@@ -47,12 +47,12 @@ buffer = buffer.replace( /\n/g, "$" ).split("$");
 
 
 var score = 0.0
-for(let i = 0; i < buffer.length-1; i++){
+for(let i = 0; i < buffer.length-2; i++){
     let regex = /^([\w. '-]+)->([\w. ']+)(?:\, ([\w. '-]+))?/g;
     var match = regex.exec(buffer[i]);
 
 
-    let sugg = train.getCorrectionSuggestions(match[1]);
+    let sugg = train.getSuggestion(match[1]);
 
     let tempArray = [];
     tempArray.push(match[2]);
@@ -65,17 +65,20 @@ for(let i = 0; i < buffer.length-1; i++){
 
     }
     else{
-        console.log(match[1] ,sugg, tempArray);
+        //console.log(match[1] ,sugg, tempArray);
     }
 }
 
-expect(train.getCorrectionSuggests("Tab")).to.be(train.getCorrectionSuggests("Tab"))
 expect(train.getFinalWord("I want it all")).to.be("all");
 expect(train.getFinalWord("Is this the real life?")).to.be('life?');
+
+//this score is entire based upon words in dictionary.
+//if the words are in the dictionary then the score is vastly improved
 //console.log("score ", score*100/ buffer.length)
 
-// console.log('t ', train.getCorrectionSuggestions("t"))
-// console.log('b ', train.getCorrectionSuggestions("l"))
-// console.log('tod ', train.getCorrectionSuggestions("tod"))
-// console.log('tom ', train.getCorrectionSuggestions("tom"))
-// console.log('bot ', train.getCorrectionSuggestions("bot"))
+// console.log('T ', train.getSuggestion("T"))
+// console.log('B ', train.getSuggestion("B"))
+// console.log('Tod ', train.getSuggestion("Tod"))
+console.log('TOM ', train.getSuggestion("TOM"))
+// console.log('bOt ', train.getSuggestion("bOt"))
+var temp = 'help';

@@ -27,6 +27,7 @@ const Style = class
         const caret = position(textInputBox);
         this.offset_y = window.getComputedStyle(textInputBox, "").fontSize;
         this.offset_y = this.pxToInt(this.offset_y) - textInputBox.scrollTop;
+        this.offset_y += 3;
         element.style.top = (rect.top + caret.top + this.offset_y).toString() + 'px';
         element.style.left = (rect.left + caret.left).toString() + 'px';
     }

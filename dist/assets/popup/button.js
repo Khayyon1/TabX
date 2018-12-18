@@ -22,13 +22,13 @@ function createButton(on)
 
    if(on)
    {
-       text = "Turn off"
-       button.setAttribute("activated", true);
+      text = "Turn off"
+      button.setAttribute("activated", true);
    }
    else
    {
-         text = "Turn on"
-         button.setAttribute("activated", false);
+      text = "Turn on"
+      button.setAttribute("activated", false);
    }
 
    let node = document.createTextNode(text);
@@ -54,17 +54,21 @@ function createButton(on)
    });
 }
 
-document.getElementById("settings").addEventListener('click', function(e){
-   chrome.tabs.query({"active": true, "currentWindow": true}, function(tabs){
+document.getElementById("settings").addEventListener('click', function(e)
+{
+   chrome.tabs.query({"active": true, "currentWindow": true}, function(tabs)
+   {
       let height = 700;
       let width = 500;
-      chrome.windows.create({
+
+      let options = {
          url: chrome.runtime.getURL("assets/settingspage/settings.html"),
          type: "popup",
          height: height,
          width: width,
          left: tabs[0].width - width
-      });
-   })
+      };
 
-})
+      chrome.windows.create(options);
+   });
+});

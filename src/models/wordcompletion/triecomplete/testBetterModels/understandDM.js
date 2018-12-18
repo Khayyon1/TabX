@@ -6,7 +6,7 @@
 ///Sub Should Never Be more than delete + Add
 const addBegW = 0.9;
 const addMidW = 1.0;
-const addEndW = -0.01;
+const addEndW = 0;
 
 const delBegW = 2;
 const delMidW = 1.1;

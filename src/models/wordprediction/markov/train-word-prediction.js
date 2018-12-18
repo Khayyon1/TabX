@@ -7,5 +7,5 @@ function train(textFile) {
     return model;
 }
 
-console.log(util.inspect(train('text/office_reviews_m.txt'), {showHidden: false, depth: null}));
+console.log(util.inspect(train('text/blogs_m.txt'), {showHidden: false, depth: null}));
     

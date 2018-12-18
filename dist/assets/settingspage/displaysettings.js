@@ -3,6 +3,11 @@ function inFont()
    return document.getElementById("font-select");
 }
 
+function inViewStrat()
+{
+   return document.getElementById("view-strat-select")
+}
+
 function inFontSize()
 {
    return document.getElementById("font-size-select");
@@ -69,11 +74,20 @@ function saveSuggestionsQuantity()
    sendMessageToAllTabs("suggestionsQuantityChange");
 }
 
+function saveViewStrat()
+{
+   let val = inViewStrat().value;
+   chrome.storage.local.set({"View Strategy": val});
+   reflectValue("view-strat-input", val)
+   sendMessageToAllTabs("viewStratChange");
+}
+
 inFont().addEventListener('change', saveFont);
 inFontSize().addEventListener('change', saveFontSize);
 inFontStyle().addEventListener('change', saveFontStyle);
 inFontColor().addEventListener('change', saveFontColor);
 inSuggestionsQuantity().addEventListener('change', saveSuggestionsQuantity);
+inViewStrat().addEventListener('change', saveViewStrat)
 
 //Load the settings
 chrome.storage.local.get(function(results)
@@ -83,4 +97,19 @@ chrome.storage.local.get(function(results)
    reflectValue("font-size-input", results["Font Size"])
    reflectValue("font-style-input", results["Font Style"])
    reflectValue("suggestions-quantity-input", results["Suggestions Quantity"])
+   reflectValue("view-strat-input", results["View Strategy"])
 });
+
+var coll = document.getElementsByClassName("collapsible");
+for (let i = 0; i < coll.length; i++)
+{
+  coll[i].addEventListener("click", function() {
+    this.classList.toggle("active");
+    var content = this.nextElementSibling;
+    if (content.style.display === "block") {
+      content.style.display = "none";
+    } else {
+      content.style.display = "block";
+    }
+  });
+}

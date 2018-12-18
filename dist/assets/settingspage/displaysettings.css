@@ -32,13 +32,38 @@ label
 }
 
 #font-select-container, #font-size-container, #font-style-container,
-#font-color-container, #suggestions-quantity-container
+#font-color-container, #suggestions-quantity-container, #view-strategy-container
 {
    display: inline-block;
    width: 150px;
 }
 
-.font, .font-style, .font-size, .suggestions-quantity
+.font, .font-style, .font-size, .suggestions-quantity, .view-strategy
 {
    width: 100%;
+}
+
+/* Style the button that is used to open and close the collapsible content */
+.collapsible {
+  background-color: #eee;
+  color: #444;
+  cursor: pointer;
+  padding: 18px;
+  width: 100%;
+  border: none;
+  text-align: left;
+  outline: none;
+  font-size: 15px;
+}
+
+.active, .collapsible:hover {
+  background-color: #ccc;
+}
+
+/* collapsible content */
+#view-settings, .font-settings {
+  padding: 0 18px;
+  display: none;
+  overflow: hidden;
+  background-color: #f1f1f1;
 }

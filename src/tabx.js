@@ -38,6 +38,12 @@ const TabX = class
          this.document = document;
       }
 
+      setDisplay(display)
+      {
+         this.displayStrategy.tearDown();
+         this.displayStrategy = display;
+      }
+      
       async getAppropriateSuggestions()
       {
          var elem = this.document.activeElement

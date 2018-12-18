@@ -5,7 +5,6 @@ chrome.runtime.onMessage.addListener(
     {
         sendResponse(request.TabxInput
         sendResponse({results: ["this", "is", "a", "mock"]});
-
     }
   });
 

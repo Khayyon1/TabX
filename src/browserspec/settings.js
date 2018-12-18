@@ -1,3 +1,6 @@
+const FixedView = require("../assets/js/viewstrats/fixedstrat");
+const TableView = require("../assets/js/viewstrats/tablestrat-ui");
+
 function applySettings(tabx)
 {
    chrome.storage.local.get(function (results)
@@ -32,6 +35,11 @@ function applySettings(tabx)
          if(results["Suggestions Quantity"])
          {
             tabx.setSuggestionsDisplayCount(results["Suggestions Quantity"]);
+         }
+
+         if(results["View Strategy"])
+         {
+            actions["viewStratChange"](tabx);
          }
 
          listenForSettingChanges(tabx);
@@ -75,6 +83,27 @@ var actions =
          }
 
          tabx.setSuggestionsDisplayCount(quantity);
+
+      });
+   },
+
+   "viewStratChange": (tabx) =>
+   {
+      chrome.storage.local.get(function(results)
+      {
+         let strat = results["View Strategy"];
+
+         if(!strat || strat === "Follow Input")
+         {
+            strat = new TableView(tabx.document);
+         }
+
+         else if(strat === "Footer View")
+         {
+            strat = new FixedView(tabx.document);
+         }
+
+         tabx.setDisplay(strat);
 
       });
    }

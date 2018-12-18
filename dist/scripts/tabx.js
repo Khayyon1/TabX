@@ -156,6 +156,12 @@ const TabX = class
          this.document = document;
       }
 
+      setDisplay(display)
+      {
+         this.displayStrategy.tearDown();
+         this.displayStrategy = display;
+      }
+      
       async getAppropriateSuggestions()
       {
          var elem = this.document.activeElement
@@ -1114,7 +1120,10 @@ module.exports = TableView;
 
 /***/ }),
 /* 6 */
-/***/ (function(module, exports) {
+/***/ (function(module, exports, __webpack_require__) {
+
+const FixedView = __webpack_require__(3);
+const TableView = __webpack_require__(5);
 
 function applySettings(tabx)
 {
@@ -1150,6 +1159,11 @@ function applySettings(tabx)
          if(results["Suggestions Quantity"])
          {
             tabx.setSuggestionsDisplayCount(results["Suggestions Quantity"]);
+         }
+
+         if(results["View Strategy"])
+         {
+            actions["viewStratChange"](tabx);
          }
 
          listenForSettingChanges(tabx);
@@ -1193,6 +1207,27 @@ var actions =
          }
 
          tabx.setSuggestionsDisplayCount(quantity);
+
+      });
+   },
+
+   "viewStratChange": (tabx) =>
+   {
+      chrome.storage.local.get(function(results)
+      {
+         let strat = results["View Strategy"];
+
+         if(!strat || strat === "Follow Input")
+         {
+            strat = new TableView(tabx.document);
+         }
+
+         else if(strat === "Footer View")
+         {
+            strat = new FixedView(tabx.document);
+         }
+
+         tabx.setDisplay(strat);
 
       });
    }
@@ -1741,7 +1776,8 @@ class AbbreviationExpansion {
         "iirc":"if I recall correctly",
         "wtg":"way to go",
         "wdym":"what do you mean",
-        "np":"no problem", "b/c":"because",
+        "np":"no problem",
+        "b/c":"because",
         "pov":"point of view",
         "wb":"welcome back",
         "mb":"my bad",

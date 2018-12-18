@@ -2,10 +2,10 @@
 
 class ProfanityFilter {
     constructor() {
-        const swears = ["fuck", "shit", "arse", "bitch", "bastard", "crap", "cunt", "damn", "prick", "shag", "wank", "nut", "piss", "twat", "jack", 
-                "dumbass", "asshole", "badass", "halfass", "hardass", "smartass", "balls", "cum", "dammit", "jizz", "testicles", "cunnilingus", 
-                "fellatio", "scrotum", "boner", "blowjob", "sex", "slut", "dick", "cock", "tit", "boob", "vagina", "penis", "pussy", "bollocks", 
-                "porn", "orgasm", "nigg", "whore", "fag", "coon"];
+        const swears = ["fuck", "shit", "arse", "bitch", "bastard", "crap", "cunt", "damn", "prick", "shag", "wank", "nut", "piss", "twat", 
+                        "jack", "dumbass", "asshole", "badass", "halfass", "hardass", "smartass", "balls", "cum", "dammit", "jizz", "testicles", 
+                        "cunnilingus", "fellatio", "scrotum", "boner", "blowjob", "sex", "slut", "dick", "cock", "tit", "boob", "vagina", 
+                        "penis", "pussy", "bollocks", "porn", "orgasm", "nigg", "whore", "fag", "coon"];
         this.swearsReg = new RegExp(swears.join( "|" ), "i"); 
     }
 
@@ -17,7 +17,6 @@ class ProfanityFilter {
             for (var i = 0; i < splitStr.length; i++) {
                 if (this.swearsReg.test(splitStr[i]) || splitStr[i] === "hell" || splitStr[i] === "ass") {
                     word = splitStr[i];
-
                 }
             }
 

@@ -13,7 +13,7 @@ let tableDisplay = new TableView(document);
 
 let tabx = new TabX(bgmodels.WordCompleteModel,
    bgmodels.WordPredictModel,
-   tableDisplay,
+   fixedDisplay,
    document=document);
 
 applySettings(tabx);

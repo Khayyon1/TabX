@@ -69,4 +69,13 @@ for(let i = 0; i < buffer.length-1; i++){
     }
 }
 
-console.log("score ", score*100/ buffer.length)
+expect(train.getCorrectionSuggests("Tab")).to.be(train.getCorrectionSuggests("Tab"))
+expect(train.getFinalWord("I want it all")).to.be("all");
+expect(train.getFinalWord("Is this the real life?")).to.be('life?');
+//console.log("score ", score*100/ buffer.length)
+
+// console.log('t ', train.getCorrectionSuggestions("t"))
+// console.log('b ', train.getCorrectionSuggestions("l"))
+// console.log('tod ', train.getCorrectionSuggestions("tod"))
+// console.log('tom ', train.getCorrectionSuggestions("tom"))
+// console.log('bot ', train.getCorrectionSuggestions("bot"))

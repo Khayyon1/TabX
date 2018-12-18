@@ -1,16 +1,21 @@
 var Trie = require('./trieModel.js');
-
+Trie.getFinalWord = function(string){
+    let regex = /(?:[^\s]+\s)*?([^\s]+)$/gm;
+    let match = regex.exec(string);
+    console.log(match)
+    return match[1]
+}
 Trie.add = function(key, validWord) {
     key = key.toLowerCase();
     var firstNode = false;
     // Make a copy of key
     keyHold = JSON.parse(JSON.stringify(key));
-    var curNode = this.head
+
+    var curNode = Trie.head
     	, newNode = null
     	, curChar = key.slice(0,1)
         , parNode = this.head;
     key = key.slice(1);
-    console.log(validWord);
 	while(curNode.children[curChar] !== undefined && curChar.length > 0){
 		curNode = curNode.children[curChar];
 		curChar = key.slice(0,1);
@@ -43,6 +48,7 @@ Trie.add = function(key, validWord) {
 
     };
 }
+
 
 Trie.search = function(key) {
     key = key.toLowerCase();
@@ -102,7 +108,7 @@ Trie.getSuggestion = function(key){
 
 }
 Trie.getCorrectionSuggestions = function(key){
-
+    console.log(key)
     this.add(key, false)
     keyHold = JSON.parse(JSON.stringify(key));
     var total = 3;
@@ -127,7 +133,7 @@ Trie.getCorrectionSuggestions = function(key){
     }
     if (curNode.closest !== undefined){
         if (curNode.closest.length > total){
-            console.log(curNode.closest.slice(0,3))
+            //console.log(curNode.closest.slice(0,3))
             return curNode.closest.slice(0,3);
         }
         else{
@@ -201,4 +207,5 @@ Trie.remove = function(key) {
 
 Trie.predictCurrentWord = Trie.getWordCompletion;
 
-module.exports = Trie
+//module.exports = getFinalWord;
+module.exports = Trie;

@@ -5,15 +5,15 @@
 
 ///Sub Should Never Be more than delete + Add
 const addBegW = 0.9;
-const addMidW = 0.7;
-const addEndW = -0.1;
+const addMidW = 1.0;
+const addEndW = -0.01;
 
-const delBegW = 0.8;
-const delMidW = 0.6;
-const delEndW = 0.4;
+const delBegW = 2;
+const delMidW = 1.1;
+const delEndW = 0.5;
 
-const subGenW = 1.1;
-const swapGenW = 0.2;
+const subGenW = 2;
+const swapGenW = 0.4;
 const typeArray = ["addBeg", "addMid", "addEnd",
         "delBeg", "delMid", "delEnd",
         "subGen", "swapGen"]

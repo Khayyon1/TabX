@@ -34,47 +34,47 @@ expect(dmod.distance("bd", "abcde")).to.be(ab + am + ae);
 
 //Tests For Delete
 
+//
+// expect(dmod.distance("ab", "a")).to.be(de);
+// expect(dmod.distance("ba", "a")).to.be(db);
+// expect(dmod.distance("abc", "ac")).to.be(dm);
+// expect(dmod.distance("abc", "a")).to.be(de*2);
+// expect(dmod.distance("abc", "b")).to.be(db + de);
+// expect(dmod.distance("abcd", "ac")).to.be(dm + de);
+// expect(dmod.distance("abcde", "bd")).to.be(db + dm + de);
+//
+//
+// expect(dmod.distance("a", "b")).to.be(sbg);
+// expect(dmod.distance("ab", "ac")).to.be(sbg);
+//
+// expect(dmod.distance("abc", "zyx")).to.be(sbg*3);
+// expect(dmod.distance("ab", "ba")).to.be(swg);
 
-expect(dmod.distance("ab", "a")).to.be(de);
-expect(dmod.distance("ba", "a")).to.be(db);
-expect(dmod.distance("abc", "ac")).to.be(dm);
-expect(dmod.distance("abc", "a")).to.be(de*2);
-expect(dmod.distance("abc", "b")).to.be(db + de);
-expect(dmod.distance("abcd", "ac")).to.be(dm + de);
-expect(dmod.distance("abcde", "bd")).to.be(db + dm + de);
-
-
-expect(dmod.distance("a", "b")).to.be(sbg);
-expect(dmod.distance("ab", "ac")).to.be(sbg);
-
-expect(dmod.distance("abc", "zyx")).to.be(sbg*3);
-expect(dmod.distance("ab", "ba")).to.be(swg);
-
-// Tests for edit weight  add b m e
-expect(dmod.distance("a", "az")).to.be(ae);
-dmod.changeValue("addEnd", 0.1 ,"z");
-expect(dmod.distance("a", "az")).to.be(0.1);
-
-expect(dmod.distance("ac", "abc")).to.be(am);
-dmod.changeValue("addMid", 0.2 ,"b");
-expect(dmod.distance("ac", "abc")).to.be(0.2);
-
-expect(dmod.distance("bc", "ybc")).to.be(ab);
-dmod.changeValue("addBeg", 0.8 ,"y");
-expect(dmod.distance("bc", "ybc")).to.be(0.8);
-
-//test for edit weight del b m e
-expect(dmod.distance("az", "a")).to.be(de);
-dmod.changeValue("delEnd", 1 ,"z");
-expect(dmod.distance("az", "a")).to.be(1);
-
-expect(dmod.distance("abc", "ac")).to.be(dm);
-dmod.changeValue("delMid", 0.9 ,"b");
-expect(dmod.distance("abc", "ac")).to.be(0.9);
-
-expect(dmod.distance("ybc", "bc")).to.be(db);
-dmod.changeValue("delBeg", 1.1 ,"y");
-expect(dmod.distance("ybc", "bc")).to.be(1.1);
+// // Tests for edit weight  add b m e
+// expect(dmod.distance("a", "az")).to.be(ae);
+// dmod.changeValue("addEnd", 0.1 ,"z");
+// expect(dmod.distance("a", "az")).to.be(0.1);
+//
+// expect(dmod.distance("ac", "abc")).to.be(am);
+// dmod.changeValue("addMid", 0.2 ,"b");
+// expect(dmod.distance("ac", "abc")).to.be(0.2);
+//
+// expect(dmod.distance("bc", "ybc")).to.be(ab);
+// dmod.changeValue("addBeg", 0.8 ,"y");
+// expect(dmod.distance("bc", "ybc")).to.be(0.8);
+//
+// //test for edit weight del b m e
+// expect(dmod.distance("az", "a")).to.be(de);
+// dmod.changeValue("delEnd", 1 ,"z");
+// expect(dmod.distance("az", "a")).to.be(1);
+//
+// expect(dmod.distance("abc", "ac")).to.be(dm);
+// dmod.changeValue("delMid", 0.9 ,"b");
+// expect(dmod.distance("abc", "ac")).to.be(0.9);
+//
+// expect(dmod.distance("ybc", "bc")).to.be(db);
+// dmod.changeValue("delBeg", 1.1 ,"y");
+// expect(dmod.distance("ybc", "bc")).to.be(1.1);
 
 //
 // //Test Weighting Substitution
@@ -112,9 +112,10 @@ dmod2.addDictionary(simpleReadFileSync('../sampleText/1-1000.txt'));
 // temp.splice(0,0, 0)
 // console.log(temp)
 
-console.log(dmod2.closestWords("the", 3));
+console.log(dmod2.closestWords("vi", 3));
 
 
-
+console.log(dmod2.distance('bot', 'object'))
+console.log(dmod2.distance('bot', 'both'))
 //TODO get exact values of Edge cases
 //expect(dmod.distance("h", "hehh")).to.be(ae*2);

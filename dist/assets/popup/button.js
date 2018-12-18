@@ -55,8 +55,16 @@ function createButton(on)
 }
 
 document.getElementById("settings").addEventListener('click', function(e){
-  chrome.windows.create({
-     url: chrome.runtime.getURL("assets/settingspage/settings.html"),
-     type: "popup"
-  });
+   chrome.tabs.query({"active": true, "currentWindow": true}, function(tabs){
+      let height = 700;
+      let width = 500;
+      chrome.windows.create({
+         url: chrome.runtime.getURL("assets/settingspage/settings.html"),
+         type: "popup",
+         height: height,
+         width: width,
+         left: tabs[0].width - width
+      });
+   })
+
 })

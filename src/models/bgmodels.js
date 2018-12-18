@@ -23,7 +23,7 @@ chrome.runtime.onMessage.addListener(
 
             else if(request.TabxOp == "WORD_PREDICT")
             {
-               let results = WordPredictModel.libraryModelMedium.predictNextWord(request.TabxInput);
+               let results = WordPredictModel.blogsModelMedium.predictNextWord(request.TabxInput);
                if(isInvalid(results))
                {
                   results = [];

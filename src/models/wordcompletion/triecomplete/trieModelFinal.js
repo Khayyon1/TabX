@@ -101,6 +101,7 @@ Trie.getSuggestion = function(key){
 
 
 }
+
 Trie.getCorrectionSuggestions = function(key){
 
     this.add(key, false)
@@ -199,6 +200,6 @@ Trie.remove = function(key) {
     	}
 }
 
-Trie.predictCurrentWord = Trie.getWordCompletion;
+Trie.predictCurrentWord = Trie.getCorrectionSuggestions;
 
 module.exports = Trie

@@ -1,5 +1,5 @@
 const WordCompleteModel = require("./wordcompletion/triecomplete/trieModelFinal");
-const WordPredictModel = require("./wordprediction/markov/word-prediction-small");
+const WordPredictModel = require("./wordprediction/markov/word-prediction-medium");
 
 chrome.runtime.onMessage.addListener(
    function(request, sender, sendResponse)
@@ -23,7 +23,7 @@ chrome.runtime.onMessage.addListener(
 
             else if(request.TabxOp == "WORD_PREDICT")
             {
-               let results = WordPredictModel.blogsModelSmall.predictNextWord(request.TabxInput);
+               let results = WordPredictModel.libraryModelMedium.predictNextWord(request.TabxInput);
                if(isInvalid(results))
                {
                   results = [];

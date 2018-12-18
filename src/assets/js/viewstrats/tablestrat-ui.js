@@ -36,6 +36,7 @@ const TableView = class
 
     display(mappings)
     {
+      this.tearDown();
         var dom = this.dom;
         var table = this.createSuggestionsTable();
 
@@ -60,7 +61,7 @@ const TableView = class
     config(settings){
         this.style.settings = settings;
     }
-    
+
 }
 
 module.exports = TableView;

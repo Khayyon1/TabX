@@ -1,11 +1,21 @@
 const position = require('caret-pos').position;
 
+/** Class for stylizing HTML elements of TabX Table */
 const Style = class
 {
+    /**
+     * Constructor
+     */
     constructor(){
         this.cache = {};
         this.offset_y = 0;
     }
+
+    /**
+     * Stylizes entire TabX table
+     * @param {HTMLElement} element - TabX table
+     * @param {HTMLElement} textInputBox - input element TabX table is attached to
+     */
     table(element, textInputBox)
     {
         element.style.display = 'flex';
@@ -21,6 +31,10 @@ const Style = class
         element.style.left = (rect.left + caret.left).toString() + 'px';
     }
 
+    /**
+     * Updates element position based on caret position
+     * @param {HTMLElement} element - TabX table
+     */
     updatePosition(element)
     {
         const w = window.innerWidth;
@@ -29,9 +43,6 @@ const Style = class
         const elRect = element.getBoundingClientRect();
         const left = this.pxToInt(element.style.left);
         const top = this.pxToInt(element.style.top);
-
-        // console.log('Mishiii', w, elRect.right)
-        // console.log(elRect)
 
         if (elRect.right > w) {
             const offset_x = elRect.right - w;
@@ -44,9 +55,20 @@ const Style = class
         }
 
     }
+
+    /**
+     * Converts pixels to integers
+     * @param {pixels} px - pixel to be converted
+     */
     pxToInt(px){
         return parseInt(px.slice(0, px.length - 2))
     }
+
+    /**
+     * Styizes inidivdual rows in TabX table
+     * @param {HTMLElement} element - row from TabX table
+     * @param {number} offset - spacing between rows
+     */
     row(element, offset=6)
     {
         element.style.marginRight = offset.toString() + 'px';
@@ -56,63 +78,6 @@ const Style = class
             element.style.color = this.settings.fontcolor;
             element.style.fontWeight = this.settings.fontstyle.toLowerCase();
         }
-    }
-    calcSize(text, options = {}) {
-
-        const cacheKey = JSON.stringify({ text: text, options: options })
-
-        if (this.cache[cacheKey]) {
-            return this.cache[cacheKey]
-        }
-
-        // prepare options
-        options.font = options.font || 'Times'
-        options.fontSize = options.fontSize || '16px'
-        options.fontWeight = options.fontWeight || 'normal'
-        options.lineHeight = options.lineHeight || 'normal'
-        options.width = options.width || 'auto'
-        options.wordBreak = options.wordBreak || 'normal'
-
-        const element = this.createDummyElement(text, options)
-
-        const size = {
-            width: element.offsetWidth,
-            height: element.offsetHeight,
-        }
-
-        this.destroyElement(element)
-
-        this.cache[cacheKey] = size
-
-        return size
-    }
-    
-    destroyElement(element)
-    {
-        element.parentNode.removeChild(element)
-    }
-
-    createDummyElement(text, options) {
-        const element = document.createElement('div')
-        const textNode = document.createTextNode(text)
-
-        element.appendChild(textNode)
-
-        element.style.fontFamily = options.font
-        element.style.fontSize = options.fontSize
-        element.style.fontWeight = options.fontWeight
-        element.style.lineHeight = options.lineHeight
-        element.style.position = 'absolute'
-        element.style.visibility = 'hidden'
-        element.style.left = '-999px'
-        element.style.top = '-999px'
-        element.style.width = options.width
-        element.style.height = 'auto'
-        element.style.wordBreak = options.wordBreak
-
-        document.body.appendChild(element)
-
-        return element
     }
 }
 

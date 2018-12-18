@@ -1,7 +1,14 @@
 const Style = require("./style");
 
+/** Class for displaying dynamically moving TabX table
+ *  based on caret position
+ */
 const TableView = class
 {
+    /**
+     * Constructor
+     * @param {HTMLDom} dom - dom TabX table will be attached to
+     */
     constructor(dom)
     {
         this.dom = dom;
@@ -10,6 +17,9 @@ const TableView = class
         this.style = new Style();
     }
 
+    /**
+     * Creates TabX table
+     */
     createSuggestionsTable()
     {
         let dom = this.dom;
@@ -21,11 +31,17 @@ const TableView = class
         return table
     }
 
+    /**
+     * Checks whether an element is active
+     */
     isActive()
     {
         return this.dom.getElementById(this.ID) != null;
     }
 
+    /**
+     * Removes TabX table
+     */
     tearDown()
     {
         if (this.isActive())
@@ -34,6 +50,10 @@ const TableView = class
         }
     }
 
+    /**
+     * Creates and presents TabX table
+     * @param {array} mappings - predictions from backend
+     */
     display(mappings)
     {
       this.tearDown();
@@ -58,6 +78,11 @@ const TableView = class
         dom.body.appendChild(table);
         this.style.updatePosition(table);
     }
+
+    /**
+     * Updates style settings (color, font, etc.)
+     * @param {object} settings 
+     */
     config(settings){
         this.style.settings = settings;
     }

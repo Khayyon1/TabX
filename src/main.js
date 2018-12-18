@@ -1,5 +1,6 @@
 const TabX = require('./tabx');
 const TableView = require("./assets/js/viewstrats/fixedstrat");
+// const TableView = require("./assets/js/viewstrats/tablestrat-ui");
 const applySettings = require("./browserspec/settings");
 const bgmodels = require("./models/messenger-models");
 //const profanityfilter = require("./models/profanityfilter/profanity-filter");

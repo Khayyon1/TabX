@@ -89,25 +89,26 @@
 /***/ (function(module, exports, __webpack_require__) {
 
 const TabX = __webpack_require__(1);
-const FixedView = __webpack_require__(3);
 const TableView = __webpack_require__(5);
 const applySettings = __webpack_require__(6);
 const bgmodels = __webpack_require__(8);
-const abbrevExpansionModel = __webpack_require__(9)
+const AbbrevExpansionModel = __webpack_require__(9)
 
-//const profanityfilter = require("./models/profanityfilter/profanity-filter");
+const ProfanityFilter = __webpack_require__(12);
 
-//const mocknext = require("./models/mock/nextword_mock")
-//const mockcomp = require("./models/mock/wordcomplete_mock")
+const mocknext = __webpack_require__(10)
+const mockcomp = __webpack_require__(11)
 
-let fixedDisplay = new FixedView(document);
 let tableDisplay = new TableView(document);
-
-let tabx = new TabX(bgmodels.WordCompleteModel,
-   bgmodels.WordPredictModel,
-   new abbrevExpansionModel(),
-   fixedDisplay,
-   document=document);
+let abbrevExpansionModel = new AbbrevExpansionModel();
+let filter = new ProfanityFilter()
+let tabx = new TabX(mockcomp,
+   mocknext,
+   abbrevExpansionModel,
+   tableDisplay,
+   document=document,
+   filter=filter,
+   );
 
 applySettings(tabx);
 
@@ -133,8 +134,9 @@ const TabX = class
       document=document,
       filter={"filter": (str) => str},
       wordCompleteEnabled=true,
-      wordPredictEnabled=true)
-
+      wordPredictEnabled=true,
+      filterEnabled=true,
+      abbrevExpansionEnabled=true)
       {
          this.wordCompleteModel = wordCompleteModel;
          this.wordPredictModel = wordPredictModel;
@@ -147,437 +149,469 @@ const TabX = class
          this.enabled = true;
          this.suggestionsDisplayCount = 3;
          this.filter = filter;
-         this.registerListeners();
+         this.filterEnabled = filterEnabled;
+         this.abbrevExpansionEnabled = abbrevExpansionEnabled;
          this.tabCount = -1;
+
+         this.registerListeners();
+
       }
 
-      setDocument(document)
+   setDocument(document)
+   {
+      this.document = document;
+   }
+
+   setDisplay(display)
+   {
+      this.displayStrategy.tearDown();
+      this.displayStrategy = display;
+   }
+
+   async getAppropriateSuggestions()
+   {
+      var elem = this.document.activeElement
+      var caret;
+      var previous;
+      var charAtCaret;
+      var text;
+
+      if(serviceabletags.isInput(elem))
       {
-         this.document = document;
+         caret = elem.selectionStart;
+         text = elem.value;
+         previous = text.charAt(caret - 1);
+         charAtCaret = text.charAt(caret);
       }
 
-      setDisplay(display)
+      else if(serviceabletags.isContentEditable(elem))
       {
-         this.displayStrategy.tearDown();
-         this.displayStrategy = display;
+         let info = serviceabletags.caretAndTextOfEditableDiv(elem,
+             window.getSelection().baseNode);
+         caret = info["caret"];
+         text = info["text"];
+         previous = info["text"].charAt(caret - 1);
+         charAtCaret = info["text"].charAt(caret);
       }
-      
-      async getAppropriateSuggestions()
-      {
-         var elem = this.document.activeElement
-         var caret;
-         var previous;
-         var charAtCaret;
-         var text;
 
-         if(serviceabletags.isInput(elem))
+      else
+      {
+         throw new Error("Active element not serviceable");
+      }
+
+
+      //Grab the current word before filter happens
+      let currentWord = this.getCurrentWord(text, caret);
+      if(this.filterEnabled)
+      {
+         text = this.filter.filter(text);
+      }
+
+      //Check for whether we can do word prediction
+      var charBeforeCaret = /\S/.test(previous);
+      if(charBeforeCaret && this.wordCompleteEnabled)
+      {
+         let results = []
+         if(this.abbrevExpansionEnabled)
          {
-            caret = elem.selectionStart;
-            text = elem.value;
-            previous = text.charAt(caret - 1);
-            charAtCaret = text.charAt(caret);
+            results = this.abbrevExpansionModel.expand(currentWord);
          }
 
-         else if(serviceabletags.isContentEditable(elem))
+         if(results.length === 0)
          {
-            let info = serviceabletags.caretAndTextOfEditableDiv(elem, window.getSelection().baseNode);
-            caret = info["caret"];
-            text = info["text"];
-            previous = info["text"].charAt(caret - 1);
-            charAtCaret = info["text"].charAt(caret);
+            return await this.getSuggestions(currentWord);
+         }
+
+         return results;
+
+      }
+
+      charAtCaret = /\S/.test(charAtCaret);
+
+      if(!this.inputIsNotValid(currentWord)
+      && !charBeforeCaret
+      && !charAtCaret
+      && this.wordPredictEnabled)
+      {
+         return await this.getNextWordSuggestion(text.trim().substring(0, caret));
+      }
+   }
+
+   async displaySuggestions()
+   {
+      if(this.tabCount !== -1)
+      {
+         return;
+      }
+
+      if(!serviceabletags.activeElementIsServiceable()
+      ||
+      this.document.activeElement.value == "")
+      {
+         this.displayStrategy.tearDown();
+         return;
+      }
+
+      let suggestions = await this.getAppropriateSuggestions();
+
+      if(suggestions == undefined || suggestions.length == 0)
+      {
+         this.displayStrategy.tearDown();
+         return;
+      }
+
+      //Don't get new suggestions if the user used tab-select
+      if(this.tabCount === -1)
+      {
+         suggestions = suggestions.slice(0, this.suggestionsDisplayCount);
+         this.mappings = {};
+         for(let i = 0; i < suggestions.length; i++)
+         {
+            let shortcut = this.shortcuts[i];
+            let suggestion = suggestions[i];
+
+            //Every shortcut is mapped to a suggestion that TabX can reference
+            //later
+            this.mappings[shortcut] = suggestion;
+         }
+      }
+
+      this.displayStrategy.display(this.mappings);
+   }
+
+   wordCompletion(userChoice)
+   {
+      let activeElement = document.activeElement;
+
+      if("value" in activeElement)
+      {
+         let prevStart = activeElement.selectionStart;
+         let offset;
+
+         //if predicting next word
+         if(/\s/.test(activeElement.value.charAt(prevStart - 1)))
+         {
+            offset = 0;
+         }
+         else
+         {
+            offset = this.getCurrentWord(activeElement.value, prevStart).length;
+         }
+
+         activeElement.value = this.replaceWordAt(
+         activeElement.value,
+         activeElement.selectionStart,
+         userChoice);
+
+         let caret = prevStart + (userChoice.length - offset);
+
+         activeElement.setSelectionRange(caret, caret);
+      }
+
+      else if("nodeValue" in activeElement)
+      {
+         let selection = window.getSelection();
+         let target = selection.anchorNode;
+         let caret = serviceabletags.caretAndTextOfEditableDiv(
+            activeElement, target)["caret"];
+
+         let start = selection.anchorOffset;
+         let isPredictingNextWord = /\s/.test(target.
+            nodeValue.charAt(start - 1));
+
+         let offset = this.getCurrentWord(target.
+            nodeValue, start).length;
+
+         target.nodeValue = this.replaceWordAt(
+            target.nodeValue.replace(/\u00a0/g, " "), //Replace hard spaces
+            start,
+            userChoice);
+
+         //Set the caret back to expected position
+         if(isPredictingNextWord)
+         {
+            offset = 0;
+         }
+
+      selection.collapse(target, start + (userChoice.length -
+         offset));
+      }
+
+      else
+      {
+         throw new Error("Attempted to mutate element" +
+         "that does not handle text")
+      }
+   }
+
+   replaceWordAt(str, i, word, delimiter=' ')
+   {
+      let startOfWord = str.lastIndexOf(delimiter, i - 1);
+
+      let before = str.substring(0, startOfWord);
+      if (before !== "" && before != null)
+      {
+         before += " "
+      }
+
+      let after  = str.substring(i);
+
+      if(after.charAt(0) !== "" && after.charAt(0) !== " ")
+      {
+         after = " " + after;
+      }
+
+      return before + word + after;
+   }
+
+   getCurrentWord(text, caret)
+   {
+      if(caret === 0)
+      {
+         return "";
+      }
+
+      //Check to see if the previoius character is a whitespace
+      //If it is not, push previous back one to allow the current
+      //word be the word that comes before a whitespace
+      //Ex. "hello |" -> "hello"
+      let offset = 1;
+      var prev = text.charAt(caret - offset);
+      while(prev.match(/\s/))
+      {
+         offset += 1;
+         prev = text.charAt(caret - offset);
+      }
+
+      //off by one due to while loop
+      caret -= (offset - 1);
+
+      //Make sure caret is at the end of a developing word
+      if(prev.match(/\w/))
+      {
+         //Iterate backwards to find the first instance of a white space
+         // 0 to caret
+         var startOfWord = this.indexOfStartOfCurrentWord(text,
+            caret);
+
+            if(startOfWord === 0)
+            {
+               return text.substring(0, caret);
+            }
+            else
+            {
+               return text.substring(startOfWord, caret);
+            }
          }
 
          else
          {
-            throw new Error("Active element not serviceable");
+            return "";
+         }
+      }
+
+      indexOfStartOfCurrentWord(text, caret)
+      {
+         //Iterate backwards to find the first instance of a white space
+         var i = caret;
+         while(i > 0 && text.charAt(i - 1).match(/\w/))
+         {
+            i--;
          }
 
-         text = this.filter.filter(text);
+         return i;
+      }
 
-         let currentWord = this.getCurrentWord(text, caret);
-         //Check for whether we can do word prediction
+      inputHasCharactersOtherThanLetters(string)
+      {
+         return (/[^a-zA-Z\s]/).test(string)
+      }
 
-         var charBeforeCaret = /\S/.test(previous);
-         if(charBeforeCaret && this.wordCompleteEnabled)
+      inputIsNotValid(str)
+      {
+         return this.inputHasCharactersOtherThanLetters(str)
+         ||
+         str.length == 0;
+      }
+
+      async getSuggestions(incomplete_string)
+      {
+         if(this.inputIsNotValid(incomplete_string))
          {
-            let results = this.abbrevExpansionModel.expand(currentWord);
+            return [];
+         }
 
-            if(results.length === 0)
+         let results = this.wordCompleteModel.predictCurrentWord(
+            incomplete_string);
+
+            if(typeof(results) === Promise)
             {
-               return await this.getSuggestions(currentWord);
+               return await results;
             }
 
             return results;
-
          }
 
-         charAtCaret = /\S/.test(charAtCaret);
-
-         if(!this.inputIsNotValid(currentWord)
-         && !charBeforeCaret
-         && !charAtCaret
-         && this.wordPredictEnabled)
+      async getNextWordSuggestion(str)
+      {
+         let results = this.wordPredictModel.predictNextWord(str);
+         if(typeof(results) === Promise)
          {
-            return await this.getNextWordSuggestion(text.trim().substring(0, caret));
+            return await results;
+         }
+
+         else
+         {
+            return results;
          }
       }
 
-      async displaySuggestions()
+      handleUserInput(event)
       {
-         if(this.tabCount !== -1)
+
+         if (serviceabletags.activeElementIsServiceable()
+         && this.enabled)
          {
-            return;
+            this.displaySuggestions();
          }
-
-         if(!serviceabletags.activeElementIsServiceable()
-         ||
-         this.document.activeElement.value == "")
-         {
-            this.displayStrategy.tearDown();
-            return;
-         }
-
-         let suggestions = await this.getAppropriateSuggestions();
-
-         if(suggestions == undefined || suggestions.length == 0)
-         {
-            this.displayStrategy.tearDown();
-            return;
-         }
-
-         //Don't get new suggestions if the user used tab-select
-         if(this.tabCount === -1)
-         {
-            suggestions = suggestions.slice(0, this.suggestionsDisplayCount);
-            this.mappings = {};
-            for(let i = 0; i < suggestions.length; i++)
-            {
-               let shortcut = this.shortcuts[i];
-               let suggestion = suggestions[i];
-
-               //Every shortcut is mapped to a suggestion that TabX can reference
-               //later
-               this.mappings[shortcut] = suggestion;
-            }
-         }
-
-         this.displayStrategy.display(this.mappings);
       }
 
-      wordCompletion(userChoice)
+      handleWordComplete(event)
       {
-         let activeElement = document.activeElement;
+         if(!this.enable){return;}
 
-         if("value" in activeElement)
+         var keyname = event.key;
+
+         if(serviceabletags.activeElementIsServiceable())
          {
-            let prevStart = activeElement.selectionStart;
-            let offset;
-
-            //if predicting next word
-            if(/\s/.test(activeElement.value.charAt(prevStart - 1)))
+            let userChoice;
+            if (keyname == 'Tab' && this.displayStrategy.isActive())
             {
-               offset = 0;
+               event.preventDefault();
+               this.tabCount = (this.tabCount + 1) % Object.keys(this.mappings).length;
+               userChoice = this.mappings[this.shortcuts[this.tabCount]];
             }
+
+            else if(this.shortcuts.includes(keyname))
+            {
+               this.tabCount = -1;
+               event.preventDefault();
+               userChoice = this.mappings[keyname];
+            }
+
             else
             {
-               offset = this.getCurrentWord(activeElement.value, prevStart).length;
+               this.tabCount = -1;
             }
 
-            activeElement.value = this.replaceWordAt(
-               activeElement.value,
-               activeElement.selectionStart,
-               userChoice);
-
-               let caret = prevStart + (userChoice.length - offset);
-
-               activeElement.setSelectionRange(caret, caret);
-
-            }
-
-            else if("nodeValue" in activeElement)
+            if (userChoice)
             {
-               let selection = window.getSelection();
-               let target = selection.anchorNode;
-               let caret = serviceabletags.caretAndTextOfEditableDiv(
-                  activeElement, target)["caret"];
+               this.wordCompletion(userChoice);
+            }
+         }
 
-                  let start = selection.anchorOffset;
-                  let isPredictingNextWord = /\s/.test(target.
-                     nodeValue.charAt(start - 1));
+         else
+         {
+            this.tabCount = -1;
+         }
+      }
 
-                     let offset = this.getCurrentWord(target.
-                        nodeValue, start).length;
+      registerListeners()
+      {
+         //Provide suggestions based on developing word
+         this.document.addEventListener('keydown',
+         this.handleWordComplete.bind(this));
 
-                        target.nodeValue = this.replaceWordAt(
-                           target.nodeValue.replace(/\u00a0/g, " "), //Replace hard spaces
-                           start,
-                           userChoice);
+         //Shows suggestions
+         this.document.addEventListener('keyup',
+         this.handleUserInput.bind(this));
 
-                           //Set the caret back to expected position
-                           if(isPredictingNextWord)
-                           {
-                              offset = 0;
-                           }
+         var serviceableElements = serviceabletags.
+         getServicableElements();
 
-                           selection.collapse(target, start + (userChoice.length -
-                              offset));
-                           }
+         //Listens for when active elements lose focus
+         for(var i = 0; i < serviceableElements.length; i++)
+         {
+            var elem = serviceableElements[i];
+            elem.addEventListener('blur', function()
+            {
+               this.displayStrategy.tearDown();
+            }.bind(this));
+         };
 
-                           else
-                           {
-                              throw new Error("Attempted to mutate element" +
-                              "that does not handle text")
-                           }
-                        }
+      }
 
-                        replaceWordAt(str, i, word, delimiter=' ')
-                        {
-                           let startOfWord = str.lastIndexOf(delimiter, i - 1);
+      enable()
+      {
+         this.enabled = true;
+      }
 
-                           let before = str.substring(0, startOfWord);
-                           if (before !== "" && before != null)
-                           {
-                              before += " "
-                           }
+      disable()
+      {
+         this.enabled = false
+      }
 
-                           let after  = str.substring(i);
+      disableWordPrediction()
+      {
+         this.wordPredictEnabled = false;
+      }
 
-                           if(after.charAt(0) !== "" && after.charAt(0) !== " ")
-                           {
-                              after = " " + after;
-                           }
+      disableWordCompletion()
+      {
+         this.wordCompleteEnabled = false;
+      }
 
-                           return before + word + after;
-                        }
+      enableWordPrediction()
+      {
+         this.wordPredictEnabled = true;
+      }
 
-                        getCurrentWord(text, caret)
-                        {
-                           if(caret === 0)
-                           {
-                              return "";
-                           }
+      enableWordCompletion()
+      {
+         this.wordCompleteEnabled = true;
+      }
 
-                           //Check to see if the previoius character is a whitespace
-                           //If it is not, push previous back one to allow the current
-                           //word be the word that comes before a whitespace
-                           //Ex. "hello |" -> "hello"
-                           let offset = 1;
-                           var prev = text.charAt(caret - offset);
-                           while(prev.match(/\s/))
-                           {
-                              offset += 1;
-                              prev = text.charAt(caret - offset);
-                           }
+      configureDisplay(settings)
+      {
+         console.log(settings);
+         this.displayStrategy.config(settings);
+      }
 
-                           //off by one due to while loop
-                           caret -= (offset - 1);
+      enableFilter()
+      {
+         this.filterEnabled = true;
+      }
 
-                           //Make sure caret is at the end of a developing word
-                           if(prev.match(/\w/))
-                           {
-                              //Iterate backwards to find the first instance of a white space
-                              // 0 to caret
-                              var startOfWord = this.indexOfStartOfCurrentWord(text,
-                                 caret);
+      disableFilter()
+      {
+         this.filterEnabled = false;
+      }
 
-                                 if(startOfWord === 0)
-                                 {
-                                    return text.substring(0, caret);
-                                 }
-                                 else
-                                 {
-                                    return text.substring(startOfWord, caret);
-                                 }
-                              }
+      enableAbbreviationExpansion()
+      {
+         this.abbrevExpansionEnabled = true;
+      }
 
-                              else
-                              {
-                                 return "";
-                              }
-                           }
+      disableAbbreviationExpansion()
+      {
+         this.abbrevExpansionEnabled = false;
+      }
 
-                           indexOfStartOfCurrentWord(text, caret)
-                           {
-                              //Iterate backwards to find the first instance of a white space
-                              var i = caret;
-                              while(i > 0 && text.charAt(i - 1).match(/\w/))
-                              {
-                                 i--;
-                              }
+      setSuggestionsDisplayCount(count)
+      {
+         this.suggestionsDisplayCount = count;
+         let newShortcuts = [];
+         for(let i = 1; i <= count; i++)
+         {
+            newShortcuts.push(i.toString());
+         }
+         this.shortcuts = newShortcuts;
 
-                              return i;
-                           }
+         this.displayStrategy.setSuggestionsDisplayCount(count);
+      }
+};
 
-                           inputHasCharactersOtherThanLetters(string)
-                           {
-                              return (/[^a-zA-Z\s]/).test(string)
-                           }
-
-                           inputIsNotValid(str)
-                           {
-                              return this.inputHasCharactersOtherThanLetters(str)
-                              ||
-                              str.length == 0;
-                           }
-
-                           async getSuggestions(incomplete_string)
-                           {
-                              if(this.inputIsNotValid(incomplete_string))
-                              {
-                                 return [];
-                              }
-
-                              let results = this.wordCompleteModel.predictCurrentWord(
-                                 incomplete_string);
-
-                                 if(typeof(results) === Promise)
-                                 {
-                                    return await results;
-                                 }
-
-                                 return results;
-                              }
-
-                              async getNextWordSuggestion(str)
-                              {
-                                 let results = this.wordPredictModel.predictNextWord(str);
-                                 if(typeof(results) === Promise)
-                                 {
-                                    return await results;
-                                 }
-
-                                 else
-                                 {
-                                    return results;
-                                 }
-                              }
-
-                              handleUserInput(event)
-                              {
-
-                                 if (serviceabletags.activeElementIsServiceable()
-                                 && this.enabled)
-                                 {
-                                    this.displaySuggestions();
-                                 }
-                              }
-
-                              handleWordComplete(event)
-                              {
-                                 if(!this.enable){return;}
-
-                                 var keyname = event.key;
-
-                                 if(serviceabletags.activeElementIsServiceable())
-                                 {
-                                    let userChoice;
-                                    if (keyname == 'Tab' && this.displayStrategy.isActive())
-                                    {
-                                       event.preventDefault();
-                                       this.tabCount = (this.tabCount + 1) % Object.keys(this.mappings).length;
-                                       userChoice = this.mappings[this.shortcuts[this.tabCount]];
-                                    }
-
-                                    else if(this.shortcuts.includes(keyname))
-                                    {
-                                       this.tabCount = -1;
-                                       event.preventDefault();
-                                       userChoice = this.mappings[keyname];
-                                    }
-
-                                    else
-                                    {
-                                       this.tabCount = -1;
-                                    }
-
-                                    if (userChoice)
-                                    {
-                                       this.wordCompletion(userChoice);
-                                    }
-                                 }
-
-                                 else
-                                 {
-                                    this.tabCount = -1;
-                                 }
-                              }
-
-                              registerListeners()
-                              {
-                                 //Provide suggestions based on developing word
-                                 this.document.addEventListener('keydown',
-                                 this.handleWordComplete.bind(this));
-
-                                 //Shows suggestions
-                                 this.document.addEventListener('keyup',
-                                 this.handleUserInput.bind(this));
-
-                                 var serviceableElements = serviceabletags.
-                                 getServicableElements();
-
-                                 //Listens for when active elements lose focus
-                                 for(var i = 0; i < serviceableElements.length; i++)
-                                 {
-                                    var elem = serviceableElements[i];
-                                    elem.addEventListener('blur', function()
-                                    {
-                                       this.displayStrategy.tearDown();
-                                    }.bind(this));
-                                 };
-
-                              }
-
-                              enable()
-                              {
-                                 this.enabled = true;
-                              }
-
-                              disable()
-                              {
-                                 this.enabled = false
-                              }
-
-                              disableWordPrediction()
-                              {
-                                 this.wordPredictEnabled = false;
-                              }
-
-                              disableWordCompletion()
-                              {
-                                 this.wordCompleteEnabled = false;
-                              }
-
-                              enableWordPrediction()
-                              {
-                                 this.wordPredictEnabled = true;
-                              }
-
-                              enableWordCompletion()
-                              {
-                                 this.wordCompleteEnabled = true;
-                              }
-
-                              configureDisplay(settings)
-                              {
-                                 console.log(settings);
-                                 this.displayStrategy.config(settings);
-                              }
-
-                              setSuggestionsDisplayCount(count)
-                              {
-                                 this.suggestionsDisplayCount = count;
-                                 let newShortcuts = [];
-                                 for(let i = 1; i <= count; i++)
-                                 {
-                                    newShortcuts.push(i.toString());
-                                 }
-                                 this.shortcuts = newShortcuts;
-
-                                 this.displayStrategy.setSuggestionsDisplayCount(count);
-                              }
-                           };
-
-                           module.exports = TabX;
+module.exports = TabX;
 
 
 /***/ }),
@@ -926,12 +960,22 @@ module.exports = FixedView;
 
 const position = __webpack_require__(7).position;
 
+/** Class for stylizing HTML elements of TabX Table */
 const Style = class
 {
+    /**
+     * Constructor
+     */
     constructor(){
         this.cache = {};
         this.offset_y = 0;
     }
+
+    /**
+     * Stylizes entire TabX table
+     * @param {HTMLElement} element - TabX table
+     * @param {HTMLElement} textInputBox - input element TabX table is attached to
+     */
     table(element, textInputBox)
     {
         element.style.display = 'flex';
@@ -947,6 +991,10 @@ const Style = class
         element.style.left = (rect.left + caret.left).toString() + 'px';
     }
 
+    /**
+     * Updates element position based on caret position
+     * @param {HTMLElement} element - TabX table
+     */
     updatePosition(element)
     {
         const w = window.innerWidth;
@@ -955,9 +1003,6 @@ const Style = class
         const elRect = element.getBoundingClientRect();
         const left = this.pxToInt(element.style.left);
         const top = this.pxToInt(element.style.top);
-
-        // console.log('Mishiii', w, elRect.right)
-        // console.log(elRect)
 
         if (elRect.right > w) {
             const offset_x = elRect.right - w;
@@ -970,9 +1015,20 @@ const Style = class
         }
 
     }
+
+    /**
+     * Converts pixels to integers
+     * @param {pixels} px - pixel to be converted
+     */
     pxToInt(px){
         return parseInt(px.slice(0, px.length - 2))
     }
+
+    /**
+     * Styizes inidivdual rows in TabX table
+     * @param {HTMLElement} element - row from TabX table
+     * @param {number} offset - spacing between rows
+     */
     row(element, offset=6)
     {
         element.style.marginRight = offset.toString() + 'px';
@@ -982,63 +1038,6 @@ const Style = class
             element.style.color = this.settings.fontcolor;
             element.style.fontWeight = this.settings.fontstyle.toLowerCase();
         }
-    }
-    calcSize(text, options = {}) {
-
-        const cacheKey = JSON.stringify({ text: text, options: options })
-
-        if (this.cache[cacheKey]) {
-            return this.cache[cacheKey]
-        }
-
-        // prepare options
-        options.font = options.font || 'Times'
-        options.fontSize = options.fontSize || '16px'
-        options.fontWeight = options.fontWeight || 'normal'
-        options.lineHeight = options.lineHeight || 'normal'
-        options.width = options.width || 'auto'
-        options.wordBreak = options.wordBreak || 'normal'
-
-        const element = this.createDummyElement(text, options)
-
-        const size = {
-            width: element.offsetWidth,
-            height: element.offsetHeight,
-        }
-
-        this.destroyElement(element)
-
-        this.cache[cacheKey] = size
-
-        return size
-    }
-    
-    destroyElement(element)
-    {
-        element.parentNode.removeChild(element)
-    }
-
-    createDummyElement(text, options) {
-        const element = document.createElement('div')
-        const textNode = document.createTextNode(text)
-
-        element.appendChild(textNode)
-
-        element.style.fontFamily = options.font
-        element.style.fontSize = options.fontSize
-        element.style.fontWeight = options.fontWeight
-        element.style.lineHeight = options.lineHeight
-        element.style.position = 'absolute'
-        element.style.visibility = 'hidden'
-        element.style.left = '-999px'
-        element.style.top = '-999px'
-        element.style.width = options.width
-        element.style.height = 'auto'
-        element.style.wordBreak = options.wordBreak
-
-        document.body.appendChild(element)
-
-        return element
     }
 }
 
@@ -1051,8 +1050,15 @@ module.exports = Style;
 
 const Style = __webpack_require__(4);
 
+/** Class for displaying dynamically moving TabX table
+ *  based on caret position
+ */
 const TableView = class
 {
+    /**
+     * Constructor
+     * @param {HTMLDom} dom - dom TabX table will be attached to
+     */
     constructor(dom)
     {
         this.dom = dom;
@@ -1061,6 +1067,9 @@ const TableView = class
         this.style = new Style();
     }
 
+    /**
+     * Creates TabX table
+     */
     createSuggestionsTable()
     {
         let dom = this.dom;
@@ -1072,11 +1081,17 @@ const TableView = class
         return table
     }
 
+    /**
+     * Checks whether an element is active
+     */
     isActive()
     {
         return this.dom.getElementById(this.ID) != null;
     }
 
+    /**
+     * Removes TabX table
+     */
     tearDown()
     {
         if (this.isActive())
@@ -1085,6 +1100,10 @@ const TableView = class
         }
     }
 
+    /**
+     * Creates and presents TabX table
+     * @param {array} mappings - predictions from backend
+     */
     display(mappings)
     {
       this.tearDown();
@@ -1109,10 +1128,16 @@ const TableView = class
         dom.body.appendChild(table);
         this.style.updatePosition(table);
     }
+
+    /**
+     * Updates style settings (color, font, etc.)
+     * @param {object} settings
+     */
     config(settings){
         this.style.settings = settings;
     }
 
+    setSuggestionsDisplayCount(count){}
 }
 
 module.exports = TableView;
@@ -1146,6 +1171,16 @@ function applySettings(tabx)
             tabx.disableWordPrediction();
          }
 
+         if(!results["Filter"])
+         {
+            tabx.disableFilter();
+         }
+
+         if(!results["Abbreviation Expansion"])
+         {
+            tabx.disableAbbreviationExpansion();
+         }
+
          let config =
          {
             font: results["Font"],
@@ -1176,6 +1211,10 @@ var actions =
 {
    "enableTabX": (tabx) => { tabx.enable() },
    "disableTabX": (tabx) => { tabx.disable() },
+   "enableFilter": (tabx) => { tabx.enableFilter()},
+   "disableFilter": (tabx) => { tabx.disableFilter()},
+   "enableAbbreviationExpansion": (tabx) => {tabx.enableAbbreviationExpansion()},
+   "disableAbbreviationExpansion": (tabx) => {tabx.disableAbbreviationExpansion()},
    "enableWordCompletion": (tabx) => { tabx.enableWordCompletion() },
    "enableWordPrediction": (tabx) => { tabx.enableWordPrediction() },
    "disableWordCompletion": (tabx) => { tabx.disableWordCompletion() },
@@ -1822,6 +1861,63 @@ class AbbreviationExpansion {
 
 module.exports = AbbreviationExpansion;
 
+
+/***/ }),
+/* 10 */
+/***/ (function(module, exports) {
+
+module.exports = {
+    predictNextWord: function(sentence){
+        return ["Hello", "World","Goodbye"];
+    }
+}
+
+/***/ }),
+/* 11 */
+/***/ (function(module, exports) {
+
+module.exports = {
+    predictCurrentWord: function(word){
+        return ["Hello", "World","Goodbye"];
+    }
+}
+
+/***/ }),
+/* 12 */
+/***/ (function(module, exports) {
+
+module.exports = class {
+    constructor() {
+        const swears = ["fuck", "shit", "arse", "bitch", "bastard", "crap", "cunt", "damn", "prick", "shag", "wank", "nut", "piss", "twat", "jack", 
+                "dumbass", "asshole", "badass", "halfass", "hardass", "smartass", "balls", "cum", "dammit", "jizz", "testicles", "cunnilingus", 
+                "fellatio", "scrotum", "boner", "blowjob", "sex", "slut", "dick", "cock", "tit", "boob", "vagina", "penis", "pussy", "bollocks", 
+                "porn", "orgasm", "nigg", "whore", "fag", "coon"];
+        this.swearsReg = new RegExp(swears.join( "|" ), "i"); 
+    }
+
+    filter(inputStr) {
+        var splitStr = inputStr.toLowerCase().split(/[^a-z]/i); 
+
+        if (this.swearsReg.test(inputStr) || splitStr.includes("hell") || splitStr.includes("ass")) {
+            var word;
+            for (var i = 0; i < splitStr.length; i++) {
+                if (this.swearsReg.test(splitStr[i]) || splitStr[i] === "hell" || splitStr[i] === "ass") {
+                    word = splitStr[i];
+
+                }
+            }
+
+            var wordReg = new RegExp(word, "i");
+            while (wordReg.test(inputStr)) {
+                inputStr = inputStr.slice(inputStr.search(wordReg) + word.length);
+            }
+            return inputStr;
+        }
+        else {
+            return inputStr;
+        }
+    }
+};
 
 /***/ })
 /******/ ]);

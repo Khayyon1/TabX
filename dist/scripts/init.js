@@ -9,5 +9,7 @@ chrome.runtime.onInstalled.addListener(function()
       "Font Style": "Normal",
       "Font Color": "#000000",
       "Suggestions Quantity": 3,
+      "Abbreviation Expansion": true,
+      "Filter": true,
    })
 });

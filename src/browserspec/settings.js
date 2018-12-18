@@ -22,6 +22,16 @@ function applySettings(tabx)
             tabx.disableWordPrediction();
          }
 
+         if(!results["Filter"])
+         {
+            tabx.disableFilter();
+         }
+
+         if(!results["Abbreviation Expansion"])
+         {
+            tabx.disableAbbreviationExpansion();
+         }
+
          let config =
          {
             font: results["Font"],
@@ -52,6 +62,10 @@ var actions =
 {
    "enableTabX": (tabx) => { tabx.enable() },
    "disableTabX": (tabx) => { tabx.disable() },
+   "enableFilter": (tabx) => { tabx.enableFilter()},
+   "disableFilter": (tabx) => { tabx.disableFilter()},
+   "enableAbbreviationExpansion": (tabx) => {tabx.enableAbbreviationExpansion()},
+   "disableAbbreviationExpansion": (tabx) => {tabx.disableAbbreviationExpansion()},
    "enableWordCompletion": (tabx) => { tabx.enableWordCompletion() },
    "enableWordPrediction": (tabx) => { tabx.enableWordPrediction() },
    "disableWordCompletion": (tabx) => { tabx.disableWordCompletion() },

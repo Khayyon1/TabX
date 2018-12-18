@@ -3,7 +3,6 @@
 var serviceabletags = require('./util/serviceabletags');
 var _current_word = "";
 
-//import {wordCompleteModel} from './models/wordcomplete.js';
 var _debug = false;
 
 const TabX = class

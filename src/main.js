@@ -12,8 +12,8 @@ const mockcomp = require("./models/mock/wordcomplete_mock")
 let tableDisplay = new TableView(document);
 let abbrevExpansionModel = new AbbrevExpansionModel();
 let filter = new ProfanityFilter()
-let tabx = new TabX(mockcomp,
-   mocknext,
+let tabx = new TabX(bgmodels.WordCompleteModel,
+   bgmodels.WordPredictModel,
    abbrevExpansionModel,
    tableDisplay,
    document=document,

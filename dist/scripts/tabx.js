@@ -102,8 +102,8 @@ const mockcomp = __webpack_require__(11)
 let tableDisplay = new TableView(document);
 let abbrevExpansionModel = new AbbrevExpansionModel();
 let filter = new ProfanityFilter()
-let tabx = new TabX(mockcomp,
-   mocknext,
+let tabx = new TabX(bgmodels.WordCompleteModel,
+   bgmodels.WordPredictModel,
    abbrevExpansionModel,
    tableDisplay,
    document=document,
@@ -122,7 +122,6 @@ applySettings(tabx);
 var serviceabletags = __webpack_require__(2);
 var _current_word = "";
 
-//import {wordCompleteModel} from './models/wordcomplete.js';
 var _debug = false;
 
 const TabX = class

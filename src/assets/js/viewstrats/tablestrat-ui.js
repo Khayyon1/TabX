@@ -69,7 +69,7 @@ const TableView = class
             var shortcutColumn = dom.createElement("td");
             var suggestionsColumn = dom.createElement("td");
             shortcutColumn.appendChild(dom.createTextNode((shortcuts[i].toString())));
-            suggestionsColumn.appendChild(dom.createTextNode(suggestions[i]));
+            suggestionsColumn.appendChild(dom.createTextNode('| '+suggestions[i]));
             row.append(shortcutColumn);
             row.append(suggestionsColumn);
             table.appendChild(row);

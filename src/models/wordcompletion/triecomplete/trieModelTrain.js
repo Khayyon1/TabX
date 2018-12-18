@@ -1,5 +1,5 @@
 //var expect = require('expect')
-const wordLocation = "sampleText/1-1000.txt";
+const wordLocation = "sampleText/1-5000.txt";
 
 function simpleReadFileSync(filePath){
 
@@ -7,6 +7,7 @@ function simpleReadFileSync(filePath){
     var options = {encoding:'utf-8', flag:'r'};
     var buffer = fs.readFileSync(filePath, options);
     return buffer.replace( /\n/g, " " ).split( " " );
+
 }
 
 var node = {
@@ -29,6 +30,7 @@ function Trie() {
 
 Trie.prototype.import = function(wordLocation){
     let wordList = simpleReadFileSync(wordLocation);
+    //console.log(wordList)
     for(var i = 0; i < wordList.length; i++){
         this.add(wordList[i], true)
     }

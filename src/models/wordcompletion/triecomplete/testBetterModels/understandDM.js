@@ -1,4 +1,6 @@
 
+//Make sure to cite https://www.wordfrequency.info/
+
 
 'use strict';
 
@@ -171,6 +173,8 @@ modelTrain.prototype.distance = function(write, guess) {
         let currDel;
         //let addToWrite;
         for (let writeIdx = 1; writeIdx <= write.length; writeIdx++) {
+            // console.log(writeIdx)
+            // console.log(write[writeIdx])
             //if no Similarities occur between write and guess
             if(totalEqual === 0){
                 currAdd = 'addBeg';
@@ -219,12 +223,17 @@ modelTrain.prototype.distance = function(write, guess) {
             if (typeof this.model[currDel][write[writeIdx -1]] !== 'number'){
                 // console.log(currDel);
                 // console.log(this.model[currDel]);
-                throw "error"
+                throw "error " + currDel
             }
+
             if (typeof this.model[currAdd][guess[guessIdx -1]] !== 'number'){
-                // console.log(this.model[currAdd][write[guessIdx -1]]);
-                console.log(write, guess)
-                throw "error"
+                //console.log(this.model);
+                console.log(currAdd)
+                // console.log(this.model[currAdd])
+                // console.log(guessIdx -1)
+                // console.log(guess.charAt(3))
+                //console.log(this.model[currAdd][])
+                throw "error " + this.model[currAdd][guess[guessIdx -1]] + " " + write + guess
             }
 
             d[writeIdx][guessIdx] = Math.min.apply(null, [

@@ -425,6 +425,7 @@ const TabX = class
 
     configureDisplay(settings)
     {
+      console.log(settings);
         this.displayStrategy.config(settings);
     }
 

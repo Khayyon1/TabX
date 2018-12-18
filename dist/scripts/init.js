@@ -5,9 +5,9 @@ chrome.runtime.onInstalled.addListener(function()
       "Current Word": true,
       "Next Word": true,
       "Font": "Times New Roman",
-      "Font Size": 12,
-      "Font Style": "Regular",
-      "Font Color": "000000",
+      "Font Size": 20,
+      "Font Style": "Normal",
+      "Font Color": "#000000",
       "Suggestions Quantity": 3,
    })
 });

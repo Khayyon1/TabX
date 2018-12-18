@@ -115,17 +115,18 @@ const FixedView = class
 			elem.style.fontSize    = options["fontsize"] + "px";
 			elem.style.fontFamily  = options["font"];
 
+			console.log("FONT STYLE: " + options["fontstyle"]);
 			if(options["fontstyle"] === "Bold")
 			{
-				elem.style.fontWeight = "bold"
+				elem.style.fontWeight = "bold";
 			}
 			else
 			{
-				elem.style.fontWeight = "normal"
-				elem.style.fontStyle   = options["fontstyle"];
+				elem.style.fontWeight = "normal";
+				elem.style.fontStyle  = options["fontstyle"];
 			}
 		}
-
+		
 	}
 
 	listenForInput(event)

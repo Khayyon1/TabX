@@ -1,4 +1,4 @@
-const getCaretCoordinates = require('./textareacaret');
+const position = require('caret-pos').position;
 
 const Style = class
 {
@@ -10,11 +10,11 @@ const Style = class
     {
         element.style.display = 'flex';
         element.style.position = 'absolute';
-        element.style.backgroundColor = "lightblue";
+        element.style.backgroundColor = "lightgrey";
         element.style.zIndex = 999;
 
         const rect = textInputBox.getBoundingClientRect();
-        const caret = getCaretCoordinates(textInputBox, textInputBox.selectionStart, {debug:true});
+        const caret = position(textInputBox);
         this.offset_y = window.getComputedStyle(textInputBox, "").fontSize;
         this.offset_y = this.pxToInt(this.offset_y) - textInputBox.scrollTop;
         element.style.top = (rect.top + caret.top + this.offset_y).toString() + 'px';

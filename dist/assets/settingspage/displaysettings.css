@@ -61,7 +61,8 @@ label
 }
 
 /* collapsible content */
-#view-settings, .font-settings {
+#view-settings, .font-settings, .service-settings
+{
   padding: 0 18px;
   display: none;
   overflow: hidden;

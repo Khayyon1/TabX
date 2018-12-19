@@ -99,7 +99,21 @@ const TabX = class
 
          if(results.length === 0)
          {
-            return await this.getSuggestions(currentWord);
+            var result = await this.getSuggestions(currentWord);
+            const swears = ["fuck", "shit", "arse", "bitch", "bastard", "crap", "cunt", "damn", "prick", "shag", "wank", "nut", "piss", "twat", 
+                        "jack", "dumbass", "asshole", "badass", "halfass", "hardass", "smartass", "balls", "cum", "dammit", "jizz", "testicles", 
+                        "cunnilingus", "fellatio", "scrotum", "boner", "blowjob", "sex", "slut", "dick", "cock", "tit", "boob", "vagina", 
+                        "penis", "pussy", "bollocks", "porn", "orgasm", "nigg", "whore", "fag", "coon", "hellbent", "hellfire", "hell fire"];
+            var swearsReg = new RegExp(swears.join( "|" ), "i"); 
+            var newResult = [];
+            for (var i = 0; i < result.length; i++) {
+               console.log(result[i]);
+               if (!swearsReg.test(result[i]) && result[i] !== "hell" && result[i] !== "ass") {
+                  console.log("yes");
+                  newResult.push(result[i]);
+               }
+            }
+            return newResult;
          }
 
          return results;

@@ -443,7 +443,21 @@ const TabX = class
 
          if(results.length === 0)
          {
-            return await this.getSuggestions(currentWord);
+            var result = await this.getSuggestions(currentWord);
+            const swears = ["fuck", "shit", "arse", "bitch", "bastard", "crap", "cunt", "damn", "prick", "shag", "wank", "nut", "piss", "twat", 
+                        "jack", "dumbass", "asshole", "badass", "halfass", "hardass", "smartass", "balls", "cum", "dammit", "jizz", "testicles", 
+                        "cunnilingus", "fellatio", "scrotum", "boner", "blowjob", "sex", "slut", "dick", "cock", "tit", "boob", "vagina", 
+                        "penis", "pussy", "bollocks", "porn", "orgasm", "nigg", "whore", "fag", "coon", "hellbent", "hellfire", "hell fire"];
+            var swearsReg = new RegExp(swears.join( "|" ), "i"); 
+            var newResult = [];
+            for (var i = 0; i < result.length; i++) {
+               console.log(result[i]);
+               if (!swearsReg.test(result[i]) && result[i] !== "hell" && result[i] !== "ass") {
+                  console.log("yes");
+                  newResult.push(result[i]);
+               }
+            }
+            return newResult;
          }
 
          return results;
@@ -1804,6 +1818,8 @@ module.exports = {
 /* 9 */
 /***/ (function(module, exports) {
 
+// Module which expands common abbreviations
+
 class AbbreviationExpansion {
     constructor() {
         this.abbreviations = {"bc":"because",
@@ -1820,22 +1836,23 @@ class AbbreviationExpansion {
         "pov":"point of view",
         "wb":"welcome back",
         "mb":"my bad",
-         "w/":"with",
-         "w/o":"without",
-         "thru":"through",
-         "yk":"you know",
-         "ily":"I love you",
-         "ik":"I know",
-         "ikr":"I know, right",
-         "nvm":"nevermind",
-         "lmk":"let me know",
-         "brb":"be right back",
-         "btw":"by the way",
-         "irl":"in real life",
-          "jk":"just kidding",
-          "gg": "good game",
-           "wyd": "what are you doing",
-           "wbu": "what about you"};
+        "w/":"with",
+        "w/o":"without",
+        "thru":"through",
+        "yk":"you know",
+        "ily":"I love you",
+        "ik":"I know",
+        "ikr":"I know, right",
+        "nvm":"nevermind",
+        "lmk":"let me know",
+        "brb":"be right back",
+        "btw":"by the way",
+        "irl":"in real life",
+        "jk":"just kidding",
+        "gg": "good game",
+        "wyd": "what are you doing",
+        "wbu": "what about you",
+        "cuz":"because"};
     }
 
     expand(inputStr) {
@@ -1852,8 +1869,7 @@ class AbbreviationExpansion {
         if (incompleteWord.toLowerCase() in this.abbreviations) {
             return [this.abbreviations[incompleteWord.toLowerCase()]];
         }
-        else
-        {
+        else {
             return [];
         }
     }
@@ -1866,12 +1882,14 @@ module.exports = AbbreviationExpansion;
 /* 10 */
 /***/ (function(module, exports) {
 
-module.exports = class {
+// Module which filters out profane input by cutting off the input string at the profanity
+
+class ProfanityFilter {
     constructor() {
-        const swears = ["fuck", "shit", "arse", "bitch", "bastard", "crap", "cunt", "damn", "prick", "shag", "wank", "nut", "piss", "twat", "jack", 
-                "dumbass", "asshole", "badass", "halfass", "hardass", "smartass", "balls", "cum", "dammit", "jizz", "testicles", "cunnilingus", 
-                "fellatio", "scrotum", "boner", "blowjob", "sex", "slut", "dick", "cock", "tit", "boob", "vagina", "penis", "pussy", "bollocks", 
-                "porn", "orgasm", "nigg", "whore", "fag", "coon"];
+        const swears = ["fuck", "shit", "arse", "bitch", "bastard", "crap", "cunt", "damn", "prick", "shag", "wank", "nut", "piss", "twat", 
+                        "jack", "dumbass", "asshole", "badass", "halfass", "hardass", "smartass", "balls", "cum", "dammit", "jizz", "testicles", 
+                        "cunnilingus", "fellatio", "scrotum", "boner", "blowjob", "sex", "slut", "dick", "cock", "tit", "boob", "vagina", 
+                        "penis", "pussy", "bollocks", "porn", "orgasm", "nigg", "whore", "fag", "coon", "hellbent", "hellfire", "hell fire"];
         this.swearsReg = new RegExp(swears.join( "|" ), "i"); 
     }
 
@@ -1879,17 +1897,16 @@ module.exports = class {
         var splitStr = inputStr.toLowerCase().split(/[^a-z]/i); 
 
         if (this.swearsReg.test(inputStr) || splitStr.includes("hell") || splitStr.includes("ass")) {
-            var word;
+            var badWord = "";
             for (var i = 0; i < splitStr.length; i++) {
                 if (this.swearsReg.test(splitStr[i]) || splitStr[i] === "hell" || splitStr[i] === "ass") {
-                    word = splitStr[i];
-
+                    badWord = splitStr[i];
                 }
             }
 
-            var wordReg = new RegExp(word, "i");
+            var wordReg = new RegExp(badWord, "i");
             while (wordReg.test(inputStr)) {
-                inputStr = inputStr.slice(inputStr.search(wordReg) + word.length);
+                inputStr = inputStr.slice(inputStr.search(wordReg) + badWord.length);
             }
             return inputStr;
         }
@@ -1898,6 +1915,8 @@ module.exports = class {
         }
     }
 };
+
+module.exports = ProfanityFilter;
 
 /***/ }),
 /* 11 */

@@ -1,3 +1,5 @@
+// Module which expands common abbreviations
+
 class AbbreviationExpansion {
     constructor() {
         this.abbreviations = {"bc":"because",
@@ -14,22 +16,23 @@ class AbbreviationExpansion {
         "pov":"point of view",
         "wb":"welcome back",
         "mb":"my bad",
-         "w/":"with",
-         "w/o":"without",
-         "thru":"through",
-         "yk":"you know",
-         "ily":"I love you",
-         "ik":"I know",
-         "ikr":"I know, right",
-         "nvm":"nevermind",
-         "lmk":"let me know",
-         "brb":"be right back",
-         "btw":"by the way",
-         "irl":"in real life",
-          "jk":"just kidding",
-          "gg": "good game",
-           "wyd": "what are you doing",
-           "wbu": "what about you"};
+        "w/":"with",
+        "w/o":"without",
+        "thru":"through",
+        "yk":"you know",
+        "ily":"I love you",
+        "ik":"I know",
+        "ikr":"I know, right",
+        "nvm":"nevermind",
+        "lmk":"let me know",
+        "brb":"be right back",
+        "btw":"by the way",
+        "irl":"in real life",
+        "jk":"just kidding",
+        "gg": "good game",
+        "wyd": "what are you doing",
+        "wbu": "what about you",
+        "cuz":"because"};
     }
 
     expand(inputStr) {
@@ -46,8 +49,7 @@ class AbbreviationExpansion {
         if (incompleteWord.toLowerCase() in this.abbreviations) {
             return [this.abbreviations[incompleteWord.toLowerCase()]];
         }
-        else
-        {
+        else {
             return [];
         }
     }

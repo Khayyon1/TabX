@@ -1,3 +1,5 @@
+// Module which trains word prediction models using a modified Markov chain algorithm
+
 var MarkovChain = require('markovchainplus');
 var fs = require('fs');
 var util = require('util');
@@ -7,5 +9,5 @@ function train(textFile) {
     return model;
 }
 
-console.log(util.inspect(train('text/office_reviews_m.txt'), {showHidden: false, depth: null}));
+console.log(util.inspect(train('text/blogs_m.txt'), {showHidden: false, depth: null}));
     

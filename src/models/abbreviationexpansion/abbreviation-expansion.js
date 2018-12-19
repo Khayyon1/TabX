@@ -1,3 +1,4 @@
+// Module which expands common abbreviations
 
 class AbbreviationExpansion {
     constructor() {

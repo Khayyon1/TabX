@@ -1,20 +1,24 @@
+// Module which exports word prediction models
+
 var MarkovChain = require('markovchainplus');
 var models = [];
 models.push(require('./models/library-model'));
 models.push(require('./models/blogs-model'));
 var mock = new MarkovChain("");
 
+// Generate suggestions for input strings based on a trained Markov chain prediction model
 class WordPrediction {
     constructor(model) {
         this.model = model;
     }
 
     predictNextWord(input) {
-        var suggestions = this.model.start(input).end(1).process(this.predictTopThree);
+        var suggestions = this.model.start(input).end(1).process(this.generateTopSuggestions);
         return suggestions;
     }
 
-    predictTopThree(inputStrs, wordBanks) {
+    // Grab top 10 suggestions for a particular set of input strings
+    generateTopSuggestions(inputStrs, wordBanks) {
         var suggestions = [];
         for (var i = 0; i < inputStrs.length; i++) {
             if (wordBanks[i][inputStrs[i]] != null) {
@@ -44,6 +48,7 @@ class WordPrediction {
     }
 }
 
+// Replace Markov chain functions in exported model
 for (var i = 0; i < models.length; i++) {
     var currentMod = models[i];
     currentMod.start = mock.start;

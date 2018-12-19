@@ -1,3 +1,5 @@
+// Module which trains word prediction models using a modified Markov chain algorithm
+
 var MarkovChain = require('markovchainplus');
 var fs = require('fs');
 var util = require('util');

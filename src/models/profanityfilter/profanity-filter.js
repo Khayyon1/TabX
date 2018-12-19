@@ -1,4 +1,4 @@
-
+// Module which filters out profane input by cutting off the input string at the profanity
 
 class ProfanityFilter {
     constructor() {

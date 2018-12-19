@@ -81,23 +81,248 @@
 /******/
 /******/
 /******/ 	// Load entry module and return exports
-/******/ 	return __webpack_require__(__webpack_require__.s = 0);
+/******/ 	return __webpack_require__(__webpack_require__.s = 2);
 /******/ })
 /************************************************************************/
 /******/ ([
 /* 0 */
+/***/ (function(module, exports) {
+
+var selector = 'input[type=text], textarea, [contenteditable=true], [contenteditable]';
+
+var serviceableTags = [
+   "input[type=text]",
+   'textarea',
+   "[contenteditable=true]",
+   "[contenteditable]"
+]
+
+var input = [
+   "input[type=text]",
+   'textarea'
+]
+
+var contenteditable = [
+   "[contenteditable=true]",
+   "[contenteditable]"
+]
+
+function getServicableElements()
+{
+   return document.querySelectorAll(selector);
+}
+
+function activeElementIsServiceable()
+{
+   let activeElement = document.activeElement;
+   for(let i = 0; i < serviceableTags.length; i++)
+   {
+      if(activeElement.matches(serviceableTags[i]))
+      {
+         return true;
+      }
+   }
+
+   return false;
+}
+
+function isInput(tag)
+{
+   for(let matcher of input)
+   {
+      if(tag.matches(matcher))
+      {
+         return true;
+      }
+   }
+
+   return false;
+}
+
+function isContentEditable(tag)
+{
+      for(let matcher of contenteditable)
+      {
+         if(tag.matches(matcher))
+         {
+            return true;
+         }
+      }
+
+   return false;
+}
+
+
+function caretAndTextOfEditableDiv(parentEditableDiv, targetDiv)
+{
+   if(parentEditableDiv == targetDiv)
+   {
+      return window.getSelection().anchorOffset;
+   }
+
+   let texts = getTextUpToChildInEditableDiv(parentEditableDiv, targetDiv)
+   let base = texts[0];
+   let activeElementText = texts[1];
+   let offset = window.getSelection().anchorOffset;
+   let caret = (base.length + offset)
+   let stringUpToCaret = activeElementText.substr(0, offset)
+
+   return { "text": base + stringUpToCaret, "caret": caret };
+}
+
+function getTextUpToChildInEditableDiv(root, target)
+{
+   let cur = target;
+   let activeNodeText = target.textContent;
+   let text = ""
+   while(cur != root)
+   {
+      while(cur.previousSibling != null)
+      {
+         cur = cur.previousSibling;
+         text = cur.textContent + text;
+         if(["P", "DIV"].includes(cur.tagName))
+         {
+            text = " " + text;
+         }
+      }
+
+      //Edge case if the parent node is a div or p tag.
+      //since the text associated with the parent is one
+      //of its child nodes.
+      cur = cur.parentNode;
+      if(["P", "DIV"].includes(cur.tagName))
+      {
+         text = " " + text;
+      }
+   }
+
+   return [text, activeNodeText];
+}
+
+module.exports =
+{
+   isInput: isInput,
+   isContentEditable: isContentEditable,
+   getServicableElements: getServicableElements,
+   activeElementIsServiceable: activeElementIsServiceable,
+   caretAndTextOfEditableDiv: caretAndTextOfEditableDiv,
+}
+
+
+/***/ }),
+/* 1 */
 /***/ (function(module, exports, __webpack_require__) {
 
-const TabX = __webpack_require__(1);
-const TableView = __webpack_require__(5);
+const Style = __webpack_require__(4);
+
+/** Class for displaying dynamically moving TabX table
+ *  based on caret position
+ */
+const TableView = class
+{
+    /**
+     * Constructor
+     * @param {HTMLDom} dom - dom TabX table will be attached to
+     */
+    constructor(dom)
+    {
+        this.dom = dom;
+        this.ID = "suggestions";
+        this.current_table = null;
+        this.style = new Style();
+    }
+
+    /**
+     * Creates TabX table
+     */
+    createSuggestionsTable()
+    {
+        let dom = this.dom;
+        let table = dom.createElement("table");
+        table.id = this.ID;
+        table.className = "suggestions";
+        this.style.table(table, dom.activeElement);
+        this.current_table = table;
+        return table
+    }
+
+    /**
+     * Checks whether an element is active
+     */
+    isActive()
+    {
+        return this.dom.getElementById(this.ID) != null;
+    }
+
+    /**
+     * Removes TabX table
+     */
+    tearDown()
+    {
+        if (this.isActive())
+        {
+            this.current_table.parentNode.removeChild(this.current_table);
+        }
+    }
+
+    /**
+     * Creates and presents TabX table
+     * @param {array} mappings - predictions from backend
+     */
+    display(mappings)
+    {
+      this.tearDown();
+        var dom = this.dom;
+        var table = this.createSuggestionsTable();
+
+        var suggestions = Object.values(mappings);
+        var shortcuts = Object.keys(mappings);
+
+        for (var i = 0; i < suggestions.length; i++) {
+            var row = dom.createElement("tr");
+            this.style.row(row);
+            var shortcutColumn = dom.createElement("td");
+            var suggestionsColumn = dom.createElement("td");
+            shortcutColumn.appendChild(dom.createTextNode((shortcuts[i].toString())));
+            suggestionsColumn.appendChild(dom.createTextNode('| '+suggestions[i]));
+            row.append(shortcutColumn);
+            row.append(suggestionsColumn);
+            table.appendChild(row);
+        }
+
+        dom.body.appendChild(table);
+        this.style.updatePosition(table);
+    }
+
+    /**
+     * Updates style settings (color, font, etc.)
+     * @param {object} settings
+     */
+    config(settings){
+        this.style.settings = settings;
+    }
+
+    setSuggestionsDisplayCount(count){}
+}
+
+module.exports = TableView;
+
+
+/***/ }),
+/* 2 */
+/***/ (function(module, exports, __webpack_require__) {
+
+const TabX = __webpack_require__(3);
+const TableView = __webpack_require__(1);
 const applySettings = __webpack_require__(6);
 const bgmodels = __webpack_require__(8);
 const AbbrevExpansionModel = __webpack_require__(9)
 
-const ProfanityFilter = __webpack_require__(12);
+const ProfanityFilter = __webpack_require__(10);
 
-const mocknext = __webpack_require__(10)
-const mockcomp = __webpack_require__(11)
+const mocknext = __webpack_require__(11)
+const mockcomp = __webpack_require__(12)
 
 let tableDisplay = new TableView(document);
 let abbrevExpansionModel = new AbbrevExpansionModel();
@@ -114,12 +339,12 @@ applySettings(tabx);
 
 
 /***/ }),
-/* 1 */
+/* 3 */
 /***/ (function(module, exports, __webpack_require__) {
 
 // TabX Shortcuts
 
-var serviceabletags = __webpack_require__(2);
+var serviceabletags = __webpack_require__(0);
 var _current_word = "";
 
 var _debug = false;
@@ -614,350 +839,10 @@ module.exports = TabX;
 
 
 /***/ }),
-/* 2 */
-/***/ (function(module, exports) {
-
-var selector = 'input[type=text], textarea, [contenteditable=true], [contenteditable]';
-
-var serviceableTags = [
-   "input[type=text]",
-   'textarea',
-   "[contenteditable=true]",
-   "[contenteditable]"
-]
-
-var input = [
-   "input[type=text]",
-   'textarea'
-]
-
-var contenteditable = [
-   "[contenteditable=true]",
-   "[contenteditable]"
-]
-
-function getServicableElements()
-{
-   return document.querySelectorAll(selector);
-}
-
-function activeElementIsServiceable()
-{
-   let activeElement = document.activeElement;
-   for(let i = 0; i < serviceableTags.length; i++)
-   {
-      if(activeElement.matches(serviceableTags[i]))
-      {
-         return true;
-      }
-   }
-
-   return false;
-}
-
-function isInput(tag)
-{
-   for(let matcher of input)
-   {
-      if(tag.matches(matcher))
-      {
-         return true;
-      }
-   }
-
-   return false;
-}
-
-function isContentEditable(tag)
-{
-      for(let matcher of contenteditable)
-      {
-         if(tag.matches(matcher))
-         {
-            return true;
-         }
-      }
-
-   return false;
-}
-
-
-function caretAndTextOfEditableDiv(parentEditableDiv, targetDiv)
-{
-   if(parentEditableDiv == targetDiv)
-   {
-      return window.getSelection().anchorOffset;
-   }
-
-   let texts = getTextUpToChildInEditableDiv(parentEditableDiv, targetDiv)
-   let base = texts[0];
-   let activeElementText = texts[1];
-   let offset = window.getSelection().anchorOffset;
-   let caret = (base.length + offset)
-   let stringUpToCaret = activeElementText.substr(0, offset)
-
-   return { "text": base + stringUpToCaret, "caret": caret };
-}
-
-function getTextUpToChildInEditableDiv(root, target)
-{
-   let cur = target;
-   let activeNodeText = target.textContent;
-   let text = ""
-   while(cur != root)
-   {
-      while(cur.previousSibling != null)
-      {
-         cur = cur.previousSibling;
-         text = cur.textContent + text;
-         if(["P", "DIV"].includes(cur.tagName))
-         {
-            text = " " + text;
-         }
-      }
-
-      //Edge case if the parent node is a div or p tag.
-      //since the text associated with the parent is one
-      //of its child nodes.
-      cur = cur.parentNode;
-      if(["P", "DIV"].includes(cur.tagName))
-      {
-         text = " " + text;
-      }
-   }
-
-   return [text, activeNodeText];
-}
-
-module.exports =
-{
-   isInput: isInput,
-   isContentEditable: isContentEditable,
-   getServicableElements: getServicableElements,
-   activeElementIsServiceable: activeElementIsServiceable,
-   caretAndTextOfEditableDiv: caretAndTextOfEditableDiv,
-}
-
-
-/***/ }),
-/* 3 */
-/***/ (function(module, exports, __webpack_require__) {
-
-const serviceabletags = __webpack_require__(2);
-
-const FixedView = class
-{
-	constructor(dom)
-	{
-		this.dom = dom;
-		this.ID = "tabx-fixedstrat-suggestionstable";
-		this.displayCount = 3;
-		dom.addEventListener("keyup", this.listenForInput.bind(this));
-		this.createSuggestionsTable();
-	}
-
-	styleTable(table)
-	{
-		let style = table.style;
-
-		style.fontFamily = "arial, san-serif";
-		style.borderCollapse = "collapse";
-		style.width = "100%";
-		style.position = "fixed";
-		style.bottom = 0;
-		style.left = 0;
-		style.textAlign = "center";
-		style.zIndex = 1000;
-		style.tableLayout = "fixed";
-		style.backgroundColor = "#898989";
-
-	}
-
-	styleTableEntry(row)
-	{
-		//Attributes
-		let attrs =
-		{
-			"border": "2px solid #dddddd",
-			"textAlign": "center",
-			"padding": "4px",
-			"backgroundColor": "#cccccc",
-			"height": "100",
-		}
-
-		for(let attr in attrs)
-		{
-			row.style[attr] = attrs[attr];
-		}
-	}
-
-	createSuggestionsTable()
-	{
-
-		let sentenceRow = document.createElement("tr");
-		sentenceRow.id = "sentence-display";
-		let sentenceValue = document.createElement("td");
-		sentenceValue.colSpan = this.displayCount;
-		sentenceValue.style.textAlign = "center";
-		sentenceValue.style.color = "white"
-		sentenceRow.appendChild(sentenceValue);
-
-		let table = document.createElement("table");
-		table.id = this.ID
-		this.styleTable(table);
-
-		let header = document.createElement("tr");
-		header.id = "suggestion-Header";
-		this.styleTableEntry(header);
-
-		let values = document.createElement("tr");
-		values.id = "suggestion-values"
-		this.styleTableEntry(values);
-
-		table.appendChild(sentenceRow)
-		table.appendChild(header);
-		table.appendChild(values);
-
-		//Pre-populate with null values
-		for(let i = 0; i < this.displayCount; i++)
-		{
-			let entry = this.dom.createElement("td");
-			this.styleTableEntry(entry);
-
-			header.appendChild(entry);
-
-			entry = this.dom.createElement("td");
-			this.styleTableEntry(entry);
-			values.appendChild(entry);
-		}
-
-		this.sentence = sentenceValue;
-		this.current_table = table;
-		this.header = header;
-		this.values = values;
-
-		return table
-	}
-
-	isActive()
-	{
-		return this.dom.getElementById(this.ID) !== null;
-	}
-
-	tearDown()
-	{
-		if (this.isActive())
-		{
-			this.current_table.parentNode.removeChild(this.current_table);
-		}
-	}
-
-	config(options)
-	{
-		for(let elem of [this.header, this.values])
-		{
-			elem.style.color       = options["fontcolor"];
-			elem.style.fontSize    = options["fontsize"] + "px";
-			elem.style.fontFamily  = options["font"];
-
-			console.log("FONT STYLE: " + options["fontstyle"]);
-			if(options["fontstyle"] === "Bold")
-			{
-				elem.style.fontWeight = "bold";
-			}
-			else
-			{
-				elem.style.fontWeight = "normal";
-				elem.style.fontStyle  = options["fontstyle"];
-			}
-		}
-		
-	}
-
-	listenForInput(event)
-	{
-		//Grab current sentence
-		if(serviceabletags.isInput(this.dom.activeElement))
-		{
-			let text = this.dom.activeElement.value;
-			let start = this.dom.activeElement.selectionStart;
-			text = text.slice(0, start) + "|" + text.slice(start);
-			this.sentence.innerText = text;
-		}
-
-		else if(serviceabletags.isContentEditable(this.dom.activeElement))
-		{
-			let selection = window.getSelection();
-			let text = selection.anchorNode.nodeValue;
-			text = text.slice(0, selection.anchorOffset) + "|" + text.slice(selection.anchorOffset);
-			this.sentence.innerText = text;
-		}
-	}
-	setSuggestionsDisplayCount(count)
-	{
-		this.displayCount = count;
-		this.tearDown();
-		this.createSuggestionsTable();
-	}
-	display(mappings)
-	{
-		const dom = this.dom;
-
-		if(this.current_table == null)
-		{
-			this.createSuggestionsTable();
-		}
-
-		let suggestions = Object.values(mappings);
-		let shortcuts = Object.keys(mappings);
-
-		//Populate headers
-		for(let i = 0; i < this.header.children.length; i++)
-		{
-			let child = this.header.children[i];
-			if(i < shortcuts.length)
-			{
-				child.innerText = shortcuts[i];
-			}
-
-			else
-			{
-				child.innerText = "";
-			}
-		}
-
-		//Populate values
-		for(let i = 0; i < this.values.children.length; i++)
-		{
-			let child = this.values.children[i];
-			if(i < suggestions.length)
-			{
-				child.innerText = suggestions[i];
-			}
-
-			else
-			{
-				child.innerText = "";
-			}
-		}
-
-		//Append the display if its not there
-		if(!this.isActive())
-		{
-			dom.body.appendChild(this.current_table);
-		}
-	}
-
-}
-
-module.exports = FixedView;
-
-
-/***/ }),
 /* 4 */
 /***/ (function(module, exports, __webpack_require__) {
 
-const position = __webpack_require__(7).position;
+const position = __webpack_require__(5).position;
 
 /** Class for stylizing HTML elements of TabX Table */
 const Style = class
@@ -1046,247 +931,6 @@ module.exports = Style;
 
 /***/ }),
 /* 5 */
-/***/ (function(module, exports, __webpack_require__) {
-
-const Style = __webpack_require__(4);
-
-/** Class for displaying dynamically moving TabX table
- *  based on caret position
- */
-const TableView = class
-{
-    /**
-     * Constructor
-     * @param {HTMLDom} dom - dom TabX table will be attached to
-     */
-    constructor(dom)
-    {
-        this.dom = dom;
-        this.ID = "suggestions";
-        this.current_table = null;
-        this.style = new Style();
-    }
-
-    /**
-     * Creates TabX table
-     */
-    createSuggestionsTable()
-    {
-        let dom = this.dom;
-        let table = dom.createElement("table");
-        table.id = this.ID;
-        table.className = "suggestions";
-        this.style.table(table, dom.activeElement);
-        this.current_table = table;
-        return table
-    }
-
-    /**
-     * Checks whether an element is active
-     */
-    isActive()
-    {
-        return this.dom.getElementById(this.ID) != null;
-    }
-
-    /**
-     * Removes TabX table
-     */
-    tearDown()
-    {
-        if (this.isActive())
-        {
-            this.current_table.parentNode.removeChild(this.current_table);
-        }
-    }
-
-    /**
-     * Creates and presents TabX table
-     * @param {array} mappings - predictions from backend
-     */
-    display(mappings)
-    {
-      this.tearDown();
-        var dom = this.dom;
-        var table = this.createSuggestionsTable();
-
-        var suggestions = Object.values(mappings);
-        var shortcuts = Object.keys(mappings);
-
-        for (var i = 0; i < suggestions.length; i++) {
-            var row = dom.createElement("tr");
-            this.style.row(row);
-            var shortcutColumn = dom.createElement("td");
-            var suggestionsColumn = dom.createElement("td");
-            shortcutColumn.appendChild(dom.createTextNode((shortcuts[i].toString())));
-            suggestionsColumn.appendChild(dom.createTextNode('| '+suggestions[i]));
-            row.append(shortcutColumn);
-            row.append(suggestionsColumn);
-            table.appendChild(row);
-        }
-
-        dom.body.appendChild(table);
-        this.style.updatePosition(table);
-    }
-
-    /**
-     * Updates style settings (color, font, etc.)
-     * @param {object} settings
-     */
-    config(settings){
-        this.style.settings = settings;
-    }
-
-    setSuggestionsDisplayCount(count){}
-}
-
-module.exports = TableView;
-
-
-/***/ }),
-/* 6 */
-/***/ (function(module, exports, __webpack_require__) {
-
-const FixedView = __webpack_require__(3);
-const TableView = __webpack_require__(5);
-
-function applySettings(tabx)
-{
-   chrome.storage.local.get(function (results)
-   {
-      if (results != null)
-      {
-         if (!results['activated'])
-         {
-            tabx.disable();
-         }
-
-         if(!results["Current Word"])
-         {
-            tabx.disableWordCompletion();
-         }
-
-         if(!results["Next Word"])
-         {
-            tabx.disableWordPrediction();
-         }
-
-         if(!results["Filter"])
-         {
-            tabx.disableFilter();
-         }
-
-         if(!results["Abbreviation Expansion"])
-         {
-            tabx.disableAbbreviationExpansion();
-         }
-
-         let config =
-         {
-            font: results["Font"],
-            fontsize: results["Font Size"],
-            fontstyle: results["Font Style"],
-            fontcolor: results["Font Color"]
-         };
-
-         tabx.configureDisplay(config);
-
-         if(results["Suggestions Quantity"])
-         {
-            tabx.setSuggestionsDisplayCount(results["Suggestions Quantity"]);
-         }
-
-         if(results["View Strategy"])
-         {
-            actions["viewStratChange"](tabx);
-         }
-
-         listenForSettingChanges(tabx);
-
-      }
-   })
-};
-
-var actions =
-{
-   "enableTabX": (tabx) => { tabx.enable() },
-   "disableTabX": (tabx) => { tabx.disable() },
-   "enableFilter": (tabx) => { tabx.enableFilter()},
-   "disableFilter": (tabx) => { tabx.disableFilter()},
-   "enableAbbreviationExpansion": (tabx) => {tabx.enableAbbreviationExpansion()},
-   "disableAbbreviationExpansion": (tabx) => {tabx.disableAbbreviationExpansion()},
-   "enableWordCompletion": (tabx) => { tabx.enableWordCompletion() },
-   "enableWordPrediction": (tabx) => { tabx.enableWordPrediction() },
-   "disableWordCompletion": (tabx) => { tabx.disableWordCompletion() },
-   "disableWordPrediction": (tabx) => { tabx.disableWordPrediction() },
-   "updateDisplay": (tabx) =>
-   {
-      chrome.storage.local.get(function(results)
-      {
-         let config =
-         {
-            font: results["Font"],
-            fontsize: results["Font Size"],
-            fontstyle: results["Font Style"],
-            fontcolor: results["Font Color"]
-         };
-
-         tabx.configureDisplay(config);
-      });
-   },
-
-   "suggestionsQuantityChange": (tabx) =>
-   {
-      chrome.storage.local.get(function(results)
-      {
-         let quantity = results["Suggestions Quantity"];
-         if(!quantity || quantity === 0)
-         {
-            quantity = 3;
-         }
-
-         tabx.setSuggestionsDisplayCount(quantity);
-
-      });
-   },
-
-   "viewStratChange": (tabx) =>
-   {
-      chrome.storage.local.get(function(results)
-      {
-         let strat = results["View Strategy"];
-
-         if(!strat || strat === "Follow Input")
-         {
-            strat = new TableView(tabx.document);
-         }
-
-         else if(strat === "Footer View")
-         {
-            strat = new FixedView(tabx.document);
-         }
-
-         tabx.setDisplay(strat);
-
-      });
-   }
-}
-
-function listenForSettingChanges(tabx)
-{
-   chrome.runtime.onMessage.addListener(function(message, sender, sendResponse)
-   {
-      console.log("received message: " + message);
-      let action = actions[message];
-      action(tabx);
-   });
-}
-
-module.exports = applySettings
-
-
-/***/ }),
-/* 7 */
 /***/ (function(module, __webpack_exports__, __webpack_require__) {
 
 "use strict";
@@ -1761,6 +1405,362 @@ var offset = function offset(element, value) {
 
 
 /***/ }),
+/* 6 */
+/***/ (function(module, exports, __webpack_require__) {
+
+const FixedView = __webpack_require__(7);
+const TableView = __webpack_require__(1);
+
+function applySettings(tabx)
+{
+   chrome.storage.local.get(function (results)
+   {
+      if (results != null)
+      {
+         if (!results['activated'])
+         {
+            tabx.disable();
+         }
+
+         if(!results["Current Word"])
+         {
+            tabx.disableWordCompletion();
+         }
+
+         if(!results["Next Word"])
+         {
+            tabx.disableWordPrediction();
+         }
+
+         if(!results["Filter"])
+         {
+            tabx.disableFilter();
+         }
+
+         if(!results["Abbreviation Expansion"])
+         {
+            tabx.disableAbbreviationExpansion();
+         }
+
+         let config =
+         {
+            font: results["Font"],
+            fontsize: results["Font Size"],
+            fontstyle: results["Font Style"],
+            fontcolor: results["Font Color"]
+         };
+
+         tabx.configureDisplay(config);
+
+         if(results["Suggestions Quantity"])
+         {
+            tabx.setSuggestionsDisplayCount(results["Suggestions Quantity"]);
+         }
+
+         if(results["View Strategy"])
+         {
+            actions["viewStratChange"](tabx);
+         }
+
+         listenForSettingChanges(tabx);
+
+      }
+   })
+};
+
+var actions =
+{
+   "enableTabX": (tabx) => { tabx.enable() },
+   "disableTabX": (tabx) => { tabx.disable() },
+   "enableFilter": (tabx) => { tabx.enableFilter()},
+   "disableFilter": (tabx) => { tabx.disableFilter()},
+   "enableAbbreviationExpansion": (tabx) => {tabx.enableAbbreviationExpansion()},
+   "disableAbbreviationExpansion": (tabx) => {tabx.disableAbbreviationExpansion()},
+   "enableWordCompletion": (tabx) => { tabx.enableWordCompletion() },
+   "enableWordPrediction": (tabx) => { tabx.enableWordPrediction() },
+   "disableWordCompletion": (tabx) => { tabx.disableWordCompletion() },
+   "disableWordPrediction": (tabx) => { tabx.disableWordPrediction() },
+   "updateDisplay": (tabx) =>
+   {
+      chrome.storage.local.get(function(results)
+      {
+         let config =
+         {
+            font: results["Font"],
+            fontsize: results["Font Size"],
+            fontstyle: results["Font Style"],
+            fontcolor: results["Font Color"]
+         };
+
+         tabx.configureDisplay(config);
+      });
+   },
+
+   "suggestionsQuantityChange": (tabx) =>
+   {
+      chrome.storage.local.get(function(results)
+      {
+         let quantity = results["Suggestions Quantity"];
+         if(!quantity || quantity === 0)
+         {
+            quantity = 3;
+         }
+
+         tabx.setSuggestionsDisplayCount(quantity);
+
+      });
+   },
+
+   "viewStratChange": (tabx) =>
+   {
+      chrome.storage.local.get(function(results)
+      {
+         let strat = results["View Strategy"];
+
+         if(!strat || strat === "Follow Input")
+         {
+            strat = new TableView(tabx.document);
+         }
+
+         else if(strat === "Footer View")
+         {
+            strat = new FixedView(tabx.document);
+         }
+
+         tabx.setDisplay(strat);
+
+      });
+   }
+}
+
+function listenForSettingChanges(tabx)
+{
+   chrome.runtime.onMessage.addListener(function(message, sender, sendResponse)
+   {
+      console.log("received message: " + message);
+      let action = actions[message];
+      action(tabx);
+   });
+}
+
+module.exports = applySettings
+
+
+/***/ }),
+/* 7 */
+/***/ (function(module, exports, __webpack_require__) {
+
+const serviceabletags = __webpack_require__(0);
+
+const FixedView = class
+{
+	constructor(dom)
+	{
+		this.dom = dom;
+		this.ID = "tabx-fixedstrat-suggestionstable";
+		this.displayCount = 3;
+		dom.addEventListener("keyup", this.listenForInput.bind(this));
+		this.createSuggestionsTable();
+	}
+
+	styleTable(table)
+	{
+		let style = table.style;
+
+		style.fontFamily = "arial, san-serif";
+		style.borderCollapse = "collapse";
+		style.width = "100%";
+		style.position = "fixed";
+		style.bottom = 0;
+		style.left = 0;
+		style.textAlign = "center";
+		style.zIndex = 1000;
+		style.tableLayout = "fixed";
+		style.backgroundColor = "#898989";
+
+	}
+
+	styleTableEntry(row)
+	{
+		//Attributes
+		let attrs =
+		{
+			"border": "2px solid #dddddd",
+			"textAlign": "center",
+			"padding": "4px",
+			"backgroundColor": "#cccccc",
+			"height": "100",
+		}
+
+		for(let attr in attrs)
+		{
+			row.style[attr] = attrs[attr];
+		}
+	}
+
+	createSuggestionsTable()
+	{
+
+		let sentenceRow = document.createElement("tr");
+		sentenceRow.id = "sentence-display";
+		let sentenceValue = document.createElement("td");
+		sentenceValue.colSpan = this.displayCount;
+		sentenceValue.style.textAlign = "center";
+		sentenceValue.style.color = "white"
+		sentenceRow.appendChild(sentenceValue);
+
+		let table = document.createElement("table");
+		table.id = this.ID
+		this.styleTable(table);
+
+		let header = document.createElement("tr");
+		header.id = "suggestion-Header";
+		this.styleTableEntry(header);
+
+		let values = document.createElement("tr");
+		values.id = "suggestion-values"
+		this.styleTableEntry(values);
+
+		table.appendChild(sentenceRow)
+		table.appendChild(header);
+		table.appendChild(values);
+
+		//Pre-populate with null values
+		for(let i = 0; i < this.displayCount; i++)
+		{
+			let entry = this.dom.createElement("td");
+			this.styleTableEntry(entry);
+
+			header.appendChild(entry);
+
+			entry = this.dom.createElement("td");
+			this.styleTableEntry(entry);
+			values.appendChild(entry);
+		}
+
+		this.sentence = sentenceValue;
+		this.current_table = table;
+		this.header = header;
+		this.values = values;
+
+		return table
+	}
+
+	isActive()
+	{
+		return this.dom.getElementById(this.ID) !== null;
+	}
+
+	tearDown()
+	{
+		if (this.isActive())
+		{
+			this.current_table.parentNode.removeChild(this.current_table);
+		}
+	}
+
+	config(options)
+	{
+		for(let elem of [this.header, this.values])
+		{
+			elem.style.color       = options["fontcolor"];
+			elem.style.fontSize    = options["fontsize"] + "px";
+			elem.style.fontFamily  = options["font"];
+
+			console.log("FONT STYLE: " + options["fontstyle"]);
+			if(options["fontstyle"] === "Bold")
+			{
+				elem.style.fontWeight = "bold";
+			}
+			else
+			{
+				elem.style.fontWeight = "normal";
+				elem.style.fontStyle  = options["fontstyle"];
+			}
+		}
+		
+	}
+
+	listenForInput(event)
+	{
+		//Grab current sentence
+		if(serviceabletags.isInput(this.dom.activeElement))
+		{
+			let text = this.dom.activeElement.value;
+			let start = this.dom.activeElement.selectionStart;
+			text = text.slice(0, start) + "|" + text.slice(start);
+			this.sentence.innerText = text;
+		}
+
+		else if(serviceabletags.isContentEditable(this.dom.activeElement))
+		{
+			let selection = window.getSelection();
+			let text = selection.anchorNode.nodeValue;
+			text = text.slice(0, selection.anchorOffset) + "|" + text.slice(selection.anchorOffset);
+			this.sentence.innerText = text;
+		}
+	}
+	setSuggestionsDisplayCount(count)
+	{
+		this.displayCount = count;
+		this.tearDown();
+		this.createSuggestionsTable();
+	}
+	display(mappings)
+	{
+		const dom = this.dom;
+
+		if(this.current_table == null)
+		{
+			this.createSuggestionsTable();
+		}
+
+		let suggestions = Object.values(mappings);
+		let shortcuts = Object.keys(mappings);
+
+		//Populate headers
+		for(let i = 0; i < this.header.children.length; i++)
+		{
+			let child = this.header.children[i];
+			if(i < shortcuts.length)
+			{
+				child.innerText = shortcuts[i];
+			}
+
+			else
+			{
+				child.innerText = "";
+			}
+		}
+
+		//Populate values
+		for(let i = 0; i < this.values.children.length; i++)
+		{
+			let child = this.values.children[i];
+			if(i < suggestions.length)
+			{
+				child.innerText = suggestions[i];
+			}
+
+			else
+			{
+				child.innerText = "";
+			}
+		}
+
+		//Append the display if its not there
+		if(!this.isActive())
+		{
+			dom.body.appendChild(this.current_table);
+		}
+	}
+
+}
+
+module.exports = FixedView;
+
+
+/***/ }),
 /* 8 */
 /***/ (function(module, exports) {
 
@@ -1866,26 +1866,6 @@ module.exports = AbbreviationExpansion;
 /* 10 */
 /***/ (function(module, exports) {
 
-module.exports = {
-    predictNextWord: function(sentence){
-        return ["Hello", "World","Goodbye"];
-    }
-}
-
-/***/ }),
-/* 11 */
-/***/ (function(module, exports) {
-
-module.exports = {
-    predictCurrentWord: function(word){
-        return ["Hello", "World","Goodbye"];
-    }
-}
-
-/***/ }),
-/* 12 */
-/***/ (function(module, exports) {
-
 module.exports = class {
     constructor() {
         const swears = ["fuck", "shit", "arse", "bitch", "bastard", "crap", "cunt", "damn", "prick", "shag", "wank", "nut", "piss", "twat", "jack", 
@@ -1918,6 +1898,26 @@ module.exports = class {
         }
     }
 };
+
+/***/ }),
+/* 11 */
+/***/ (function(module, exports) {
+
+module.exports = {
+    predictNextWord: function(sentence){
+        return ["Hello", "World","Goodbye"];
+    }
+}
+
+/***/ }),
+/* 12 */
+/***/ (function(module, exports) {
+
+module.exports = {
+    predictCurrentWord: function(word){
+        return ["Hello", "World","Goodbye"];
+    }
+}
 
 /***/ })
 /******/ ]);

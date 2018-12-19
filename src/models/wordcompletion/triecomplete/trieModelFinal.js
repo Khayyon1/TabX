@@ -1,16 +1,25 @@
 var Trie = require('./trieModel.js');
 
+//Takes in a full String, Returns the final word
+Trie.getFinalWord = function(string){
+    let regex = /(?:[^\s]+\s)*?([^\s]+)$/gm;
+    let match = regex.exec(string);
+
+    return match[1]
+}
+
+
 Trie.add = function(key, validWord) {
     key = key.toLowerCase();
     var firstNode = false;
     // Make a copy of key
     keyHold = JSON.parse(JSON.stringify(key));
-    var curNode = this.head
+
+    var curNode = Trie.head
     	, newNode = null
     	, curChar = key.slice(0,1)
         , parNode = this.head;
     key = key.slice(1);
-    console.log(validWord);
 	while(curNode.children[curChar] !== undefined && curChar.length > 0){
 		curNode = curNode.children[curChar];
 		curChar = key.slice(0,1);
@@ -43,6 +52,7 @@ Trie.add = function(key, validWord) {
 
     };
 }
+
 
 Trie.search = function(key) {
     key = key.toLowerCase();
@@ -91,19 +101,9 @@ Trie.getChildren = function(finalArray, total, curNode, ignore){
     }
     return [finalArray, total]
 }
-Trie.getSuggestion = function(key){
-    var finalArray = this.getWordCompletion(key);
-
-    if (finalArray[0].length < 3){
-        finalArray = this.getCorrectSuggestion(key);
-    }
-    return finalArray[0,3]
-
-
-}
 
 Trie.getCorrectionSuggestions = function(key){
-
+    console.log(key)
     this.add(key, false)
     keyHold = JSON.parse(JSON.stringify(key));
     var total = 3;
@@ -128,8 +128,8 @@ Trie.getCorrectionSuggestions = function(key){
     }
     if (curNode.closest !== undefined){
         if (curNode.closest.length > total){
-            console.log(curNode.closest.slice(0,3))
-            return curNode.closest.slice(0,3);
+            //console.log(curNode.closest.slice(0,3))
+            return curNode.closest.slice(0,total);
         }
         else{
             finalArray = curNode.closest;
@@ -191,7 +191,55 @@ Trie.getWordCompletion = function(key){
 
     return finalArray
 }
+Trie.getSuggestion = function(key){
 
+    var number = 3;
+    var capitol = false;
+    var capsLock = false;
+
+    //if first letter is capital
+    if (key.charAt(0) === key.charAt(0).toUpperCase()){
+        if (key.length === 1){
+            console.log("first Capitol")
+            capitol = true;
+        }
+        else if (key.charAt(1) === key.charAt(1).toUpperCase()){
+            console.log("capslock")
+            capsLock = true;
+        }
+        else{
+            console.log("Here")
+            capitol = true;
+        }
+
+    }
+    key = key.toLowerCase()
+    //if the first and second letters are capitol
+
+
+    //TODO, clean up this arrangement
+    var finalArray = this.getCorrectionSuggestions(key);
+
+    if (finalArray.length < number){
+        finalArray.concat(this.getWordCompletion(key));
+    }
+
+    console.log(finalArray)
+    for (let i = 0; i < finalArray.length; i++){
+        if(capitol){
+
+            finalArray[i] = finalArray[i].charAt(0).toUpperCase() + finalArray[i].slice(1);
+        }
+        else if(capsLock){
+
+            finalArray[i] = finalArray[i].toUpperCase();
+        }
+    }
+    console.log(finalArray)
+    return finalArray
+
+
+}
 Trie.remove = function(key) {
     key = key.toLowerCase();
 	var d = this.search(key);
@@ -200,6 +248,7 @@ Trie.remove = function(key) {
     	}
 }
 
-Trie.predictCurrentWord = Trie.getCorrectionSuggestions;
+Trie.predictCurrentWord = Trie.getWordCompletion;
 
-module.exports = Trie
+//module.exports = getFinalWord;
+module.exports = Trie;

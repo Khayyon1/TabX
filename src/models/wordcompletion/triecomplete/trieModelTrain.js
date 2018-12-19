@@ -1,20 +1,24 @@
 //var expect = require('expect')
-const wordLocation = "sampleText/1-1000.txt";
+const wordLocation = "sampleText/1-5000.txt";
 
+//Get File and read file into array by line
 function simpleReadFileSync(filePath){
 
     var fs = require('fs');
     var options = {encoding:'utf-8', flag:'r'};
     var buffer = fs.readFileSync(filePath, options);
     return buffer.replace( /\n/g, " " ).split( " " );
+
 }
 
+//create Node
 var node = {
   key : null
   , value : null
   , children : []
 }
 
+//Create object for Trie
 function Trie() {
   	this.head = {
   			key : ''
@@ -27,8 +31,10 @@ function Trie() {
 
 }
 
+//import Object from word Location
 Trie.prototype.import = function(wordLocation){
     let wordList = simpleReadFileSync(wordLocation);
+    //console.log(wordList)
     for(var i = 0; i < wordList.length; i++){
         this.add(wordList[i], true)
     }
@@ -77,6 +83,8 @@ Trie.prototype.add = function(key, validWord) {
 		key = key.slice(1);
 	}
 };
+
+//Search the trie for a node
 Trie.search = function(key) {
     //key = key.toLowerCase();
     keyHold = JSON.parse(JSON.stringify(key));

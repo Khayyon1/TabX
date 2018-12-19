@@ -5,4 +5,4 @@
 ## dist
    Contains the bundled TabX code that is deployed to the Chrome Browser
 ## src
-    Contains the Front-End application and Back-End application logic for TabX
+   Contains the Front-End application and Back-End application logic for TabX

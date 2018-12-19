@@ -14,10 +14,10 @@
      "js": [ "scripts/jquery-3.3.1.min.js","scripts/tabx.js"]
    }],
 
-   "icons": { "16": "assets/img/tabx16.png",
-              "32": "assets/img/tabx32.png",
-              "48": "assets/img/tabx48.png",
-             "128": "assets/img/tabx128.png"},
+   "icons": { "16": "assets/logo/tabx16.png",
+              "32": "assets/logo/tabx32.png",
+              "48": "assets/logo/tabx48.png",
+             "128": "assets/logo/tabx128.png"},
 
   "permissions": ["storage",
     "activeTab",
